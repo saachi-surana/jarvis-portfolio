@@ -10,7 +10,11 @@ const ROWS = [
   { label: "COORDS",  value: "47.6062°N 122.3321°W", color: "muted"  as const },
 ];
 
-export default function LocationPanel() {
+interface LocationPanelProps {
+  shouldAnimate?: boolean;
+}
+
+export default function LocationPanel(_props: LocationPanelProps) {
   return (
     <Panel label="// LOCATION">
       <div className="flex flex-col gap-[2px]">

@@ -3,7 +3,11 @@
 import Panel from "@/components/ui/Panel";
 import Waveform from "@/components/ui/Waveform";
 
-export default function VoicePanel() {
+interface VoicePanelProps {
+  shouldAnimate?: boolean;
+}
+
+export default function VoicePanel(_props: VoicePanelProps) {
   return (
     <Panel noPadding>
       <div className="p-4 pb-2">

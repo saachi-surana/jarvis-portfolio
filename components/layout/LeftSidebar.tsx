@@ -15,12 +15,12 @@ interface LeftSidebarProps {
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const PANELS = [
-  { id: "clock",       Component: ClockPanel,       needsAnimate: false },
-  { id: "diagnostics", Component: DiagnosticsPanel, needsAnimate: true  },
-  { id: "voice",       Component: VoicePanel,       needsAnimate: false },
-  { id: "atmospheric", Component: AtmosphericPanel, needsAnimate: true  },
-  { id: "location",    Component: LocationPanel,    needsAnimate: false },
-  { id: "operator",    Component: OperatorPanel,    needsAnimate: false },
+  { id: "clock",       Component: ClockPanel       },
+  { id: "diagnostics", Component: DiagnosticsPanel },
+  { id: "voice",       Component: VoicePanel       },
+  { id: "atmospheric", Component: AtmosphericPanel },
+  { id: "location",    Component: LocationPanel    },
+  { id: "operator",    Component: OperatorPanel    },
 ];
 
 export default function LeftSidebar({ booted }: LeftSidebarProps) {
@@ -29,7 +29,7 @@ export default function LeftSidebar({ booted }: LeftSidebarProps) {
       style={{ borderRight: "1px solid rgba(0,229,255,0.18)" }}
       className="w-[280px] shrink-0 bg-[#050a0a] overflow-y-auto flex flex-col gap-2 p-3"
     >
-      {PANELS.map(({ id, Component, needsAnimate }, i) => (
+      {PANELS.map(({ id, Component }, i) => (
         <motion.div
           key={id}
           initial={{ opacity: 0, x: -10 }}
@@ -40,11 +40,7 @@ export default function LeftSidebar({ booted }: LeftSidebarProps) {
             ease: EASE,
           }}
         >
-          {needsAnimate ? (
-            <Component shouldAnimate={booted} />
-          ) : (
-            <Component />
-          )}
+          <Component shouldAnimate={booted} />
         </motion.div>
       ))}
     </aside>

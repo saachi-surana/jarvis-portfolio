@@ -10,7 +10,11 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
-export default function ClockPanel() {
+interface ClockPanelProps {
+  shouldAnimate?: boolean;
+}
+
+export default function ClockPanel(_props: ClockPanelProps) {
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {

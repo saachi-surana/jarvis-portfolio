@@ -10,7 +10,11 @@ const ROWS = [
   { label: "CLASS",       value: "2028",                 color: "white" as const },
 ];
 
-export default function OperatorPanel() {
+interface OperatorPanelProps {
+  shouldAnimate?: boolean;
+}
+
+export default function OperatorPanel(_props: OperatorPanelProps) {
   return (
     <Panel label="// OPERATOR">
       <div className="flex flex-col gap-[2px]">
