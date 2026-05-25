@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Mono, Rajdhani, Orbitron } from "next/font/google";
 import "./globals.css";
+import CustomCursor from "@/components/effects/CustomCursor";
+import ScanLine from "@/components/effects/ScanLine";
 
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
@@ -27,6 +29,13 @@ const orbitron = Orbitron({
 export const metadata: Metadata = {
   title: "J.A.R.V.I.S // SAACHI SURANA",
   description: "Portfolio interface — Saachi Surana, CS @ University of Washington",
+  robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -35,8 +44,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${spaceMono.variable} ${rajdhani.variable} ${orbitron.variable}`}>
-      <body className="bg-black overflow-hidden h-screen">
+    <html
+      lang="en"
+      className={`${spaceMono.variable} ${rajdhani.variable} ${orbitron.variable}`}
+    >
+      <body className="bg-black">
+        <CustomCursor />
+        <ScanLine />
         {children}
       </body>
     </html>

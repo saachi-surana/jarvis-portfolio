@@ -46,12 +46,12 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 5. Left sidebar — clock, diagnostics, voice, atmospheric, location, operator
 - [DONE] 6. Right sidebar — operator ID, projects (all 8 + overlay), skills, vitals, network
 - [DONE] 7. JARVIS chat — keyword matching, typewriter effect, all response cases
-- [ ] 8. Global effects — custom cursor, scan line, scanline texture overlay
-- [ ] 9. Mobile — single column graceful degradation, arc reactor scales down
-- [ ] 10. Lighthouse audit — target 85+ performance
+- [DONE] 8. Global effects — custom cursor, scan line, scanline texture overlay
+- [DONE] 9. Mobile — single column graceful degradation, arc reactor scales down
+- [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-8 — Global effects
+COMPLETE — all 10 steps done
 
 (Update this line every time you finish a step so context can be restored if needed)
 

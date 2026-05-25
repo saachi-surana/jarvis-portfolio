@@ -107,5 +107,5 @@ export default function RadarDisplay({ size = 100 }: RadarDisplayProps) {
     return () => cancelAnimationFrame(rafRef.current);
   }, [size]);
 
-  return <canvas ref={canvasRef} className="block shrink-0" />;
+  return <canvas ref={canvasRef} aria-hidden="true" className="block shrink-0" />;
 }

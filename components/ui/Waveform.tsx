@@ -57,6 +57,7 @@ export default function Waveform({ width = 240, height = 40, color = "#00e5ff" }
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="block"
       style={{ imageRendering: "pixelated" }}
     />

@@ -17,7 +17,7 @@ export default function JarvisHUD() {
   const handleBootComplete = useCallback(() => setBooted(true), []);
 
   return (
-    <div className="flex flex-col h-screen bg-black overflow-hidden">
+    <div className="flex flex-col bg-black min-h-screen md:h-screen md:overflow-hidden">
       {/* Boot overlay — renders on top of everything until dismissed */}
       <BootSequence onComplete={handleBootComplete} />
 
@@ -30,13 +30,13 @@ export default function JarvisHUD() {
         <TopBar />
       </motion.div>
 
-      <div className="flex flex-1 min-h-0">
+      <div className="flex flex-col md:flex-row md:flex-1 md:min-h-0">
         {/* Left sidebar — panels stagger in individually */}
         <LeftSidebar booted={booted} />
 
         {/* Center panel — materializes slightly after left */}
         <motion.div
-          className="flex-1 min-w-0"
+          className="flex-1 min-w-0 md:min-h-0"
           initial={{ opacity: 0, scale: 0.975 }}
           animate={booted ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.975 }}
           transition={{ duration: 0.7, delay: 0.5, ease: EASE }}

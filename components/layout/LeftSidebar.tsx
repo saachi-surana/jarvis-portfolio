@@ -26,8 +26,7 @@ const PANELS = [
 export default function LeftSidebar({ booted }: LeftSidebarProps) {
   return (
     <aside
-      style={{ borderRight: "1px solid rgba(0,229,255,0.18)" }}
-      className="w-[280px] shrink-0 bg-[#050a0a] overflow-y-auto flex flex-col gap-2 p-3"
+      className="sidebar-border-r w-full md:w-[280px] md:shrink-0 bg-[#050a0a] md:overflow-y-auto flex flex-col gap-2 p-3"
     >
       {PANELS.map(({ id, Component }, i) => (
         <motion.div

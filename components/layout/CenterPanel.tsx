@@ -15,16 +15,16 @@ interface CenterPanelProps {
 export default function CenterPanel({ booted }: CenterPanelProps) {
   return (
     <main className="h-full w-full flex flex-col bg-black overflow-hidden">
-      {/* Arc reactor — fills ~58% */}
-      <div className="relative min-h-0" style={{ flex: 58 }}>
+      {/* Arc reactor — 280px on mobile, flex-[58] on desktop */}
+      <div className="reactor-section">
         <ArcReactor />
       </div>
 
       {/* Divider */}
       <div style={{ borderTop: "1px solid rgba(0,229,255,0.18)", flexShrink: 0 }} />
 
-      {/* JARVIS chat — fills ~42% */}
-      <div className="min-h-0 overflow-hidden" style={{ flex: 42 }}>
+      {/* JARVIS chat — 240px on mobile, flex-[42] on desktop */}
+      <div className="chat-section">
         <JarvisChat booted={booted} />
       </div>
     </main>
