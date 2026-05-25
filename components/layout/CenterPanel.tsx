@@ -10,7 +10,7 @@ const ArcReactor = dynamic(() => import("@/components/reactor/ArcReactor"), {
 
 export default function CenterPanel() {
   return (
-    <main className="flex-1 relative overflow-hidden bg-black">
+    <main className="h-full w-full relative overflow-hidden bg-black">
       {/* Arc reactor fills the full panel as a living background */}
       <ArcReactor />
 
