@@ -41,17 +41,11 @@ export default function JarvisHUD() {
           animate={booted ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.975 }}
           transition={{ duration: 0.7, delay: 0.5, ease: EASE }}
         >
-          <CenterPanel />
+          <CenterPanel booted={booted} />
         </motion.div>
 
-        {/* Right sidebar */}
-        <motion.div
-          initial={{ opacity: 0, x: 12 }}
-          animate={booted ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
-          transition={{ duration: 0.6, delay: 0.62, ease: EASE }}
-        >
-          <RightSidebar />
-        </motion.div>
+        {/* Right sidebar — handles its own panel stagger internally */}
+        <RightSidebar booted={booted} />
       </div>
 
       {/* Bottom bar — last to appear */}
