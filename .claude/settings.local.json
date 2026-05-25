@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Read(//Users/saachisurana/Projects/**)",
-      "Bash(npx create-next-app@14 jarvis-temp --typescript --tailwind --app --no-eslint --no-src-dir --import-alias \"@/*\" --yes)"
+      "Bash(npx create-next-app@14 jarvis-temp --typescript --tailwind --app --no-eslint --no-src-dir --import-alias \"@/*\" --yes)",
+      "Bash($PLAYWRIGHT_BIN *)",
+      "Bash(node *)",
+      "Bash(npm run *)",
+      "Bash(/Users/saachisurana/Library/Caches/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-mac-arm64/chrome-headless-shell --use-gl=angle --use-angle=metal --enable-webgl --ignore-gpu-blocklist --no-sandbox --screenshot=/tmp/jarvis-reactor2.png --window-size=1440,900 --virtual-time-budget=5000 http://localhost:3099)",
+      "Bash(grep -v \"^$\")",
+      "Bash(curl -s http://localhost:3099)"
     ]
   }
 }

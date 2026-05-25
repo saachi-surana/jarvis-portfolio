@@ -41,7 +41,7 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 
 - [DONE] 1. Project scaffold — Next.js 14, Tailwind config, fonts, folder structure
 - [DONE] 2. Layout skeleton — three columns, top bar, bottom bar, correct proportions
-- [ ] 3. Arc reactor — Three.js, 8+ rings, bloom, particles (do not rush this)
+- [DONE] 3. Arc reactor — Three.js, 8+ rings, bloom, particles (do not rush this)
 - [ ] 4. Boot sequence — black screen → J.A.R.V.I.S → staggered panel load
 - [ ] 5. Left sidebar — clock, diagnostics, voice, atmospheric, location, operator
 - [ ] 6. Right sidebar — operator ID, projects (all 8 + overlay), skills, vitals, network
@@ -51,7 +51,7 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [ ] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-3 — Arc reactor
+4 — Boot sequence
 
 (Update this line every time you finish a step so context can be restored if needed)
 

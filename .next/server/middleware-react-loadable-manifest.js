@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST="{\"components/layout/CenterPanel.tsx -> @/components/reactor/ArcReactor\":{\"id\":\"components/layout/CenterPanel.tsx -> @/components/reactor/ArcReactor\",\"files\":[\"static/chunks/_app-pages-browser_components_reactor_ArcReactor_tsx.js\"]}}"
