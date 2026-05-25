@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/saachisurana/Projects/**)",
+      "Bash(npx create-next-app@14 jarvis-temp --typescript --tailwind --app --no-eslint --no-src-dir --import-alias \"@/*\" --yes)"
+    ]
+  }
+}
