@@ -12,7 +12,10 @@ export default function OperatorIDPanel(_props: OperatorIDPanelProps) {
       <p className="font-mono text-[0.65rem] tracking-[0.2em] text-[#00b8cc] uppercase mb-3">
         // OPERATOR_ID
       </p>
-      <p className="font-ui font-bold text-[1.4rem] tracking-[0.06em] text-white uppercase leading-none mb-1">
+      <p
+        className="font-ui font-bold text-[1.4rem] tracking-[0.06em] text-white uppercase leading-none mb-1"
+        style={{ textShadow: "0 0 12px rgba(255,255,255,0.1)" }}
+      >
         SAACHI SURANA
       </p>
       <p className="font-mono text-[0.68rem] tracking-[0.18em] text-[#00e5ff] uppercase mb-4">
@@ -32,7 +35,7 @@ export default function OperatorIDPanel(_props: OperatorIDPanelProps) {
           href="https://github.com/saachi-surana"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-[0.62rem] tracking-[0.08em] text-[#00e5ff] hover:text-white transition-colors duration-150"
+          className="font-mono text-[0.62rem] tracking-[0.08em] text-white hover:text-[#00e5ff] transition-colors duration-150"
           style={{ textDecoration: "underline", textDecorationColor: "rgba(0,229,255,0.35)" }}
         >
           saachisurana

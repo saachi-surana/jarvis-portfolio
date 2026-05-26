@@ -10,7 +10,7 @@ interface AboutPanelProps {
 export default function AboutPanel(_props: AboutPanelProps) {
   return (
     <Panel label="// ABOUT">
-      <p className="font-ui text-[0.8rem] text-[#475569] mb-4 leading-relaxed tracking-[0.02em]">
+      <p className="font-ui font-normal text-[0.95rem] text-[#e2e8f0] mb-4 leading-[1.6] tracking-[0.01em]">
         CS &amp; Data Science @ UW Seattle. Dean&rsquo;s List. Building AI systems,
         local inference pipelines, and things that feel alive.
       </p>

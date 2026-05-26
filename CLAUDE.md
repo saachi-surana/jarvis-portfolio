@@ -52,7 +52,7 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — all 10 steps done + attribution + enhancement session done
+COMPLETE — all 10 steps done + attribution + enhancement + polish + readability sessions done
 
 ## Enhancement Session — DONE
 - [DONE] PART 1 — Authorship clarity (boot sequence, greeting, bottom bar, operator ID)
@@ -68,6 +68,20 @@ COMPLETE — all 10 steps done + attribution + enhancement session done
 - [DONE] ExperiencePanel: new right sidebar panel (below ProjectsPanel) with 5 expandable entries
 - [DONE] lib/projects.ts: added BIN SENTINEL as project 09
 - [DONE] responses.ts: updated skills, about, resume, contact; added experience/work command + BIN SENTINEL rule
+
+## Readability & Visual Polish Session — DONE
+- [DONE] DESIGN.md: added official text hierarchy table (PRIMARY/BODY/LABEL/MUTED), updated bg-panel to #070d0d, border to 0.25 opacity
+- [DONE] globals.css: --color-bg-panel #070d0d, --color-cyan-border 0.25, --color-text-body #e2e8f0, --color-text-muted #64748b, panel inset glow
+- [DONE] DataRow.tsx: label #00b8cc 0.65rem, value #ffffff Rajdhani 0.9rem with text-shadow
+- [DONE] BarGauge.tsx: converted to Framer Motion with stagger delay via index prop, label now white Rajdhani 0.78rem
+- [DONE] SkillsPanel.tsx: passes index to BarGauge for staggered fill animation
+- [DONE] Panel.tsx: border 0.25 opacity, inset glow in animate base state, bg #070d0d
+- [DONE] ProjectsPanel.tsx: number #00b8cc, name #ffffff→hover #00e5ff, row separator cyan-tinted, inset glow
+- [DONE] ExperiencePanel.tsx: role #ffffff, company #00e5ff, date #64748b, desc #e2e8f0 0.9rem lh 1.6
+- [DONE] ChatMessage.tsx: JARVIS text #e2e8f0 Rajdhani 0.9rem lh 1.6, YOU label #64748b, entry fade+slide-up animation
+- [DONE] AboutPanel.tsx: bio #e2e8f0 Rajdhani 400 0.95rem lh 1.6
+- [DONE] OperatorIDPanel.tsx: name text-shadow, GitHub #ffffff→hover #00e5ff (corrected direction)
+- [DONE] ProjectOverlay.tsx: spring transition stiffness 300 damping 30, desc #e2e8f0 0.95rem lh 1.6, bg #070d0d
 
 ## Polish Session — DONE
 - [DONE] BarGauge: added showPercent prop; SkillsPanel now shows relative bars only, no numbers

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 interface BarGaugeProps {
   label: string;
   value: number;
   shouldAnimate?: boolean;
   showPercent?: boolean;
+  index?: number;
 }
 
 export default function BarGauge({
@@ -14,45 +15,19 @@ export default function BarGauge({
   value,
   shouldAnimate = true,
   showPercent = true,
+  index = 0,
 }: BarGaugeProps) {
-  const barRef  = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLSpanElement>(null);
-  const rafRef  = useRef<number>(0);
-
-  useEffect(() => {
-    if (!shouldAnimate) return;
-
-    const start = performance.now();
-    const dur   = 1000;
-
-    const tick = (now: number) => {
-      const t       = Math.min((now - start) / dur, 1);
-      const eased   = 1 - Math.pow(1 - t, 3);
-      const current = value * eased;
-
-      if (barRef.current)  barRef.current.style.width = `${current}%`;
-      if (showPercent && textRef.current)
-        textRef.current.textContent = `${Math.round(current)}%`;
-
-      if (t < 1) rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [shouldAnimate, value, showPercent]);
-
   return (
-    <div className="flex flex-col gap-[4px]">
+    <div className="flex flex-col gap-[5px]">
       <div className={`flex ${showPercent ? "justify-between" : ""} items-baseline`}>
-        <span className="font-mono text-[0.58rem] tracking-[0.15em] text-[#475569] uppercase">
+        <span className="font-ui font-semibold text-[0.78rem] tracking-[0.1em] text-white uppercase"
+          style={{ textShadow: "0 0 8px rgba(255,255,255,0.08)" }}
+        >
           {label}
         </span>
         {showPercent && (
-          <span
-            ref={textRef}
-            className="font-mono text-[0.62rem] text-[#00e5ff] tabular-nums"
-          >
-            0%
+          <span className="font-mono text-[0.62rem] text-[#00e5ff] tabular-nums">
+            {value}%
           </span>
         )}
       </div>
@@ -60,11 +35,16 @@ export default function BarGauge({
         className="h-[2px] w-full"
         style={{ background: "rgba(255,255,255,0.06)" }}
       >
-        <div
-          ref={barRef}
+        <motion.div
           className="h-full"
+          initial={{ width: shouldAnimate ? "0%" : `${value}%` }}
+          animate={{ width: `${value}%` }}
+          transition={shouldAnimate ? {
+            duration: 0.9,
+            delay: index * 0.07,
+            ease: [0.16, 1, 0.3, 1],
+          } : { duration: 0 }}
           style={{
-            width: "0%",
             background: "#00e5ff",
             boxShadow: "0 0 6px rgba(0,229,255,0.45)",
           }}

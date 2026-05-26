@@ -16,19 +16,37 @@
 
 ---
 
+## Text Hierarchy (official — applied everywhere)
+
+| Role | Color | Font | Size | Usage |
+|------|-------|------|------|-------|
+| PRIMARY | `#ffffff` | Rajdhani 600 | ≥0.88rem | Names, values, titles, headings |
+| SECONDARY | `#00e5ff` | Space Mono | any | Active labels, company names, status |
+| LABEL | `#00b8cc` | Space Mono 0.65rem | 0.65rem | Section headers, data row labels |
+| BODY | `#e2e8f0` | Rajdhani 400 | 0.9–0.95rem / lh 1.6 | Bios, descriptions, chat responses |
+| MUTED | `#64748b` | Space Mono | any | Dates, coordinates, metadata |
+
+**Rules:**
+- NEVER use purple or cyan for readable body text
+- NEVER use `#94a3b8` or `#475569` for readable descriptions — use `#e2e8f0`
+- Nothing readable below 0.85rem
+- Add `text-shadow: 0 0 8px rgba(255,255,255,0.08)` to white PRIMARY text in key panels
+
+---
+
 ## Color Palette
 
 ```css
 /* Backgrounds */
 --color-bg:           #000000;   /* true black — not #0a0a0a, not #111 */
---color-bg-panel:     #050a0a;   /* panel surfaces — barely lifted from black */
+--color-bg-panel:     #070d0d;   /* panel surfaces */
 --color-bg-overlay:   #020808;   /* modal/overlay backgrounds */
 
 /* Primary — Cyan (system active state) */
 --color-cyan:         #00e5ff;
 --color-cyan-dim:     #00b8cc;
 --color-cyan-ghost:   rgba(0, 229, 255, 0.08);
---color-cyan-border:  rgba(0, 229, 255, 0.18);
+--color-cyan-border:  rgba(0, 229, 255, 0.25);
 --color-cyan-glow:    rgba(0, 229, 255, 0.35);
 
 /* Secondary — Purple (accent, AI responses) */
@@ -38,11 +56,12 @@
 --color-purple-glow:  rgba(192, 132, 252, 0.3);
 
 /* Text */
---color-text-primary:   #ffffff;
---color-text-secondary: #94a3b8;
---color-text-muted:     #475569;
---color-text-cyan:      #00e5ff;
---color-text-purple:    #c084fc;
+--color-text-primary:   #ffffff;    /* names, values, headings */
+--color-text-body:      #e2e8f0;    /* bios, descriptions, chat responses */
+--color-text-secondary: #94a3b8;    /* intermediate labels */
+--color-text-muted:     #64748b;    /* dates, coords, metadata */
+--color-text-cyan:      #00e5ff;    /* active labels, section IDs */
+--color-text-purple:    #c084fc;    /* accent only — NOT for readable text */
 
 /* Status */
 --color-online:  #00e5ff;
@@ -97,7 +116,7 @@
 /* No rounded-lg, no rounded-full on anything that isn't a circle */
 
 /* Borders */
---border-panel:  1px solid rgba(0, 229, 255, 0.18);
+--border-panel:  1px solid rgba(0, 229, 255, 0.25);
 --border-active: 1px solid #00e5ff;
 --border-dim:    1px solid rgba(255,255,255,0.06);
 
@@ -119,8 +138,9 @@ LEFT SIDEBAR (280px) | CENTER (flex-1) | RIGHT SIDEBAR (300px)
 Panel structure — every panel uses this pattern:
 ```css
 .panel {
-  background: #050a0a;
-  border: 1px solid rgba(0,229,255,0.18);
+  background: #070d0d;
+  border: 1px solid rgba(0,229,255,0.25);
+  box-shadow: inset 0 0 8px rgba(0,229,255,0.05);
   padding: 16px;
   position: relative;
 }

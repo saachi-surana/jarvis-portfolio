@@ -7,14 +7,14 @@
 :root {
   /* Backgrounds */
   --color-bg:           #000000;
-  --color-bg-panel:     #050a0a;
+  --color-bg-panel:     #070d0d;
   --color-bg-overlay:   #020808;
 
   /* Primary — Cyan */
   --color-cyan:         #00e5ff;
   --color-cyan-dim:     #00b8cc;
   --color-cyan-ghost:   rgba(0, 229, 255, 0.08);
-  --color-cyan-border:  rgba(0, 229, 255, 0.18);
+  --color-cyan-border:  rgba(0, 229, 255, 0.25);
   --color-cyan-glow:    rgba(0, 229, 255, 0.35);
 
   /* Secondary — Purple */
@@ -26,7 +26,8 @@
   /* Text */
   --color-text-primary:   #ffffff;
   --color-text-secondary: #94a3b8;
-  --color-text-muted:     #475569;
+  --color-text-body:      #e2e8f0;
+  --color-text-muted:     #64748b;
   --color-text-cyan:      #00e5ff;
   --color-text-purple:    #c084fc;
 
@@ -42,7 +43,7 @@
   --space-12: 48px; --space-16: 64px;
 
   /* Borders */
-  --border-panel:  1px solid rgba(0, 229, 255, 0.18);
+  --border-panel:  1px solid rgba(0, 229, 255, 0.25);
   --border-active: 1px solid #00e5ff;
   --border-dim:    1px solid rgba(255,255,255,0.06);
 
@@ -124,6 +125,7 @@ body::after {
 .panel {
   background: var(--color-bg-panel);
   border: var(--border-panel);
+  box-shadow: inset 0 0 8px rgba(0,229,255,0.05);
   padding: var(--space-4);
   position: relative;
 }

@@ -80,31 +80,34 @@ export default function ExperiencePanel(_props: ExperiencePanelProps) {
         {ENTRIES.map((e) => {
           const isOpen = expanded.has(e.id);
           return (
-            <div key={e.id} style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+            <div key={e.id} style={{ borderTop: "1px solid rgba(0,229,255,0.08)" }}>
               <button
                 onClick={() => toggle(e.id)}
-                className="w-full flex items-start gap-3 px-4 py-[7px] text-left group transition-colors duration-150 hover:bg-[rgba(0,229,255,0.04)]"
+                className="w-full flex items-start gap-3 px-4 py-[7px] text-left group transition-colors duration-150 hover:bg-[rgba(0,229,255,0.06)]"
               >
                 {/* ID */}
-                <span className="font-mono text-[0.55rem] tracking-[0.1em] text-[#475569] shrink-0 w-4 tabular-nums mt-[1px]">
+                <span className="font-mono text-[0.58rem] tracking-[0.1em] text-[#00b8cc] shrink-0 w-4 tabular-nums mt-[1px]">
                   {e.id}
                 </span>
 
                 {/* Role + company */}
                 <div className="flex-1 min-w-0">
-                  <span className="font-ui font-semibold text-[0.78rem] tracking-[0.04em] text-[#94a3b8] group-hover:text-white uppercase transition-colors duration-150 leading-tight block">
+                  <span
+                    className="font-ui font-semibold text-[0.85rem] tracking-[0.04em] text-white group-hover:text-[#00e5ff] uppercase transition-colors duration-150 leading-tight block"
+                    style={{ textShadow: "0 0 8px rgba(255,255,255,0.08)" }}
+                  >
                     {e.role}
                     <span className="text-[#475569] mx-1">//</span>
-                    <span className="text-[#00b8cc]">{e.company}</span>
+                    <span className="text-[#00e5ff]">{e.company}</span>
                   </span>
-                  <span className="font-mono text-[0.58rem] tracking-[0.1em] text-[#475569] uppercase block mt-[2px]">
+                  <span className="font-mono text-[0.58rem] tracking-[0.1em] text-[#64748b] uppercase block mt-[2px]">
                     {e.date}
                   </span>
                 </div>
 
                 {/* Expand chevron */}
                 <span
-                  className="font-mono text-[0.65rem] text-[#475569] shrink-0 mt-[1px] transition-transform duration-200"
+                  className="font-mono text-[0.65rem] text-[#64748b] shrink-0 mt-[1px] transition-transform duration-200"
                   style={{ transform: isOpen ? "rotate(90deg)" : "rotate(0deg)" }}
                 >
                   &rsaquo;
@@ -117,14 +120,14 @@ export default function ExperiencePanel(_props: ExperiencePanelProps) {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                     style={{ overflow: "hidden" }}
                   >
                     <div className="px-4 pb-3 pl-11">
-                      <p className="font-mono text-[0.55rem] tracking-[0.12em] text-[#475569] uppercase mb-[2px]">
+                      <p className="font-mono text-[0.55rem] tracking-[0.12em] text-[#64748b] uppercase mb-[3px]">
                         {e.location}
                       </p>
-                      <p className="font-ui text-[0.8rem] text-[#475569] leading-relaxed tracking-[0.02em]">
+                      <p className="font-ui font-normal text-[0.9rem] text-[#e2e8f0] leading-[1.6] tracking-[0.01em]">
                         {e.desc}
                       </p>
                     </div>

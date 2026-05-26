@@ -47,11 +47,11 @@ export default function ProjectsPanel(_props: ProjectsPanelProps) {
       <motion.div
         className="relative bg-[#050a0a]"
         animate={isHighlighted
-          ? { boxShadow: ["0 0 0px transparent", "0 0 16px rgba(0,229,255,0.45)", "0 0 0px transparent"] }
-          : { boxShadow: "0 0 0px transparent" }
+          ? { boxShadow: ["inset 0 0 8px rgba(0,229,255,0.05)", "0 0 20px rgba(0,229,255,0.5)", "inset 0 0 8px rgba(0,229,255,0.05)"] }
+          : { boxShadow: "inset 0 0 8px rgba(0,229,255,0.05)" }
         }
         transition={{ duration: 0.8 }}
-        style={{ border: `1px solid ${isHighlighted ? "#00e5ff" : "rgba(0,229,255,0.18)"}` }}
+        style={{ border: `1px solid ${isHighlighted ? "#00e5ff" : "rgba(0,229,255,0.25)"}` }}
       >
         <span
           aria-hidden
@@ -69,13 +69,16 @@ export default function ProjectsPanel(_props: ProjectsPanelProps) {
               key={p.id}
               ref={(el) => { rowRefs.current[p.id] = el; }}
               onClick={() => setSelected(p)}
-              className="w-full flex items-center gap-3 px-4 py-[6px] text-left group transition-colors duration-150 hover:bg-[rgba(0,229,255,0.05)]"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
+              className="w-full flex items-center gap-3 px-4 py-[6px] text-left group transition-colors duration-150 hover:bg-[rgba(0,229,255,0.07)]"
+              style={{ borderTop: "1px solid rgba(0,229,255,0.08)" }}
             >
-              <span className="font-mono text-[0.55rem] tracking-[0.1em] text-[#475569] shrink-0 w-4 tabular-nums">
+              <span className="font-mono text-[0.58rem] tracking-[0.1em] text-[#00b8cc] shrink-0 w-4 tabular-nums">
                 {p.id}
               </span>
-              <span className="font-ui font-semibold text-[0.82rem] tracking-[0.05em] text-[#94a3b8] group-hover:text-white uppercase transition-colors duration-150 leading-tight">
+              <span
+                className="font-ui font-semibold text-[0.88rem] tracking-[0.05em] text-white group-hover:text-[#00e5ff] uppercase transition-colors duration-150 leading-tight"
+                style={{ textShadow: "0 0 8px rgba(255,255,255,0.08)" }}
+              >
                 {p.name}
               </span>
               <span className="ml-auto font-mono text-[0.6rem] text-[#00e5ff] opacity-0 group-hover:opacity-100 transition-opacity duration-150 shrink-0">

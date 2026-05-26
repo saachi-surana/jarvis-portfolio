@@ -26,13 +26,14 @@ export default function SkillsPanel({ shouldAnimate }: SkillsPanelProps) {
   return (
     <Panel label="// SKILLS_MATRIX" sectionId="skills">
       <div className="flex flex-col gap-3">
-        {SKILLS.map((s) => (
+        {SKILLS.map((s, i) => (
           <BarGauge
             key={s.label}
             label={s.label}
             value={s.value}
             shouldAnimate={shouldAnimate}
             showPercent={false}
+            index={i}
           />
         ))}
       </div>

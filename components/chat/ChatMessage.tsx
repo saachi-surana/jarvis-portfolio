@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 export interface Message {
   id: string;
   role: "jarvis" | "user";
@@ -41,16 +43,23 @@ export default function ChatMessage({ message }: ChatMessageProps) {
   const segments = parseSegments(displayText);
 
   return (
-    <div className="flex flex-col gap-[2px]">
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col gap-[3px]"
+    >
       <span
         className="font-mono text-[0.52rem] tracking-[0.25em] uppercase select-none"
-        style={{ color: isJarvis ? "#00e5ff" : "#475569" }}
+        style={{ color: isJarvis ? "#00e5ff" : "#64748b" }}
       >
         {isJarvis ? "J.A.R.V.I.S" : "YOU"}
       </span>
 
-      <p className="font-mono text-[0.77rem] leading-relaxed whitespace-pre-wrap"
-         style={{ color: isJarvis ? "#94a3b8" : "#ffffff" }}>
+      <p
+        className="font-ui font-normal text-[0.9rem] leading-[1.6] whitespace-pre-wrap"
+        style={{ color: isJarvis ? "#e2e8f0" : "#ffffff" }}
+      >
         {segments.map((seg, i) =>
           seg.kind === "link" ? (
             <a
@@ -81,6 +90,6 @@ export default function ChatMessage({ message }: ChatMessageProps) {
           </span>
         )}
       </p>
-    </div>
+    </motion.div>
   );
 }

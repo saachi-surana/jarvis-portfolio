@@ -9,8 +9,6 @@ interface ProjectOverlayProps {
   onClose: () => void;
 }
 
-const EASE = [0.16, 1, 0.3, 1] as const;
-
 export default function ProjectOverlay({ project, onClose }: ProjectOverlayProps) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -30,11 +28,12 @@ export default function ProjectOverlay({ project, onClose }: ProjectOverlayProps
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
-        transition={{ duration: 0.38, ease: EASE }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="absolute top-0 right-0 h-full w-[380px] overflow-y-auto"
         style={{
-          background: "#020808",
-          borderLeft: "1px solid rgba(0,229,255,0.35)",
+          background: "#070d0d",
+          borderLeft: "1px solid rgba(0,229,255,0.4)",
+          boxShadow: "inset 4px 0 24px rgba(0,229,255,0.03)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -51,17 +50,20 @@ export default function ProjectOverlay({ project, onClose }: ProjectOverlayProps
             <p className="font-mono text-[0.62rem] tracking-[0.22em] text-[#00b8cc] uppercase mb-2">
               // PROJECT_{project.id}
             </p>
-            <h2 className="font-ui font-bold text-[1.5rem] tracking-[0.06em] text-white uppercase leading-none">
+            <h2
+              className="font-ui font-bold text-[1.5rem] tracking-[0.06em] text-white uppercase leading-none"
+              style={{ textShadow: "0 0 12px rgba(255,255,255,0.1)" }}
+            >
               {project.name}
             </h2>
           </div>
 
           {/* Description */}
           <div>
-            <p className="font-mono text-[0.58rem] tracking-[0.18em] text-[#475569] uppercase mb-2">
+            <p className="font-mono text-[0.58rem] tracking-[0.18em] text-[#00b8cc] uppercase mb-2">
               // SYNOPSIS
             </p>
-            <p className="font-ui font-medium text-[0.88rem] leading-relaxed text-[#94a3b8]">
+            <p className="font-ui font-normal text-[0.95rem] leading-[1.6] text-[#e2e8f0]">
               {project.description}
             </p>
           </div>

@@ -38,15 +38,15 @@ export default function Panel({
   return (
     <motion.div
       animate={isHighlighted
-        ? { boxShadow: ["0 0 0px transparent", "0 0 16px rgba(0,229,255,0.45)", "0 0 0px transparent"] }
-        : { boxShadow: "0 0 0px transparent" }
+        ? { boxShadow: ["inset 0 0 8px rgba(0,229,255,0.05)", "0 0 20px rgba(0,229,255,0.5)", "inset 0 0 8px rgba(0,229,255,0.05)"] }
+        : { boxShadow: "inset 0 0 8px rgba(0,229,255,0.05)" }
       }
       transition={{ duration: 0.8 }}
       style={{
-        border: `1px solid ${isHighlighted ? "#00e5ff" : "rgba(0,229,255,0.18)"}`,
+        border: `1px solid ${isHighlighted ? "#00e5ff" : "rgba(0,229,255,0.25)"}`,
         ...style,
       }}
-      className={`relative bg-[#050a0a] ${noPadding ? "" : "p-4"} ${className}`}
+      className={`relative bg-[#070d0d] ${noPadding ? "" : "p-4"} ${className}`}
     >
       {(corner === "tl" || corner === "both") && (
         <span
