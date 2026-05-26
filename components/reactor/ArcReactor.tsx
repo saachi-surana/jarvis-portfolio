@@ -64,6 +64,172 @@ const RINGS: RingSpec[] = [
   { radius: 0.35, tube: 0.038, color: "#f0faff", intensity: 6.0, speed: -2.20, axis: [1,   0,   0  ], tilt: [0,    0.5,  0   ], tubeSeg:  80, sectionId: "operator",    sectionLabel: "// OPERATOR"        },
 ];
 
+// ─── Outer casing ring (static, segmented) ───────────────────────────────────
+
+const CASING_RADIUS  = 3.25;
+const CASING_SEG     = 48;
+const CASING_GAP     = 0.045; // radians gap between segments
+
+function CasingRing() {
+  const segments = useMemo(() => {
+    const items: THREE.Mesh[] = [];
+    const segAngle = (Math.PI * 2) / CASING_SEG;
+    for (let i = 0; i < CASING_SEG; i++) {
+      const angle     = i * segAngle;
+      const spanAngle = segAngle - CASING_GAP;
+      const geo = new THREE.TorusGeometry(CASING_RADIUS, 0.055, 4, Math.max(2, Math.round(spanAngle * 32)), spanAngle);
+      const mat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color("#1a1a1a"),
+        emissive: new THREE.Color("#00e5ff"),
+        emissiveIntensity: 0.3,
+        metalness: 0.8,
+        roughness: 0.4,
+        toneMapped: false,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.rotation.z = angle + spanAngle / 2;
+      items.push(mesh);
+    }
+    return items;
+  }, []);
+
+  return (
+    <group>
+      {segments.map((mesh, i) => (
+        <primitive key={i} object={mesh} />
+      ))}
+    </group>
+  );
+}
+
+// ─── Tick marks ring ─────────────────────────────────────────────────────────
+
+const TICK_COUNT  = 48;
+const TICK_RADIUS = 3.05;
+
+function TickMarks() {
+  const geo = useMemo(() => {
+    const positions: number[] = [];
+    for (let i = 0; i < TICK_COUNT; i++) {
+      const angle    = (i / TICK_COUNT) * Math.PI * 2;
+      const isMajor  = i % 4 === 0;
+      const len      = isMajor ? 0.14 : 0.07;
+      const inner    = TICK_RADIUS;
+      const outer    = TICK_RADIUS + len;
+      positions.push(
+        Math.cos(angle) * inner, Math.sin(angle) * inner, 0,
+        Math.cos(angle) * outer, Math.sin(angle) * outer, 0,
+      );
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    return geo;
+  }, []);
+
+  return (
+    <lineSegments geometry={geo}>
+      <lineBasicMaterial color="#00e5ff" toneMapped={false} />
+    </lineSegments>
+  );
+}
+
+// ─── Radar sweep ──────────────────────────────────────────────────────────────
+
+const SWEEP_VERT = `
+  varying float vAngle;
+  void main() {
+    vAngle = atan(position.y, position.x);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const SWEEP_FRAG = `
+  varying float vAngle;
+  uniform float uTime;
+  void main() {
+    float speed = 0.1047197551; // 2π / 60 = 1 RPM
+    float lead  = mod(uTime * speed, 6.28318);
+    float diff  = mod(lead - vAngle + 6.28318, 6.28318);
+    float fade  = diff < 1.5708 ? (1.0 - diff / 1.5708) : 0.0; // 90-degree trail
+    gl_FragColor = vec4(0.0, 0.898, 1.0, fade * 0.45);
+  }
+`;
+
+function RadarSweep() {
+  const matRef = useRef<THREE.ShaderMaterial>(null!);
+
+  const geo = useMemo(() => {
+    const segments = 128;
+    const verts: number[] = [0, 0, 0];
+    for (let i = 0; i <= segments; i++) {
+      const a = (i / segments) * Math.PI * 2;
+      verts.push(Math.cos(a) * TICK_RADIUS, Math.sin(a) * TICK_RADIUS, 0);
+    }
+    const indices: number[] = [];
+    for (let i = 1; i <= segments; i++) {
+      indices.push(0, i, i + 1);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
+    g.setIndex(indices);
+    return g;
+  }, []);
+
+  useFrame(({ clock }) => {
+    if (matRef.current) {
+      matRef.current.uniforms.uTime.value = clock.getElapsedTime();
+    }
+  });
+
+  return (
+    <mesh geometry={geo}>
+      <shaderMaterial
+        ref={matRef}
+        vertexShader={SWEEP_VERT}
+        fragmentShader={SWEEP_FRAG}
+        uniforms={{ uTime: { value: 0 } }}
+        transparent
+        depthWrite={false}
+        side={THREE.DoubleSide}
+      />
+    </mesh>
+  );
+}
+
+// ─── Floating data labels ─────────────────────────────────────────────────────
+
+const LABEL_STYLE: React.CSSProperties = {
+  fontFamily: "'Space Mono', monospace",
+  fontSize: "0.6rem",
+  letterSpacing: "0.18em",
+  color: "rgba(0,184,204,0.75)",
+  textTransform: "uppercase" as const,
+  whiteSpace: "nowrap",
+  pointerEvents: "none",
+  userSelect: "none",
+};
+
+const LABELS = [
+  { pos: [0,  3.6, 0] as [number,number,number], text: "47.6062°N",   anchor: "center" },
+  { pos: [0, -3.6, 0] as [number,number,number], text: "122.3321°W",  anchor: "center" },
+  { pos: [-3.8, 0, 0] as [number,number,number], text: "ALT: 52M",    anchor: "right"  },
+  { pos: [ 3.8, 0, 0] as [number,number,number], text: "SEC: NOMINAL",anchor: "left"   },
+];
+
+function DataLabels() {
+  return (
+    <>
+      {LABELS.map((l) => (
+        <Html key={l.text} position={l.pos} style={{ pointerEvents: "none" }}>
+          <span style={{ ...LABEL_STYLE, display: "block", textAlign: l.anchor as "center" | "left" | "right" }}>
+            {l.text}
+          </span>
+        </Html>
+      ))}
+    </>
+  );
+}
+
 // ─── Ring ────────────────────────────────────────────────────────────────────
 
 interface RingProps extends RingSpec {
@@ -145,35 +311,50 @@ function Ring({
 
 // ─── Particle field ──────────────────────────────────────────────────────────
 
-function Particles({ count = 1200, mode }: { count?: number; mode: ReactorMode }) {
+function Particles({ count = 2000, mode }: { count?: number; mode: ReactorMode }) {
   const ref = useRef<THREE.Points>(null!);
 
-  const geo = useMemo(() => {
-    const g = new THREE.BufferGeometry();
-    const pos = new Float32Array(count * 3);
-    const col = new Float32Array(count * 3);
+  const { geo, sizes } = useMemo(() => {
+    const g    = new THREE.BufferGeometry();
+    const pos  = new Float32Array(count * 3);
+    const col  = new Float32Array(count * 3);
+    const sz   = new Float32Array(count);
     const cyan   = new THREE.Color("#00e5ff");
     const purple = new THREE.Color("#c084fc");
     const dim    = new THREE.Color("#00b8cc");
 
     for (let i = 0; i < count; i++) {
-      const r     = 2.4 + Math.random() * 3.2;
-      const theta = Math.random() * Math.PI * 2;
-      const phi   = Math.acos(2 * Math.random() - 1);
-      pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      pos[i * 3 + 2] = r * Math.cos(phi);
+      // Mix orbital (inner band) and free-drift (outer sphere)
+      const orbital = Math.random() < 0.45;
+      if (orbital) {
+        const r     = 2.6 + Math.random() * 1.8;
+        const theta = Math.random() * Math.PI * 2;
+        const spread = (Math.random() - 0.5) * 0.8;
+        pos[i * 3]     = r * Math.cos(theta);
+        pos[i * 3 + 1] = r * Math.sin(theta) * 0.3 + spread;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 1.2;
+      } else {
+        const r     = 3.0 + Math.random() * 2.8;
+        const theta = Math.random() * Math.PI * 2;
+        const phi   = Math.acos(2 * Math.random() - 1);
+        pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
+        pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        pos[i * 3 + 2] = r * Math.cos(phi);
+      }
 
       const t = Math.random();
       const c = t < 0.55 ? cyan : t < 0.80 ? purple : dim;
       col[i * 3]     = c.r;
       col[i * 3 + 1] = c.g;
       col[i * 3 + 2] = c.b;
+
+      // Vary sizes 0.008–0.025
+      sz[i] = 0.008 + Math.random() * 0.017;
     }
 
     g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
     g.setAttribute("color",    new THREE.BufferAttribute(col, 3));
-    return g;
+    return { geo: g, sizes: sz };
   }, [count]);
 
   useFrame(({ clock }, delta) => {
@@ -183,16 +364,21 @@ function Particles({ count = 1200, mode }: { count?: number; mode: ReactorMode }
 
     const mat = ref.current.material as THREE.PointsMaterial;
     const targetOpacity =
-      mode === "stealth" ? 0.18 :
-      mode === "overdrive" ? 0.9 :
+      mode === "stealth"   ? 0.18 :
+      mode === "overdrive" ? 0.9  :
       0.65;
     mat.opacity += (targetOpacity - mat.opacity) * 3 * delta;
+    // slight size shimmer
+    mat.size = 0.015 + Math.sin(t * 1.2) * 0.003;
   });
+
+  // sizes attribute stored but PointsMaterial uses uniform size; shimmer via useFrame
+  void sizes;
 
   return (
     <points ref={ref} geometry={geo}>
       <pointsMaterial
-        size={0.018}
+        size={0.015}
         vertexColors
         transparent
         opacity={0.65}
@@ -331,7 +517,7 @@ function Core({
         "#e0f8ff";
       mat.emissive.lerp(new THREE.Color(coreColor), 4 * delta);
       const targetEI =
-        hovered     ? 18 :
+        hovered          ? 18 :
         mode === "overdrive" ? 14 :
         mode === "stealth"   ? 2  :
         8;
@@ -420,6 +606,12 @@ function ReactorScene({
 
   return (
     <group ref={groupRef}>
+      {/* Static outer casing — not inside the parallax group rotation */}
+      <CasingRing />
+      <TickMarks />
+      <RadarSweep />
+      <DataLabels />
+
       {RINGS.map((spec, i) => (
         <Ring
           key={i}
@@ -431,7 +623,7 @@ function ReactorScene({
         />
       ))}
       <Core hovered={hovered} onHover={onHover} mode={mode} onCoreClick={onCoreClick} />
-      <Particles count={1200} mode={mode} />
+      <Particles count={2000} mode={mode} />
       <BurstParticles burstTick={burstTick} mode={mode} />
     </group>
   );
@@ -505,7 +697,7 @@ export default function ArcReactor() {
       </button>
 
       <Canvas
-        camera={{ position: [0, 0, 6], fov: 50 }}
+        camera={{ position: [0, 0, 7.2], fov: 50 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: false }}
       >
@@ -528,9 +720,9 @@ export default function ArcReactor() {
 
         <EffectComposer>
           <Bloom
-            intensity={2.0}
-            luminanceThreshold={0.15}
-            luminanceSmoothing={0.9}
+            intensity={2.5}
+            luminanceThreshold={0.1}
+            luminanceSmoothing={0.85}
           />
           <ChromaticAberration
             offset={caOffset.current}
