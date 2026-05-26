@@ -62,12 +62,23 @@ COMPLETE — all 10 steps done + attribution + enhancement session done
 - [DONE] PART 5 — GlitchEffect: J.A.R.V.I.S title in TopBar does RGB channel split every 15–20s
 - [DONE] PART 6 — Particle burst: clicking reactor core fires 100 particles outward + lerp back
 
+## Content Update Session — DONE
+- [DONE] SkillsPanel: updated to Python 90%, TS/JS 80%, React/Next 80%, ML/AI 85%, Java 70%, Data 75%
+- [DONE] AboutPanel: new left sidebar panel with bio, degree/school/status/grad/email/LinkedIn data rows
+- [DONE] ExperiencePanel: new right sidebar panel (below ProjectsPanel) with 5 expandable entries
+- [DONE] lib/projects.ts: added BIN SENTINEL as project 09
+- [DONE] responses.ts: updated skills, about, resume, contact; added experience/work command + BIN SENTINEL rule
+
 ## Key Architecture Notes (for future sessions)
 - State management: Zustand store at lib/store.ts (reactorMode, pingProjectId, highlightSection, pendingMessage)
 - Panel highlight system: Panel.tsx accepts sectionId prop → reads highlightSection from Zustand → pulses glow
 - Ring→section map: outer 5 rings = right sidebar (projects, skills, vitals, network, operator-id), inner 5 = left sidebar
 - Reactor mode keywords: "red alert"/"stealth"/"overdrive"/"reset" in chat → setReactorMode in store
 - Ring click → queueMessage(RING_MESSAGES[sectionId]) → JarvisChat watches pendingMessage → types it out
+- Projects: now 9 entries (01–09, BIN SENTINEL added)
+- Right sidebar order: OperatorID → Projects → Experience → Skills → Vitals → Network
+- Left sidebar order: Clock → Diagnostics → Voice → Atmospheric → Location → Operator → About
+- Saachi: CS & Data Science @ UW, Dean's List, Class 2028, CoreWeave intern, UW BioRobotics researcher
 
 (Update this line every time you finish a step so context can be restored if needed)
 

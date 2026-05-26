@@ -8,12 +8,12 @@ interface SkillsPanelProps {
 }
 
 const SKILLS = [
-  { label: "PYTHON",     value: 85 },
-  { label: "TYPESCRIPT", value: 80 },
-  { label: "GO",         value: 70 },
-  { label: "REACT/NEXT", value: 80 },
-  { label: "AI/ML",      value: 75 },
-  { label: "SYSTEMS",    value: 75 },
+  { label: "PYTHON",       value: 90 },
+  { label: "TYPESCRIPT/JS",value: 80 },
+  { label: "REACT/NEXT.JS",value: 80 },
+  { label: "ML/AI",        value: 85 },
+  { label: "JAVA",         value: 70 },
+  { label: "DATA",         value: 75 },
 ];
 
 export default function SkillsPanel({ shouldAnimate }: SkillsPanelProps) {

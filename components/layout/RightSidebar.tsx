@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import OperatorIDPanel from "@/components/panels/OperatorIDPanel";
 import ProjectsPanel from "@/components/panels/ProjectsPanel";
+import ExperiencePanel from "@/components/panels/ExperiencePanel";
 import SkillsPanel from "@/components/panels/SkillsPanel";
 import VitalsPanel from "@/components/panels/VitalsPanel";
 import NetworkPanel from "@/components/panels/NetworkPanel";
@@ -15,11 +16,12 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 // OperatorIDPanel must remain first — it's the primary identity panel
 const PANELS = [
-  { id: "operator-id", Component: OperatorIDPanel },
-  { id: "projects",    Component: ProjectsPanel   },
-  { id: "skills",      Component: SkillsPanel     },
-  { id: "vitals",      Component: VitalsPanel     },
-  { id: "network",     Component: NetworkPanel    },
+  { id: "operator-id", Component: OperatorIDPanel  },
+  { id: "projects",    Component: ProjectsPanel    },
+  { id: "experience",  Component: ExperiencePanel  },
+  { id: "skills",      Component: SkillsPanel      },
+  { id: "vitals",      Component: VitalsPanel      },
+  { id: "network",     Component: NetworkPanel     },
 ];
 
 export default function RightSidebar({ booted = false }: RightSidebarProps) {

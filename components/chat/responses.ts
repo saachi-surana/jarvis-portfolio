@@ -4,19 +4,19 @@ export const GREETING =
   `Online and fully operational. You've accessed the portfolio interface of Saachi Surana — Computer Science, University of Washington, Class of 2028. This interface was designed and built by Saachi Surana. I can brief you on active projects, pull her GitHub, or answer any questions about her work. How may I assist?`;
 
 const FALLBACK =
-  `I didn't quite catch that. Try: 'show projects', a project name like 'jarvis' or 'query', 'open github', 'skills', or 'about'.`;
+  `I didn't quite catch that. Try: 'show projects', a project name like 'jarvis' or 'query', 'experience', 'skills', or 'about'.`;
 
 export const RING_MESSAGES: Record<string, string> = {
-  "projects":    "ACTIVE_PROJECTS panel — 8 entries in the project registry. Type any project name for a full briefing.",
-  "skills":      "OPERATOR SKILL MATRIX — Primary stack: Python, TypeScript, Go. Frameworks: React, Next.js, FastAPI, Electron.",
+  "projects":    "ACTIVE_PROJECTS panel — 9 entries in the project registry. Type any project name for a full briefing.",
+  "skills":      "OPERATOR SKILL MATRIX — Primary: Python, TypeScript/JS, Java. ML/AI: PyTorch, Whisper, Ollama, ChromaDB, LangChain.",
   "vitals":      "NEURAL LINK holding at 70%. CPU nominal at 12%. Memory footprint 31%. All systems green.",
   "network":     "GLOBAL UPLINK stable. Seattle node active. Ping 24ms. Bandwidth 783 Mb/s.",
-  "operator-id": "OPERATOR: Saachi Surana — CS, University of Washington, Class of 2028. GitHub: saachisurana.",
+  "operator-id": "OPERATOR: Saachi Surana — CS & Data Science, University of Washington, Class of 2028. Dean's List.",
   "diagnostics": "SUIT DIAGNOSTICS nominal — Power 94%, Grid 87%, Shield 93%, Comms 100%.",
   "voice":       "VOICE ANALYSIS module active. Waveform stable. Signal nominal.",
   "atmospheric": "ATMOSPHERIC SENSORS reading 29.91 inHg. Conditions nominal.",
   "location":    "LOCATION LOCK: Seattle, WA. Coordinates 47.6062°N, 122.3321°W.",
-  "operator":    "OPERATOR CREDENTIALS confirmed — University of Washington, Computer Science, Class of 2028.",
+  "operator":    "OPERATOR CREDENTIALS confirmed — University of Washington, CS & Data Science, Class of 2028.",
 };
 
 export const PROJECT_PING_MAP: Record<string, string> = {
@@ -28,6 +28,7 @@ export const PROJECT_PING_MAP: Record<string, string> = {
   "TRAFFICOP": "06",
   "STELLAR":   "07",
   "FLEXNET":   "08",
+  "BIN":       "09",
 };
 
 interface Rule {
@@ -54,7 +55,7 @@ const RULES: Rule[] = [
     mode: "overdrive",
   },
   {
-    keywords: ["online", "reset", "normal mode", "stand down", "stand down"],
+    keywords: ["online", "reset", "normal mode", "stand down"],
     response: `RETURNING TO STANDARD OPERATING PARAMETERS.\nReactor normalized. All systems nominal.`,
     mode: "online",
   },
@@ -69,7 +70,7 @@ const RULES: Rule[] = [
   {
     keywords: ["projects", "what have you built", "show projects", "show me", "portfolio", "everything"],
     response:
-      `Eight active entries in the project registry:\n` +
+      `Nine active entries in the project registry:\n` +
       `01 — JARVIS (you are looking at it)\n` +
       `02 — STUDYSYNC\n` +
       `03 — NOTION-PLANNER\n` +
@@ -78,7 +79,17 @@ const RULES: Rule[] = [
       `06 — TRAFFICOP\n` +
       `07 — STELLAR CLASSIFICATION\n` +
       `08 — FLEXNET\n` +
+      `09 — BIN SENTINEL\n` +
       `Type the name of any project for a full briefing.`,
+  },
+
+  // BIN SENTINEL — check before generic "bin" matches anything else
+  {
+    keywords: ["bin sentinel", "bin", "waste", "trash", "garbage classification", "anthropic"],
+    response:
+      `BIN SENTINEL — Real-time waste classification system. Won Best Use of AI at the Anthropic Startup-athon and AI Student Collective Hackathon. Camera feed → TensorFlow.js CNN classifies waste type → FastAPI + ChromaDB + LangChain route disposal instructions in real time.\n` +
+      `Stack: React, TensorFlow.js, FastAPI, ChromaDB, LangChain.\n` +
+      `[LINK: github.com/saachi-surana]`,
   },
 
   // JARVIS
@@ -137,9 +148,10 @@ const RULES: Rule[] = [
 
   // STELLAR CLASSIFICATION
   {
-    keywords: ["stellar", "star", "classification", "astronomy", "ml model", "stellar classification"],
+    keywords: ["stellar", "star", "classification", "astronomy", "stellar classification"],
     response:
-      `STELLAR CLASSIFICATION — Machine learning model for classifying stellar objects from spectral and photometric data. Documentation incoming.\n` +
+      `STELLAR CLASSIFICATION — Machine learning model for classifying stellar objects from spectral and photometric data.\n` +
+      `Stack: Python, PyTorch.\n` +
       `[LINK: github.com/saachi-surana/stellar-classification]`,
   },
 
@@ -164,11 +176,23 @@ const RULES: Rule[] = [
     keywords: ["skills", "tech stack", "languages", "what do you know", "technologies", "stack"],
     response:
       `Operator skill matrix:\n` +
-      `PRIMARY: Python, JavaScript/TypeScript, Go\n` +
-      `FRAMEWORKS: React, Next.js, FastAPI, Electron\n` +
-      `AI/ML: Ollama, Whisper, ChromaDB, LLM integration, MCP\n` +
-      `SYSTEMS: Docker, PostgreSQL, Redis, Prometheus, Supabase\n` +
-      `OTHER: Framer Motion, Three.js, Canvas API`,
+      `PRIMARY: Python, Java, TypeScript, JavaScript, C/C++\n` +
+      `ML/AI: PyTorch, TensorFlow.js, Whisper, Ollama, ChromaDB, LangChain, RAG, CNNs\n` +
+      `BACKEND: FastAPI, Node.js, PostgreSQL, Supabase, Docker, REST APIs\n` +
+      `FRONTEND: React, Next.js, Tailwind CSS\n` +
+      `DATA: Pandas, NumPy, SciPy, HDF5, Prometheus, Grafana`,
+  },
+
+  // Experience / work history
+  {
+    keywords: ["experience", "work", "jobs", "internship", "employment", "career", "history", "coreweave", "biorobotics", "hsu lab", "c2s", "future is female"],
+    response:
+      `WORK HISTORY:\n` +
+      `CoreWeave — Production Engineering Intern (June 2026)\n` +
+      `UW BioRobotics Lab — Undergraduate Researcher (Jan 2026)\n` +
+      `UW Hsu Lab — CS & Particle Physics Intern (Sep 2024)\n` +
+      `C2S Technologies — Software Engineering Intern (July 2024)\n` +
+      `The Future Is Female — Co-Founder & Co-President (Sep 2022)`,
   },
 
   // About
@@ -176,27 +200,28 @@ const RULES: Rule[] = [
     keywords: ["who is saachi", "about", "tell me about", "who are you", "bio", "saachi", "operator"],
     response:
       `OPERATOR PROFILE — Saachi Surana.\n` +
-      `CS student, University of Washington, Class of 2028.\n` +
-      `Based in Seattle, WA.\n` +
-      `Builds things that feel alive — AI assistants, dev tools, real-time systems.\n` +
-      `Current focus: local AI, systems programming, full-stack.\n` +
-      `GitHub: saachisurana`,
+      `CS & Data Science, University of Washington, Class of 2028. Dean's List.\n` +
+      `Currently: Production Engineering Intern at CoreWeave, Undergraduate Researcher at UW BioRobotics Lab.\n` +
+      `Builds AI systems, local inference pipelines, full-stack platforms, and things that feel alive.\n` +
+      `Won Best Use of AI at the Anthropic Startup-athon.\n` +
+      `GitHub: saachi-surana | saachi.dev`,
   },
 
   // Contact
   {
     keywords: ["contact", "email", "reach", "hire", "linkedin", "get in touch"],
     response:
-      `Contact protocols available via GitHub: github.com/saachi-surana\n` +
-      `For direct inquiries, LinkedIn search: Saachi Surana (University of Washington).`,
+      `Direct contact: saachisurana@outlook.com\n` +
+      `LinkedIn: [LINK: linkedin.com/in/saachi-surana]\n` +
+      `GitHub: [LINK: github.com/saachi-surana]`,
   },
 
   // Resume
   {
     keywords: ["resume", "cv", "curriculum"],
     response:
-      `Resume request logged. Redirecting to GitHub for full project history: github.com/saachi-surana\n` +
-      `Direct resume available on request via LinkedIn.`,
+      `Resume on file. Direct link: saachi.dev\n` +
+      `LinkedIn: [LINK: https://linkedin.com/in/saachi-surana]`,
   },
 
   // Easter eggs
@@ -219,11 +244,12 @@ const RULES: Rule[] = [
     keywords: ["help", "what can you do", "commands", "options"],
     response:
       `Available queries:\n` +
-      `— Project names: jarvis, studysync, notion-planner, query, snip, trafficop, stellar, flexnet\n` +
+      `— Project names: jarvis, studysync, query, snip, trafficop, stellar, bin sentinel\n` +
       `— 'show projects' — full registry\n` +
-      `— 'open github' — external link\n` +
+      `— 'experience' — work history\n` +
       `— 'skills' — operator skill matrix\n` +
       `— 'about' — operator profile\n` +
+      `— 'resume' — direct link\n` +
       `— 'contact' — contact protocols\n` +
       `— Reactor commands: 'red alert', 'stealth', 'overdrive', 'reset'`,
   },

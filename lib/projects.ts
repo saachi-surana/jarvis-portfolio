@@ -72,4 +72,12 @@ export const PROJECTS: Project[] = [
     stack: [],
     github: "https://github.com/saachi-surana/flexnet",
   },
+  {
+    id: "09",
+    name: "BIN SENTINEL",
+    description:
+      "Real-time waste classification system. Won Best Use of AI at the Anthropic Startup-athon and AI Student Collective Hackathon. Camera feed → TensorFlow.js CNN classifies waste type → FastAPI + ChromaDB + LangChain route disposal instructions in real time.",
+    stack: ["React", "TensorFlow.js", "FastAPI", "ChromaDB", "LangChain"],
+    github: "https://github.com/saachi-surana",
+  },
 ];

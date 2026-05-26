@@ -7,6 +7,7 @@ import VoicePanel from "@/components/panels/VoicePanel";
 import AtmosphericPanel from "@/components/panels/AtmosphericPanel";
 import LocationPanel from "@/components/panels/LocationPanel";
 import OperatorPanel from "@/components/panels/OperatorPanel";
+import AboutPanel from "@/components/panels/AboutPanel";
 
 interface LeftSidebarProps {
   booted: boolean;
@@ -21,6 +22,7 @@ const PANELS = [
   { id: "atmospheric", Component: AtmosphericPanel },
   { id: "location",    Component: LocationPanel    },
   { id: "operator",    Component: OperatorPanel    },
+  { id: "about",       Component: AboutPanel       },
 ];
 
 export default function LeftSidebar({ booted }: LeftSidebarProps) {
