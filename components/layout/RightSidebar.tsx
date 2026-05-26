@@ -13,6 +13,7 @@ interface RightSidebarProps {
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+// OperatorIDPanel must remain first — it's the primary identity panel
 const PANELS = [
   { id: "operator-id", Component: OperatorIDPanel },
   { id: "projects",    Component: ProjectsPanel   },

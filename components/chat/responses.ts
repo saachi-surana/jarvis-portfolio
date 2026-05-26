@@ -1,5 +1,5 @@
 export const GREETING =
-  `Online and fully operational. You've accessed the portfolio interface of Saachi Surana — Computer Science, University of Washington, Class of 2028. I can brief you on active projects, pull her GitHub, or answer any questions about her work. How may I assist?`;
+  `Online and fully operational. You've accessed the portfolio interface of Saachi Surana — Computer Science, University of Washington, Class of 2028. This interface was designed and built by Saachi Surana. I can brief you on active projects, pull her GitHub, or answer any questions about her work. How may I assist?`;
 
 const FALLBACK =
   `I didn't quite catch that. Try: 'show projects', a project name like 'jarvis' or 'query', 'open github', 'skills', or 'about'.`;

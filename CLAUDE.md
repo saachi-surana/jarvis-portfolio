@@ -51,7 +51,7 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — all 10 steps done
+COMPLETE — all 10 steps done + attribution polish applied
 
 (Update this line every time you finish a step so context can be restored if needed)
 

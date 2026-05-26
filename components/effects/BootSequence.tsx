@@ -3,46 +3,62 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const TITLE_LINES = ["INITIALIZING SYSTEMS", "LOADING OPERATOR PROFILE", "NEURAL LINK ESTABLISHED"];
-const INIT_TEXT = "INITIALIZING SYSTEMS...";
-// Each char at 32ms → 23 chars ≈ 736ms
+const LINE1 = "INITIALIZING SYSTEMS...";
+const LINE2 = "OPERATOR PORTFOLIO SYSTEM — BUILT BY SAACHI SURANA";
 const CHAR_MS = 32;
+
+type Phase = "title" | "typing1" | "typing2" | "fade";
 
 interface BootSequenceProps {
   onComplete: () => void;
 }
 
 export default function BootSequence({ onComplete }: BootSequenceProps) {
-  const [phase, setPhase] = useState<"title" | "typing" | "fade">("title");
-  const [typed, setTyped] = useState("");
+  const [phase, setPhase]         = useState<Phase>("title");
+  const [line1, setLine1]         = useState("");
+  const [line2, setLine2]         = useState("");
   const [showTitle, setShowTitle] = useState(false);
-  const [visible, setVisible] = useState(true);
-  const completedRef = useRef(false);
+  const [visible, setVisible]     = useState(true);
+  const completedRef              = useRef(false);
 
-  // Phase 1 — title appears with flicker at 150ms
+  // Phase 1 — title flickers in, then typing1 starts
   useEffect(() => {
     const t1 = setTimeout(() => setShowTitle(true), 150);
-    // Phase 2 — start typing after title settles (800ms flicker + 400ms pause)
-    const t2 = setTimeout(() => setPhase("typing"), 1500);
+    const t2 = setTimeout(() => setPhase("typing1"), 1500);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
-  // Phase 2 — typewriter
+  // Phase typing1 — type LINE1
   useEffect(() => {
-    if (phase !== "typing") return;
+    if (phase !== "typing1") return;
     let i = 0;
     const interval = setInterval(() => {
       i += 1;
-      setTyped(INIT_TEXT.slice(0, i));
-      if (i >= INIT_TEXT.length) {
+      setLine1(LINE1.slice(0, i));
+      if (i >= LINE1.length) {
         clearInterval(interval);
-        // Brief pause after typing, then fade out
+        // Short pause, then start LINE2
+        setTimeout(() => setPhase("typing2"), 220);
+      }
+    }, CHAR_MS);
+    return () => clearInterval(interval);
+  }, [phase]);
+
+  // Phase typing2 — type LINE2, then hand off
+  useEffect(() => {
+    if (phase !== "typing2") return;
+    let i = 0;
+    const interval = setInterval(() => {
+      i += 1;
+      setLine2(LINE2.slice(0, i));
+      if (i >= LINE2.length) {
+        clearInterval(interval);
         setTimeout(() => {
           if (!completedRef.current) {
             completedRef.current = true;
             setPhase("fade");
-            onComplete();          // tells JarvisHUD to start stagger
-            setTimeout(() => setVisible(false), 100); // unmount triggers exit
+            onComplete();
+            setTimeout(() => setVisible(false), 100);
           }
         }, 420);
       }
@@ -58,7 +74,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.85, ease: "easeOut" }}
         >
-          {/* Radial glow behind title */}
+          {/* Radial glow */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -122,19 +138,41 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
             />
           )}
 
-          {/* Typing area */}
-          <div className="h-6 flex items-center">
-            {(phase === "typing" || phase === "fade") && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.2 }}
-                className="font-mono text-[0.78rem] tracking-[0.18em] text-[#00b8cc] uppercase"
-              >
-                {typed}
-                <span className="animate-pulse text-[#00e5ff]">_</span>
-              </motion.p>
-            )}
+          {/* Typing area — two sequential lines */}
+          <div className="flex flex-col items-center gap-2">
+            {/* Line 1 — dims once line 2 begins typing */}
+            <div className="h-5 flex items-center">
+              {(phase === "typing1" || phase === "typing2" || phase === "fade") && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: phase === "typing1" ? 1 : 0.4 }}
+                  transition={{ duration: 0.2 }}
+                  className="font-mono text-[0.72rem] tracking-[0.18em] text-[#00b8cc] uppercase"
+                >
+                  {line1}
+                  {phase === "typing1" && (
+                    <span className="animate-pulse text-[#00e5ff]">_</span>
+                  )}
+                </motion.p>
+              )}
+            </div>
+
+            {/* Line 2 — brighter, more prominent */}
+            <div className="h-5 flex items-center">
+              {(phase === "typing2" || phase === "fade") && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.15 }}
+                  className="font-mono text-[0.72rem] tracking-[0.18em] text-[#00e5ff] uppercase"
+                >
+                  {line2}
+                  {phase === "typing2" && (
+                    <span className="animate-pulse text-[#00e5ff]">_</span>
+                  )}
+                </motion.p>
+              )}
+            </div>
           </div>
         </motion.div>
       )}
