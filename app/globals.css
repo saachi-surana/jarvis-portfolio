@@ -198,6 +198,12 @@ body::after {
   color: var(--color-cyan-dim);
 }
 
+/* OPERATOR label pulse in ArcReactor */
+@keyframes operatorPulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1;   }
+}
+
 /* Project row ping flash */
 .pinged {
   background: rgba(0, 229, 255, 0.12) !important;

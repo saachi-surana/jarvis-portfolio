@@ -69,12 +69,22 @@ COMPLETE — all 10 steps done + attribution + enhancement session done
 - [DONE] lib/projects.ts: added BIN SENTINEL as project 09
 - [DONE] responses.ts: updated skills, about, resume, contact; added experience/work command + BIN SENTINEL rule
 
+## Polish Session — DONE
+- [DONE] BarGauge: added showPercent prop; SkillsPanel now shows relative bars only, no numbers
+- [DONE] SkillsPanel: 8 skills (Python/ML-AI/Java = strongest; React/TS/Data = strong; HTML/C++ = familiar)
+- [DONE] OperatorOverlay: HUD slide-up panel over center panel with full contact info + bio
+- [DONE] ArcReactor: "// OPERATOR" pulsing label below core — click opens OperatorOverlay
+- [DONE] JarvisChat: "about"/"who is saachi" keywords trigger OperatorOverlay + brief typewriter response
+- [DONE] store.ts: added showAbout / setShowAbout to Zustand store
+
 ## Key Architecture Notes (for future sessions)
 - State management: Zustand store at lib/store.ts (reactorMode, pingProjectId, highlightSection, pendingMessage)
 - Panel highlight system: Panel.tsx accepts sectionId prop → reads highlightSection from Zustand → pulses glow
 - Ring→section map: outer 5 rings = right sidebar (projects, skills, vitals, network, operator-id), inner 5 = left sidebar
 - Reactor mode keywords: "red alert"/"stealth"/"overdrive"/"reset" in chat → setReactorMode in store
 - Ring click → queueMessage(RING_MESSAGES[sectionId]) → JarvisChat watches pendingMessage → types it out
+- OperatorOverlay: slides up from bottom of CenterPanel; triggered by ArcReactor "// OPERATOR" button OR "about" keyword in chat; ESC/click-outside closes
+- store.ts also has showAbout / setShowAbout for the overlay
 - Projects: now 9 entries (01–09, BIN SENTINEL added)
 - Right sidebar order: OperatorID → Projects → Experience → Skills → Vitals → Network
 - Left sidebar order: Clock → Diagnostics → Voice → Atmospheric → Location → Operator → About

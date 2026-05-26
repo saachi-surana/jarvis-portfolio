@@ -23,7 +23,7 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
   const timerRef                = useRef<ReturnType<typeof setTimeout> | null>(null);
   const greetedRef              = useRef(false);
 
-  const { setReactorMode, pingProject, pendingMessage, clearMessage } = useJarvisStore();
+  const { setReactorMode, pingProject, pendingMessage, clearMessage, setShowAbout } = useJarvisStore();
 
   const typeMessage = useCallback((text: string) => {
     const id = nextId();
@@ -88,9 +88,10 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
     ]);
     setInput("");
 
-    const { response, mode } = getResponse(trimmed);
+    const { response, mode, showAbout } = getResponse(trimmed);
 
     if (mode) setReactorMode(mode);
+    if (showAbout) setShowAbout(true);
 
     // Ping the matching project row if this response mentions a project
     const upper = response.toUpperCase();
@@ -99,7 +100,7 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
 
     const responseDelay = setTimeout(() => typeMessage(response), 280);
     timerRef.current = responseDelay;
-  }, [input, isTyping, typeMessage, setReactorMode, pingProject]);
+  }, [input, isTyping, typeMessage, setReactorMode, pingProject, setShowAbout]);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") submit();

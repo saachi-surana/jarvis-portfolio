@@ -7,13 +7,19 @@ interface SkillsPanelProps {
   shouldAnimate?: boolean;
 }
 
+// Values are relative only — no percentages displayed.
+// STRONGEST: Python, ML/AI, Java
+// STRONG:    React/Next.js, TypeScript/JS, Data
+// FAMILIAR:  HTML/CSS, C/C++
 const SKILLS = [
-  { label: "PYTHON",       value: 90 },
-  { label: "TYPESCRIPT/JS",value: 80 },
+  { label: "PYTHON",       value: 93 },
+  { label: "ML/AI",        value: 90 },
+  { label: "JAVA",         value: 88 },
   { label: "REACT/NEXT.JS",value: 80 },
-  { label: "ML/AI",        value: 85 },
-  { label: "JAVA",         value: 70 },
-  { label: "DATA",         value: 75 },
+  { label: "TYPESCRIPT/JS",value: 79 },
+  { label: "DATA",         value: 78 },
+  { label: "HTML/CSS",     value: 65 },
+  { label: "C/C++",        value: 62 },
 ];
 
 export default function SkillsPanel({ shouldAnimate }: SkillsPanelProps) {
@@ -26,6 +32,7 @@ export default function SkillsPanel({ shouldAnimate }: SkillsPanelProps) {
             label={s.label}
             value={s.value}
             shouldAnimate={shouldAnimate}
+            showPercent={false}
           />
         ))}
       </div>

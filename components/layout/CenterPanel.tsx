@@ -1,7 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { AnimatePresence } from "framer-motion";
 import JarvisChat from "@/components/chat/JarvisChat";
+import OperatorOverlay from "@/components/panels/OperatorOverlay";
+import { useJarvisStore } from "@/lib/store";
 
 const ArcReactor = dynamic(() => import("@/components/reactor/ArcReactor"), {
   ssr: false,
@@ -13,8 +16,10 @@ interface CenterPanelProps {
 }
 
 export default function CenterPanel({ booted }: CenterPanelProps) {
+  const { showAbout, setShowAbout } = useJarvisStore();
+
   return (
-    <main className="h-full w-full flex flex-col bg-black overflow-hidden">
+    <main className="relative h-full w-full flex flex-col bg-black overflow-hidden">
       {/* Arc reactor — 280px on mobile, flex-[58] on desktop */}
       <div className="reactor-section">
         <ArcReactor />
@@ -27,6 +32,13 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
       <div className="chat-section">
         <JarvisChat booted={booted} />
       </div>
+
+      {/* Operator profile overlay — slides up over chat area */}
+      <AnimatePresence>
+        {showAbout && (
+          <OperatorOverlay key="operator-overlay" onClose={() => setShowAbout(false)} />
+        )}
+      </AnimatePresence>
     </main>
   );
 }

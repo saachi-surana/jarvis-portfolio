@@ -15,6 +15,9 @@ interface JarvisStore {
   pendingMessage: string | null;
   queueMessage: (text: string) => void;
   clearMessage: () => void;
+
+  showAbout: boolean;
+  setShowAbout: (v: boolean) => void;
 }
 
 export const useJarvisStore = create<JarvisStore>((set) => ({
@@ -30,4 +33,7 @@ export const useJarvisStore = create<JarvisStore>((set) => ({
   pendingMessage: null,
   queueMessage: (text) => set({ pendingMessage: text }),
   clearMessage: () => set({ pendingMessage: null }),
+
+  showAbout: false,
+  setShowAbout: (v) => set({ showAbout: v }),
 }));

@@ -35,6 +35,7 @@ interface Rule {
   keywords: string[];
   response: string;
   mode?: ReactorMode;
+  showAbout?: boolean;
 }
 
 const RULES: Rule[] = [
@@ -195,16 +196,11 @@ const RULES: Rule[] = [
       `The Future Is Female — Co-Founder & Co-President (Sep 2022)`,
   },
 
-  // About
+  // About — also triggers the operator overlay
   {
     keywords: ["who is saachi", "about", "tell me about", "who are you", "bio", "saachi", "operator"],
-    response:
-      `OPERATOR PROFILE — Saachi Surana.\n` +
-      `CS & Data Science, University of Washington, Class of 2028. Dean's List.\n` +
-      `Currently: Production Engineering Intern at CoreWeave, Undergraduate Researcher at UW BioRobotics Lab.\n` +
-      `Builds AI systems, local inference pipelines, full-stack platforms, and things that feel alive.\n` +
-      `Won Best Use of AI at the Anthropic Startup-athon.\n` +
-      `GitHub: saachi-surana | saachi.dev`,
+    response: `OPERATOR PROFILE — loading credentials. Display active.`,
+    showAbout: true,
   },
 
   // Contact
@@ -262,13 +258,14 @@ function normalize(s: string): string {
 export interface JarvisResponse {
   response: string;
   mode?: ReactorMode;
+  showAbout?: boolean;
 }
 
 export function getResponse(input: string): JarvisResponse {
   const norm = normalize(input);
   for (const rule of RULES) {
     if (rule.keywords.some((kw) => norm.includes(kw))) {
-      return { response: rule.response, mode: rule.mode };
+      return { response: rule.response, mode: rule.mode, showAbout: rule.showAbout };
     }
   }
   return { response: FALLBACK };

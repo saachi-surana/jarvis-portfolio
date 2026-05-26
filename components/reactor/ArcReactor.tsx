@@ -446,7 +446,7 @@ export default function ArcReactor() {
   const mouseRef = useRef({ x: 0, y: 0 });
   const caOffset = useRef(new THREE.Vector2(0.0008, 0.0008));
 
-  const { reactorMode, setHighlightSection, queueMessage } = useJarvisStore();
+  const { reactorMode, setHighlightSection, queueMessage, setShowAbout } = useJarvisStore();
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -479,6 +479,31 @@ export default function ArcReactor() {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
+      {/* OPERATOR label — absolute overlay centered below the core */}
+      <button
+        onClick={() => setShowAbout(true)}
+        className="absolute left-1/2 z-10 flex flex-col items-center gap-[3px] group"
+        style={{
+          top: "58%",
+          transform: "translateX(-50%)",
+          background: "transparent",
+          border: "none",
+          padding: "4px 10px",
+        }}
+        aria-label="View operator profile"
+      >
+        <span
+          className="font-mono text-[0.55rem] tracking-[0.22em] uppercase select-none transition-colors duration-200 group-hover:text-[#00e5ff]"
+          style={{ color: "rgba(0,229,255,0.35)", animation: "operatorPulse 3s ease-in-out infinite" }}
+        >
+          // OPERATOR
+        </span>
+        <span
+          className="block w-3 h-px transition-colors duration-200 group-hover:bg-[#00e5ff]"
+          style={{ background: "rgba(0,229,255,0.25)" }}
+        />
+      </button>
+
       <Canvas
         camera={{ position: [0, 0, 6], fov: 50 }}
         dpr={[1, 2]}
