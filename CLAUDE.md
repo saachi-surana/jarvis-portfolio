@@ -69,6 +69,16 @@ COMPLETE — all 10 steps done + attribution + enhancement + polish + readabilit
 - [DONE] lib/projects.ts: added BIN SENTINEL as project 09
 - [DONE] responses.ts: updated skills, about, resume, contact; added experience/work command + BIN SENTINEL rule
 
+## Modularity Refactor Session — DONE
+- [DONE] lib/constants.ts: all color tokens (C_CYAN, C_BG_PANEL, etc.), reactor mode maps, geometry constants, animation durations, BURST_COUNT
+- [DONE] lib/animations.ts: SPRING, EASE_REVEAL, fadeIn, slideUp, slideFromRight, slideFromBottom, scrim, stagger variants
+- [DONE] ArcReactor.tsx (737 lines) → 6 files: ArcReactor (122), ArcReactorRings (83), ArcReactorCore (85), ArcReactorParticles (125), ArcReactorSweep (129), ArcReactorLabels (39)
+- [DONE] BootSequence (181 lines) → useBootSequence.ts hook (61) + BootSequence.tsx (81)
+- [DONE] OrbitalDisplays (238 lines) → OrbitalDisplayItem.tsx (74) + OrbitalDisplays.tsx (57)
+- [DONE] OperatorOverlay (186 lines) → OperatorOverlayRows.tsx (49) + OperatorOverlay.tsx (74)
+- [DONE] ChatMessage imports slideUp from animations.ts; JarvisChat imports DUR_CHAT_CHAR from constants.ts; ProjectOverlay imports SPRING from animations.ts
+- [DONE] All refactored files verified ≤ 150 lines; build passes clean
+
 ## Cinematic HUD Density Session — DONE
 - [DONE] PART 1 — ArcReactor: 48-segment static casing ring (charcoal + cyan emissive), 48 tick marks (every 4th longer), radar sweep shader (1 RPM, 90° cyan trail), floating HTML data labels (coords + ALT + SEC), 2000 particles (mixed orbital/drift, 0.008–0.025 size), bloom 2.5 / threshold 0.1, camera pullback to z=7.2
 - [DONE] PART 2 — OrbitalDisplays.tsx: three CSS/SVG animated HUD circles (NEURAL LINK cyan, QUANTUM CORE purple, STORAGE ARRAY dim cyan) with counter-rotating inner rings, pulsing center dots, glow overlays, corner brackets on container; wired into CenterPanel between reactor and chat
@@ -96,6 +106,12 @@ COMPLETE — all 10 steps done + attribution + enhancement + polish + readabilit
 - [DONE] ArcReactor: "// OPERATOR" pulsing label below core — click opens OperatorOverlay
 - [DONE] JarvisChat: "about"/"who is saachi" keywords trigger OperatorOverlay + brief typewriter response
 - [DONE] store.ts: added showAbout / setShowAbout to Zustand store
+
+## File Length Rule
+**Keep all files under 150 lines. Split if exceeded.**
+- Large components: extract sub-components or custom hooks
+- Shared config: add to lib/constants.ts (colors, durations, reactor config)
+- Shared animations: add to lib/animations.ts (Framer Motion variants)
 
 ## Key Architecture Notes (for future sessions)
 - State management: Zustand store at lib/store.ts (reactorMode, pingProjectId, highlightSection, pendingMessage)

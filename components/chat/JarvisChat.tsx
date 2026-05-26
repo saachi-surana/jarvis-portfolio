@@ -5,11 +5,10 @@ import ChatMessage from "./ChatMessage";
 import type { Message } from "./ChatMessage";
 import { getResponse, GREETING, PROJECT_PING_MAP } from "./responses";
 import { useJarvisStore } from "@/lib/store";
+import { DUR_CHAT_CHAR } from "@/lib/constants";
 
 let _id = 0;
 const nextId = () => String(++_id);
-
-const CHAR_MS = 25;
 
 interface JarvisChatProps {
   booted?: boolean;
@@ -44,12 +43,12 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
         )
       );
       if (i < text.length) {
-        timerRef.current = setTimeout(tick, CHAR_MS);
+        timerRef.current = setTimeout(tick, DUR_CHAT_CHAR);
       } else {
         setIsTyping(false);
       }
     };
-    timerRef.current = setTimeout(tick, CHAR_MS);
+    timerRef.current = setTimeout(tick, DUR_CHAT_CHAR);
   }, []);
 
   // Auto-greeting on boot

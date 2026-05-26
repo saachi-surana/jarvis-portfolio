@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import type { Project } from "@/lib/projects";
+import { SPRING } from "@/lib/animations";
 
 interface ProjectOverlayProps {
   project: Project;
@@ -28,7 +29,7 @@ export default function ProjectOverlay({ project, onClose }: ProjectOverlayProps
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        transition={SPRING}
         className="absolute top-0 right-0 h-full w-[380px] overflow-y-auto"
         style={{
           background: "#070d0d",
