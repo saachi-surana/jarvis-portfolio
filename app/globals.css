@@ -198,6 +198,12 @@ body::after {
   color: var(--color-cyan-dim);
 }
 
+/* Project row ping flash */
+.pinged {
+  background: rgba(0, 229, 255, 0.12) !important;
+  transition: background 0.1s ease;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 4px;

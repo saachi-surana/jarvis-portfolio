@@ -8,7 +8,7 @@ interface OperatorIDPanelProps {
 
 export default function OperatorIDPanel(_props: OperatorIDPanelProps) {
   return (
-    <Panel corner="both">
+    <Panel corner="both" sectionId="operator-id">
       <p className="font-mono text-[0.65rem] tracking-[0.2em] text-[#00b8cc] uppercase mb-3">
         // OPERATOR_ID
       </p>

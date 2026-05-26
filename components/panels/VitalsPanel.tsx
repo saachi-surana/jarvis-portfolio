@@ -15,7 +15,7 @@ const VITALS = [
 
 export default function VitalsPanel({ shouldAnimate }: VitalsPanelProps) {
   return (
-    <Panel label="// VITALS">
+    <Panel label="// VITALS" sectionId="vitals">
       <div className="grid grid-cols-3 gap-x-1 place-items-center">
         {VITALS.map((v) => (
           <CircularGauge

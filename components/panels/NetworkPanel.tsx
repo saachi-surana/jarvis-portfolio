@@ -10,7 +10,7 @@ interface NetworkPanelProps {
 
 export default function NetworkPanel(_props: NetworkPanelProps) {
   return (
-    <Panel noPadding>
+    <Panel noPadding sectionId="network">
       {/* Top-left corner bracket — Panel already renders it */}
 
       {/* Header row */}

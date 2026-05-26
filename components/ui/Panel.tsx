@@ -1,15 +1,19 @@
 "use client";
 
+import { useEffect } from "react";
+import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { useJarvisStore } from "@/lib/store";
 
 interface PanelProps {
   label?: string;
   children: ReactNode;
   className?: string;
-  /** "tl" = top-left only, "both" = top-left + bottom-right, "none" = no accents */
   corner?: "tl" | "both" | "none";
   noPadding?: boolean;
   style?: React.CSSProperties;
+  /** When set, this panel will pulse a cyan glow when highlightSection matches */
+  sectionId?: string;
 }
 
 export default function Panel({
@@ -19,10 +23,29 @@ export default function Panel({
   corner = "tl",
   noPadding = false,
   style,
+  sectionId,
 }: PanelProps) {
+  const { highlightSection, setHighlightSection } = useJarvisStore();
+  const isHighlighted = !!sectionId && highlightSection === sectionId;
+
+  // Auto-clear after 2s when this panel is highlighted
+  useEffect(() => {
+    if (!isHighlighted) return;
+    const t = setTimeout(() => setHighlightSection(null), 2000);
+    return () => clearTimeout(t);
+  }, [isHighlighted, setHighlightSection]);
+
   return (
-    <div
-      style={{ border: "1px solid rgba(0,229,255,0.18)", ...style }}
+    <motion.div
+      animate={isHighlighted
+        ? { boxShadow: ["0 0 0px transparent", "0 0 16px rgba(0,229,255,0.45)", "0 0 0px transparent"] }
+        : { boxShadow: "0 0 0px transparent" }
+      }
+      transition={{ duration: 0.8 }}
+      style={{
+        border: `1px solid ${isHighlighted ? "#00e5ff" : "rgba(0,229,255,0.18)"}`,
+        ...style,
+      }}
       className={`relative bg-[#050a0a] ${noPadding ? "" : "p-4"} ${className}`}
     >
       {(corner === "tl" || corner === "both") && (
@@ -45,6 +68,6 @@ export default function Panel({
         </p>
       )}
       {children}
-    </div>
+    </motion.div>
   );
 }

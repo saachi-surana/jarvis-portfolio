@@ -21,6 +21,7 @@ Always read DESIGN.md before making any UI or styling decision.
 - Three.js + @react-three/fiber + @react-three/drei (arc reactor)
 - @react-three/postprocessing (bloom, chromatic aberration, vignette)
 - Space Mono, Rajdhani, Orbitron (Google Fonts)
+- Zustand (global state: reactor mode, project ping, section highlight, pending chat messages)
 - NO Anthropic SDK. NO paid AI API. JARVIS chat = keyword matching only.
 
 ## Non-Negotiable Design Rules
@@ -51,7 +52,22 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — all 10 steps done + attribution polish applied
+COMPLETE — all 10 steps done + attribution + enhancement session done
+
+## Enhancement Session — DONE
+- [DONE] PART 1 — Authorship clarity (boot sequence, greeting, bottom bar, operator ID)
+- [DONE] PART 2 — Ring navigation: hover labels (// SECTION_NAME) + ring click sends JARVIS message + highlights right sidebar panel
+- [DONE] PART 3 — Reactor modes via chat: "red alert" / "stealth" / "overdrive" / "reset" → ArcReactor smoothly transitions color/speed
+- [DONE] PART 4 — Panel ping: JARVIS response mentioning a project flashes that row in ProjectsPanel
+- [DONE] PART 5 — GlitchEffect: J.A.R.V.I.S title in TopBar does RGB channel split every 15–20s
+- [DONE] PART 6 — Particle burst: clicking reactor core fires 100 particles outward + lerp back
+
+## Key Architecture Notes (for future sessions)
+- State management: Zustand store at lib/store.ts (reactorMode, pingProjectId, highlightSection, pendingMessage)
+- Panel highlight system: Panel.tsx accepts sectionId prop → reads highlightSection from Zustand → pulses glow
+- Ring→section map: outer 5 rings = right sidebar (projects, skills, vitals, network, operator-id), inner 5 = left sidebar
+- Reactor mode keywords: "red alert"/"stealth"/"overdrive"/"reset" in chat → setReactorMode in store
+- Ring click → queueMessage(RING_MESSAGES[sectionId]) → JarvisChat watches pendingMessage → types it out
 
 (Update this line every time you finish a step so context can be restored if needed)
 

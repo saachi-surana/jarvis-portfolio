@@ -18,7 +18,7 @@ const SKILLS = [
 
 export default function SkillsPanel({ shouldAnimate }: SkillsPanelProps) {
   return (
-    <Panel label="// SKILLS_MATRIX">
+    <Panel label="// SKILLS_MATRIX" sectionId="skills">
       <div className="flex flex-col gap-3">
         {SKILLS.map((s) => (
           <BarGauge

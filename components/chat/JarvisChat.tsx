@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import ChatMessage from "./ChatMessage";
 import type { Message } from "./ChatMessage";
-import { getResponse, GREETING } from "./responses";
+import { getResponse, GREETING, PROJECT_PING_MAP } from "./responses";
+import { useJarvisStore } from "@/lib/store";
 
 let _id = 0;
 const nextId = () => String(++_id);
@@ -15,12 +16,14 @@ interface JarvisChatProps {
 }
 
 export default function JarvisChat({ booted }: JarvisChatProps) {
-  const [messages, setMessages]   = useState<Message[]>([]);
-  const [input, setInput]         = useState("");
-  const [isTyping, setIsTyping]   = useState(false);
-  const bottomRef                  = useRef<HTMLDivElement>(null);
-  const timerRef                   = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const greetedRef                 = useRef(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input,    setInput]    = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const bottomRef               = useRef<HTMLDivElement>(null);
+  const timerRef                = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const greetedRef              = useRef(false);
+
+  const { setReactorMode, pingProject, pendingMessage, clearMessage } = useJarvisStore();
 
   const typeMessage = useCallback((text: string) => {
     const id = nextId();
@@ -49,7 +52,7 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
     timerRef.current = setTimeout(tick, CHAR_MS);
   }, []);
 
-  // Start greeting once booted
+  // Auto-greeting on boot
   useEffect(() => {
     if (!booted || greetedRef.current) return;
     greetedRef.current = true;
@@ -57,12 +60,18 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
     return () => clearTimeout(tid);
   }, [booted, typeMessage]);
 
-  // Scroll to bottom whenever messages update
+  // Consume pending messages queued by ring clicks
+  useEffect(() => {
+    if (!pendingMessage || isTyping) return;
+    clearMessage();
+    typeMessage(pendingMessage);
+  }, [pendingMessage, isTyping, clearMessage, typeMessage]);
+
+  // Scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
@@ -79,10 +88,18 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
     ]);
     setInput("");
 
-    const response = getResponse(trimmed);
+    const { response, mode } = getResponse(trimmed);
+
+    if (mode) setReactorMode(mode);
+
+    // Ping the matching project row if this response mentions a project
+    const upper = response.toUpperCase();
+    const pingEntry = Object.entries(PROJECT_PING_MAP).find(([name]) => upper.includes(name));
+    if (pingEntry) pingProject(pingEntry[1]);
+
     const responseDelay = setTimeout(() => typeMessage(response), 280);
     timerRef.current = responseDelay;
-  }, [input, isTyping, typeMessage]);
+  }, [input, isTyping, typeMessage, setReactorMode, pingProject]);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") submit();
@@ -90,7 +107,6 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
 
   return (
     <div className="flex flex-col h-full" style={{ background: "#000" }}>
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-4 min-h-0">
         {messages.map((msg) => (
           <ChatMessage key={msg.id} message={msg} />
@@ -98,7 +114,6 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input row */}
       <div
         className="flex items-center gap-2 px-4 py-3 shrink-0"
         style={{ borderTop: "1px solid rgba(0,229,255,0.12)" }}

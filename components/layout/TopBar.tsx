@@ -1,5 +1,7 @@
 "use client";
 
+import { GlitchTitle } from "@/components/effects/GlitchEffect";
+
 export default function TopBar() {
   return (
     <header
@@ -7,9 +9,10 @@ export default function TopBar() {
       className="flex items-center justify-between px-6 h-10 bg-[#050a0a] shrink-0"
     >
       <div className="flex items-center gap-6">
-        <span className="font-display text-xs tracking-[0.2em] text-[#00e5ff] uppercase">
-          J.A.R.V.I.S
-        </span>
+        <GlitchTitle
+          text="J.A.R.V.I.S"
+          className="font-display text-xs tracking-[0.2em] text-[#00e5ff] uppercase"
+        />
         <span className="font-mono text-[0.65rem] text-[#475569] tracking-[0.2em] uppercase">
           // INTERFACE v7.3.1
         </span>

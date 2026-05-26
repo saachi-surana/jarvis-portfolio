@@ -1,15 +1,64 @@
+import type { ReactorMode } from "@/lib/store";
+
 export const GREETING =
   `Online and fully operational. You've accessed the portfolio interface of Saachi Surana — Computer Science, University of Washington, Class of 2028. This interface was designed and built by Saachi Surana. I can brief you on active projects, pull her GitHub, or answer any questions about her work. How may I assist?`;
 
 const FALLBACK =
   `I didn't quite catch that. Try: 'show projects', a project name like 'jarvis' or 'query', 'open github', 'skills', or 'about'.`;
 
+export const RING_MESSAGES: Record<string, string> = {
+  "projects":    "ACTIVE_PROJECTS panel — 8 entries in the project registry. Type any project name for a full briefing.",
+  "skills":      "OPERATOR SKILL MATRIX — Primary stack: Python, TypeScript, Go. Frameworks: React, Next.js, FastAPI, Electron.",
+  "vitals":      "NEURAL LINK holding at 70%. CPU nominal at 12%. Memory footprint 31%. All systems green.",
+  "network":     "GLOBAL UPLINK stable. Seattle node active. Ping 24ms. Bandwidth 783 Mb/s.",
+  "operator-id": "OPERATOR: Saachi Surana — CS, University of Washington, Class of 2028. GitHub: saachisurana.",
+  "diagnostics": "SUIT DIAGNOSTICS nominal — Power 94%, Grid 87%, Shield 93%, Comms 100%.",
+  "voice":       "VOICE ANALYSIS module active. Waveform stable. Signal nominal.",
+  "atmospheric": "ATMOSPHERIC SENSORS reading 29.91 inHg. Conditions nominal.",
+  "location":    "LOCATION LOCK: Seattle, WA. Coordinates 47.6062°N, 122.3321°W.",
+  "operator":    "OPERATOR CREDENTIALS confirmed — University of Washington, Computer Science, Class of 2028.",
+};
+
+export const PROJECT_PING_MAP: Record<string, string> = {
+  "JARVIS":    "01",
+  "STUDYSYNC": "02",
+  "NOTION":    "03",
+  "QUERY":     "04",
+  "SNIP":      "05",
+  "TRAFFICOP": "06",
+  "STELLAR":   "07",
+  "FLEXNET":   "08",
+};
+
 interface Rule {
   keywords: string[];
   response: string;
+  mode?: ReactorMode;
 }
 
 const RULES: Rule[] = [
+  // Reactor modes — check before generic keywords
+  {
+    keywords: ["red alert", "emergency", "threat detected", "lockdown", "red mode"],
+    response: `RED ALERT PROTOCOL ENGAGED.\nReactor switching to emergency configuration. All systems on heightened standby.`,
+    mode: "red-alert",
+  },
+  {
+    keywords: ["stealth", "dark mode", "go dark", "silent mode", "quiet mode"],
+    response: `STEALTH MODE ACTIVATED.\nReducing reactor output and electromagnetic signature. Running silent.`,
+    mode: "stealth",
+  },
+  {
+    keywords: ["overdrive", "maximum power", "full power", "max power", "boost"],
+    response: `OVERDRIVE SEQUENCE INITIATED.\nReactor output at maximum. All ring velocities elevated. Power surging.`,
+    mode: "overdrive",
+  },
+  {
+    keywords: ["online", "reset", "normal mode", "stand down", "stand down"],
+    response: `RETURNING TO STANDARD OPERATING PARAMETERS.\nReactor normalized. All systems nominal.`,
+    mode: "online",
+  },
+
   // Greetings — check before project names so "hello jarvis" routes here
   {
     keywords: ["hello", "hi", "hey", "good morning", "good evening", "good afternoon", "sup", "greetings"],
@@ -70,7 +119,7 @@ const RULES: Rule[] = [
 
   // SNIP
   {
-    keywords: ["snip", "url shortener", "url shortener", "short link"],
+    keywords: ["snip", "url shortener", "short link"],
     response:
       `SNIP — Production-grade URL shortener with click analytics. Redis-cached redirects (1h TTL), async click logging (IP, country, referrer), QR code generation, JWT + API key auth, per-IP token-bucket rate limiting, OG preview scraping. Redirect latency is never blocked by analytics writes.\n` +
       `Stack: Go (Chi), PostgreSQL, Redis, React + Vite, Docker.\n` +
@@ -79,7 +128,7 @@ const RULES: Rule[] = [
 
   // TRAFFICOP
   {
-    keywords: ["trafficop", "traffic", "load balancer", "load balance", "trafficop"],
+    keywords: ["trafficop", "traffic", "load balancer", "load balance"],
     response:
       `TRAFFICOP — HTTP load balancer in pure Go. Lock-free atomic round-robin routing, per-backend circuit breakers (Closed / Open / HalfOpen), active TCP health checking, automatic failover, per-IP rate limiting, Prometheus metrics, pre-provisioned Grafana dashboard, live admin API for runtime backend management.\n` +
       `Stack: Go, Prometheus, Grafana, Docker.\n` +
@@ -175,7 +224,8 @@ const RULES: Rule[] = [
       `— 'open github' — external link\n` +
       `— 'skills' — operator skill matrix\n` +
       `— 'about' — operator profile\n` +
-      `— 'contact' — contact protocols`,
+      `— 'contact' — contact protocols\n` +
+      `— Reactor commands: 'red alert', 'stealth', 'overdrive', 'reset'`,
   },
 ];
 
@@ -183,12 +233,17 @@ function normalize(s: string): string {
   return s.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
 }
 
-export function getResponse(input: string): string {
+export interface JarvisResponse {
+  response: string;
+  mode?: ReactorMode;
+}
+
+export function getResponse(input: string): JarvisResponse {
   const norm = normalize(input);
   for (const rule of RULES) {
     if (rule.keywords.some((kw) => norm.includes(kw))) {
-      return rule.response;
+      return { response: rule.response, mode: rule.mode };
     }
   }
-  return FALLBACK;
+  return { response: FALLBACK };
 }

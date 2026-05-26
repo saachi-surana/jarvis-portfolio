@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback, useMemo, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { Html } from "@react-three/drei";
 import {
   EffectComposer,
   Bloom,
@@ -9,12 +10,33 @@ import {
   Vignette,
 } from "@react-three/postprocessing";
 import * as THREE from "three";
+import { useJarvisStore, type ReactorMode } from "@/lib/store";
+import { RING_MESSAGES } from "@/components/chat/responses";
+
+// ─── Mode config ─────────────────────────────────────────────────────────────
+
+const MODE_COLORS: Record<ReactorMode, string> = {
+  "online":    "",
+  "red-alert": "#ff3333",
+  "stealth":   "#1a0a2e",
+  "overdrive": "",
+};
+
+const MODE_INTENSITY_MULT: Record<ReactorMode, number> = {
+  "online":    1.0,
+  "red-alert": 1.6,
+  "stealth":   0.22,
+  "overdrive": 2.8,
+};
+
+const MODE_SPEED_MULT: Record<ReactorMode, number> = {
+  "online":    1.0,
+  "red-alert": 1.4,
+  "stealth":   0.28,
+  "overdrive": 2.6,
+};
 
 // ─── Ring configuration ──────────────────────────────────────────────────────
-//
-// Outer rings: cyan + purple from the design system.
-// Inner rings: shift progressively toward cold blue-white (#a8ecff → #f0faff).
-// Each ring has a unique rotation axis and initial tilt so they never align.
 
 type RingSpec = {
   radius: number;
@@ -25,40 +47,54 @@ type RingSpec = {
   axis: [number, number, number];
   tilt: [number, number, number];
   tubeSeg: number;
+  sectionId: string;
+  sectionLabel: string;
 };
 
 const RINGS: RingSpec[] = [
-  // Outermost — slow cyan orbit on Y
-  { radius: 2.80, tube: 0.010, color: "#00e5ff", intensity: 2.5, speed:  0.12, axis: [0,   1,   0  ], tilt: [0,    0,    0   ], tubeSeg: 220 },
-  // Cyan-dim on X with slight Z tilt
-  { radius: 2.55, tube: 0.013, color: "#00b8cc", intensity: 2.0, speed: -0.20, axis: [1,   0,   0  ], tilt: [0,    0,    0.3 ], tubeSeg: 200 },
-  // Purple on diagonal XY
-  { radius: 2.30, tube: 0.015, color: "#c084fc", intensity: 2.0, speed:  0.32, axis: [0.7, 1,   0  ], tilt: [0.5,  0,    0   ], tubeSeg: 190 },
-  // Cyan on Z with angled tilt
-  { radius: 2.05, tube: 0.018, color: "#00e5ff", intensity: 2.5, speed: -0.27, axis: [0,   0,   1  ], tilt: [0.2,  0.4,  0   ], tubeSeg: 170 },
-  // Purple-dim on XY diagonal
-  { radius: 1.80, tube: 0.020, color: "#9b5fd4", intensity: 1.8, speed:  0.50, axis: [1,   1,   0  ], tilt: [-0.3, 0,    0.5 ], tubeSeg: 160 },
-  // Transition — teal-cyan, shifting toward blue-white
-  { radius: 1.50, tube: 0.022, color: "#5cddf0", intensity: 2.5, speed: -0.65, axis: [1,   0,   0.7], tilt: [0,    0.6,  0   ], tubeSeg: 150 },
-  // Light blue-white, fast
-  { radius: 1.20, tube: 0.025, color: "#a8ecff", intensity: 3.0, speed:  0.85, axis: [0,   1,   1  ], tilt: [0.4,  0,   -0.4 ], tubeSeg: 140 },
-  // Near-white, faster
-  { radius: 0.90, tube: 0.028, color: "#c8f4ff", intensity: 3.5, speed: -1.20, axis: [1,   1,   1  ], tilt: [0,    0,    0   ], tubeSeg: 120 },
-  // Almost-white, very fast
-  { radius: 0.60, tube: 0.032, color: "#e0f7ff", intensity: 4.5, speed:  1.60, axis: [0,   0,   1  ], tilt: [0.5,  0.3,  0   ], tubeSeg: 100 },
-  // Innermost — white-hot, rapid
-  { radius: 0.35, tube: 0.038, color: "#f0faff", intensity: 6.0, speed: -2.20, axis: [1,   0,   0  ], tilt: [0,    0.5,  0   ], tubeSeg:  80 },
+  { radius: 2.80, tube: 0.010, color: "#00e5ff", intensity: 2.5, speed:  0.12, axis: [0,   1,   0  ], tilt: [0,    0,    0   ], tubeSeg: 220, sectionId: "projects",   sectionLabel: "// ACTIVE_PROJECTS" },
+  { radius: 2.55, tube: 0.013, color: "#00b8cc", intensity: 2.0, speed: -0.20, axis: [1,   0,   0  ], tilt: [0,    0,    0.3 ], tubeSeg: 200, sectionId: "skills",      sectionLabel: "// SKILLS"          },
+  { radius: 2.30, tube: 0.015, color: "#c084fc", intensity: 2.0, speed:  0.32, axis: [0.7, 1,   0  ], tilt: [0.5,  0,    0   ], tubeSeg: 190, sectionId: "vitals",      sectionLabel: "// VITALS"          },
+  { radius: 2.05, tube: 0.018, color: "#00e5ff", intensity: 2.5, speed: -0.27, axis: [0,   0,   1  ], tilt: [0.2,  0.4,  0   ], tubeSeg: 170, sectionId: "network",     sectionLabel: "// NETWORK"         },
+  { radius: 1.80, tube: 0.020, color: "#9b5fd4", intensity: 1.8, speed:  0.50, axis: [1,   1,   0  ], tilt: [-0.3, 0,    0.5 ], tubeSeg: 160, sectionId: "operator-id", sectionLabel: "// OPERATOR_ID"     },
+  { radius: 1.50, tube: 0.022, color: "#5cddf0", intensity: 2.5, speed: -0.65, axis: [1,   0,   0.7], tilt: [0,    0.6,  0   ], tubeSeg: 150, sectionId: "diagnostics", sectionLabel: "// DIAGNOSTICS"     },
+  { radius: 1.20, tube: 0.025, color: "#a8ecff", intensity: 3.0, speed:  0.85, axis: [0,   1,   1  ], tilt: [0.4,  0,   -0.4 ], tubeSeg: 140, sectionId: "voice",       sectionLabel: "// VOICE ANALYSIS"  },
+  { radius: 0.90, tube: 0.028, color: "#c8f4ff", intensity: 3.5, speed: -1.20, axis: [1,   1,   1  ], tilt: [0,    0,    0   ], tubeSeg: 120, sectionId: "atmospheric", sectionLabel: "// ATMOSPHERIC"     },
+  { radius: 0.60, tube: 0.032, color: "#e0f7ff", intensity: 4.5, speed:  1.60, axis: [0,   0,   1  ], tilt: [0.5,  0.3,  0   ], tubeSeg: 100, sectionId: "location",    sectionLabel: "// LOCATION"        },
+  { radius: 0.35, tube: 0.038, color: "#f0faff", intensity: 6.0, speed: -2.20, axis: [1,   0,   0  ], tilt: [0,    0.5,  0   ], tubeSeg:  80, sectionId: "operator",    sectionLabel: "// OPERATOR"        },
 ];
 
 // ─── Ring ────────────────────────────────────────────────────────────────────
 
-function Ring({ radius, tube, color, intensity, speed, axis, tilt, tubeSeg }: RingSpec) {
-  const meshRef = useRef<THREE.Mesh>(null!);
-  // Stable axis vector — computed once on mount via useRef initial value
-  const rotAxis = useRef(new THREE.Vector3(...axis).normalize());
+interface RingProps extends RingSpec {
+  mode: ReactorMode;
+  onHoverChange: (hovered: boolean, sectionId: string) => void;
+  onRingClick: (sectionId: string) => void;
+  isHovered: boolean;
+}
+
+function Ring({
+  radius, tube, color, intensity, speed, axis, tilt, tubeSeg,
+  sectionId, sectionLabel, mode, onHoverChange, onRingClick, isHovered,
+}: RingProps) {
+  const meshRef  = useRef<THREE.Mesh>(null!);
+  const rotAxis  = useRef(new THREE.Vector3(...axis).normalize());
+  const curColor = useRef(new THREE.Color(color));
+  const curEI    = useRef(intensity);
 
   useFrame((_, delta) => {
-    meshRef.current.rotateOnAxis(rotAxis.current, speed * delta);
+    const modeColorHex = MODE_COLORS[mode];
+    const targetColor  = new THREE.Color(modeColorHex || color);
+    curColor.current.lerp(targetColor, 5 * delta);
+    const mat = meshRef.current.material as THREE.MeshStandardMaterial;
+    mat.color.copy(curColor.current);
+    mat.emissive.copy(curColor.current);
+
+    const targetEI = intensity * MODE_INTENSITY_MULT[mode] * (isHovered ? 1.6 : 1.0);
+    curEI.current += (targetEI - curEI.current) * 5 * delta;
+    mat.emissiveIntensity = curEI.current;
+
+    meshRef.current.rotateOnAxis(rotAxis.current, speed * MODE_SPEED_MULT[mode] * delta);
   });
 
   return (
@@ -70,13 +106,46 @@ function Ring({ radius, tube, color, intensity, speed, axis, tilt, tubeSeg }: Ri
         emissiveIntensity={intensity}
         toneMapped={false}
       />
+
+      {/* Invisible wider hitbox for reliable pointer events */}
+      <mesh
+        onPointerOver={(e) => { e.stopPropagation(); onHoverChange(true, sectionId); }}
+        onPointerOut={(e)  => { e.stopPropagation(); onHoverChange(false, sectionId); }}
+        onClick={(e)       => { e.stopPropagation(); onRingClick(sectionId); }}
+      >
+        <torusGeometry args={[radius, 0.12, 6, tubeSeg]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+
+      {isHovered && (
+        <Html
+          position={[radius + 0.2, 0, 0]}
+          style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
+        >
+          <span
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: "0.6rem",
+              letterSpacing: "0.18em",
+              color: "#00b8cc",
+              textTransform: "uppercase",
+              background: "rgba(0,0,0,0.75)",
+              padding: "2px 6px",
+              border: "1px solid rgba(0,229,255,0.25)",
+              userSelect: "none",
+            }}
+          >
+            {sectionLabel}
+          </span>
+        </Html>
+      )}
     </mesh>
   );
 }
 
 // ─── Particle field ──────────────────────────────────────────────────────────
 
-function Particles({ count = 1200 }: { count?: number }) {
+function Particles({ count = 1200, mode }: { count?: number; mode: ReactorMode }) {
   const ref = useRef<THREE.Points>(null!);
 
   const geo = useMemo(() => {
@@ -88,7 +157,6 @@ function Particles({ count = 1200 }: { count?: number }) {
     const dim    = new THREE.Color("#00b8cc");
 
     for (let i = 0; i < count; i++) {
-      // Spherical distribution in a shell around the reactor
       const r     = 2.4 + Math.random() * 3.2;
       const theta = Math.random() * Math.PI * 2;
       const phi   = Math.acos(2 * Math.random() - 1);
@@ -108,10 +176,17 @@ function Particles({ count = 1200 }: { count?: number }) {
     return g;
   }, [count]);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     const t = clock.getElapsedTime();
-    ref.current.rotation.y = t * 0.04;
-    ref.current.rotation.x = t * 0.015;
+    ref.current.rotation.y = t * 0.04 * MODE_SPEED_MULT[mode];
+    ref.current.rotation.x = t * 0.015 * MODE_SPEED_MULT[mode];
+
+    const mat = ref.current.material as THREE.PointsMaterial;
+    const targetOpacity =
+      mode === "stealth" ? 0.18 :
+      mode === "overdrive" ? 0.9 :
+      0.65;
+    mat.opacity += (targetOpacity - mat.opacity) * 3 * delta;
   });
 
   return (
@@ -128,60 +203,167 @@ function Particles({ count = 1200 }: { count?: number }) {
   );
 }
 
-// ─── Core + hover flare ──────────────────────────────────────────────────────
+// ─── Burst particles ──────────────────────────────────────────────────────────
+
+const BURST_COUNT = 100;
+
+function BurstParticles({ burstTick, mode }: { burstTick: number; mode: ReactorMode }) {
+  const ref = useRef<THREE.Points>(null!);
+
+  const basePos = useMemo(() => {
+    const arr = new Float32Array(BURST_COUNT * 3);
+    for (let i = 0; i < BURST_COUNT; i++) {
+      const r     = 1.0 + Math.random() * 2.5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi   = Math.acos(2 * Math.random() - 1);
+      arr[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
+      arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      arr[i * 3 + 2] = r * Math.cos(phi);
+    }
+    return arr;
+  }, []);
+
+  const velocities = useRef(new Float32Array(BURST_COUNT * 3));
+  const active     = useRef(false);
+  const elapsed    = useRef(0);
+  const prevTick   = useRef(0);
+
+  const geo = useMemo(() => {
+    const g   = new THREE.BufferGeometry();
+    const pos = new Float32Array(basePos);
+    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    return g;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useFrame((_, delta) => {
+    if (burstTick !== prevTick.current) {
+      prevTick.current = burstTick;
+      for (let i = 0; i < BURST_COUNT; i++) {
+        const mag = 2.5 + Math.random() * 1.5;
+        const dir = new THREE.Vector3(
+          (Math.random() - 0.5) * 2,
+          (Math.random() - 0.5) * 2,
+          (Math.random() - 0.5) * 2,
+        ).normalize().multiplyScalar(mag);
+        velocities.current[i * 3]     = dir.x;
+        velocities.current[i * 3 + 1] = dir.y;
+        velocities.current[i * 3 + 2] = dir.z;
+      }
+      active.current  = true;
+      elapsed.current = 0;
+    }
+
+    if (!active.current) return;
+
+    elapsed.current += delta;
+    const progress = Math.min(elapsed.current / 0.8, 1);
+    const burst    = Math.sin(progress * Math.PI);
+
+    const posArr = geo.attributes.position.array as Float32Array;
+    for (let i = 0; i < BURST_COUNT; i++) {
+      posArr[i * 3]     = basePos[i * 3]     + velocities.current[i * 3]     * burst;
+      posArr[i * 3 + 1] = basePos[i * 3 + 1] + velocities.current[i * 3 + 1] * burst;
+      posArr[i * 3 + 2] = basePos[i * 3 + 2] + velocities.current[i * 3 + 2] * burst;
+    }
+    geo.attributes.position.needsUpdate = true;
+
+    if (progress >= 1) active.current = false;
+  });
+
+  const burstColor =
+    mode === "red-alert" ? "#ff4444" :
+    mode === "stealth"   ? "#4a2080" :
+    mode === "overdrive" ? "#ffffff" :
+    "#00e5ff";
+
+  return (
+    <points geometry={geo} ref={ref}>
+      <pointsMaterial
+        size={0.025}
+        color={burstColor}
+        transparent
+        opacity={0.9}
+        sizeAttenuation
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
+// ─── Core ────────────────────────────────────────────────────────────────────
 
 function Core({
   hovered,
   onHover,
+  mode,
+  onCoreClick,
 }: {
   hovered: boolean;
   onHover: (v: boolean) => void;
+  mode: ReactorMode;
+  onCoreClick: () => void;
 }) {
-  const sphereRef  = useRef<THREE.Mesh>(null!);
-  const coronaRef  = useRef<THREE.Mesh>(null!);
+  const sphereRef   = useRef<THREE.Mesh>(null!);
+  const coronaRef   = useRef<THREE.Mesh>(null!);
   const coronaScale = useRef(0);
-  const lightRef   = useRef<THREE.PointLight>(null!);
+  const lightRef    = useRef<THREE.PointLight>(null!);
+  const clickFlash  = useRef(0);
 
   useFrame(({ clock }, delta) => {
     const t = clock.getElapsedTime();
 
-    // Core pulse + hover scale
-    const pulse      = 1 + Math.sin(t * 2.5) * 0.06;
-    const targetSc   = hovered ? 1.45 * pulse : pulse;
-    const curSc      = sphereRef.current.scale.x;
+    const pulse    = 1 + Math.sin(t * 2.5) * 0.06;
+    const targetSc = hovered ? 1.45 * pulse : pulse;
+    const curSc    = sphereRef.current.scale.x;
     sphereRef.current.scale.setScalar(curSc + (targetSc - curSc) * 8 * delta);
 
-    // Core emissive brightens on hover
     const mat = sphereRef.current.material as THREE.MeshStandardMaterial;
-    const targetEI = hovered ? 18 : 8;
-    mat.emissiveIntensity += (targetEI - mat.emissiveIntensity) * 6 * delta;
 
-    // Corona scale lerp
+    if (clickFlash.current > 0) {
+      clickFlash.current -= delta;
+      mat.emissiveIntensity = 25;
+    } else {
+      const coreColor =
+        mode === "red-alert" ? "#ff2222" :
+        mode === "stealth"   ? "#220840" :
+        mode === "overdrive" ? "#ffffff" :
+        "#e0f8ff";
+      mat.emissive.lerp(new THREE.Color(coreColor), 4 * delta);
+      const targetEI =
+        hovered     ? 18 :
+        mode === "overdrive" ? 14 :
+        mode === "stealth"   ? 2  :
+        8;
+      mat.emissiveIntensity += (targetEI - mat.emissiveIntensity) * 6 * delta;
+    }
+
     const targetCS = hovered ? 1 : 0;
     coronaScale.current += (targetCS - coronaScale.current) * 8 * delta;
     coronaRef.current.scale.setScalar(Math.max(0, coronaScale.current));
-
-    // Corona opacity pulse while hovered
     const cMat = coronaRef.current.material as THREE.MeshStandardMaterial;
     const targetOp = hovered ? 0.07 + Math.sin(t * 4) * 0.025 : 0;
     cMat.opacity += (targetOp - cMat.opacity) * 6 * delta;
 
-    // Point light intensity follows hover
     lightRef.current.intensity += ((hovered ? 8 : 3) - lightRef.current.intensity) * 5 * delta;
   });
 
+  const handleClick = useCallback(() => {
+    clickFlash.current = 0.12;
+    onCoreClick();
+  }, [onCoreClick]);
+
   return (
     <group>
-      {/* Invisible hitbox — captures pointer events over core area */}
       <mesh
         onPointerOver={() => onHover(true)}
         onPointerOut={() => onHover(false)}
+        onClick={handleClick}
       >
         <sphereGeometry args={[0.55, 16, 16]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
 
-      {/* Hover corona — expands and pulses on hover */}
       <mesh ref={coronaRef} scale={0}>
         <sphereGeometry args={[0.9, 32, 32]} />
         <meshStandardMaterial
@@ -196,7 +378,6 @@ function Core({
         />
       </mesh>
 
-      {/* Visible core sphere */}
       <mesh ref={sphereRef}>
         <sphereGeometry args={[0.16, 32, 32]} />
         <meshStandardMaterial
@@ -207,27 +388,30 @@ function Core({
         />
       </mesh>
 
-      {/* Dynamic point light — illuminates inner rings from center */}
       <pointLight ref={lightRef} color="#00e5ff" intensity={3} distance={4} />
     </group>
   );
 }
 
-// ─── Scene group — owns all geometry and the parallax tilt ──────────────────
+// ─── Scene group ─────────────────────────────────────────────────────────────
 
 function ReactorScene({
-  hovered,
-  onHover,
-  mouseRef,
+  hovered, onHover, mouseRef, mode, hoveredRing,
+  onRingHoverChange, onRingClick, burstTick, onCoreClick,
 }: {
   hovered: boolean;
   onHover: (v: boolean) => void;
   mouseRef: React.MutableRefObject<{ x: number; y: number }>;
+  mode: ReactorMode;
+  hoveredRing: string | null;
+  onRingHoverChange: (hovered: boolean, sectionId: string) => void;
+  onRingClick: (sectionId: string) => void;
+  burstTick: number;
+  onCoreClick: () => void;
 }) {
   const groupRef = useRef<THREE.Group>(null!);
 
   useFrame((_, delta) => {
-    // Lazily lerp toward mouse-based tilt — max ~16 degrees
     const targetX = -mouseRef.current.y * 0.28;
     const targetY =  mouseRef.current.x * 0.28;
     groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 3 * delta;
@@ -237,21 +421,32 @@ function ReactorScene({
   return (
     <group ref={groupRef}>
       {RINGS.map((spec, i) => (
-        <Ring key={i} {...spec} />
+        <Ring
+          key={i}
+          {...spec}
+          mode={mode}
+          isHovered={hoveredRing === spec.sectionId}
+          onHoverChange={onRingHoverChange}
+          onRingClick={onRingClick}
+        />
       ))}
-      <Core hovered={hovered} onHover={onHover} />
-      <Particles count={1200} />
+      <Core hovered={hovered} onHover={onHover} mode={mode} onCoreClick={onCoreClick} />
+      <Particles count={1200} mode={mode} />
+      <BurstParticles burstTick={burstTick} mode={mode} />
     </group>
   );
 }
 
-// ─── ArcReactor — exported component ────────────────────────────────────────
+// ─── ArcReactor — exported component ─────────────────────────────────────────
 
 export default function ArcReactor() {
-  const [hovered, setHovered] = useState(false);
+  const [hovered,     setHovered]     = useState(false);
+  const [hoveredRing, setHoveredRing] = useState<string | null>(null);
+  const [burstTick,   setBurstTick]   = useState(0);
   const mouseRef = useRef({ x: 0, y: 0 });
-  // Stable offset vector for ChromaticAberration
   const caOffset = useRef(new THREE.Vector2(0.0008, 0.0008));
+
+  const { reactorMode, setHighlightSection, queueMessage } = useJarvisStore();
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -262,6 +457,20 @@ export default function ArcReactor() {
   const handleMouseLeave = useCallback(() => {
     mouseRef.current.x = 0;
     mouseRef.current.y = 0;
+  }, []);
+
+  const handleRingHoverChange = useCallback((isHovered: boolean, sectionId: string) => {
+    setHoveredRing(isHovered ? sectionId : null);
+  }, []);
+
+  const handleRingClick = useCallback((sectionId: string) => {
+    setHighlightSection(sectionId);
+    const msg = RING_MESSAGES[sectionId];
+    if (msg) queueMessage(msg);
+  }, [setHighlightSection, queueMessage]);
+
+  const handleCoreClick = useCallback(() => {
+    setBurstTick((t) => t + 1);
   }, []);
 
   return (
@@ -275,9 +484,7 @@ export default function ArcReactor() {
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: false }}
       >
-        {/* True black background — matches the overall #000000 palette */}
         <color attach="background" args={["#000000"]} />
-        {/* Minimal ambient so rings aren't invisible on the dark side */}
         <ambientLight intensity={0.04} />
 
         <Suspense fallback={null}>
@@ -285,6 +492,12 @@ export default function ArcReactor() {
             hovered={hovered}
             onHover={setHovered}
             mouseRef={mouseRef}
+            mode={reactorMode}
+            hoveredRing={hoveredRing}
+            onRingHoverChange={handleRingHoverChange}
+            onRingClick={handleRingClick}
+            burstTick={burstTick}
+            onCoreClick={handleCoreClick}
           />
         </Suspense>
 

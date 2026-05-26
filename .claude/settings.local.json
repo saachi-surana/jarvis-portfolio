@@ -8,7 +8,8 @@
       "Bash(npm run *)",
       "Bash(/Users/saachisurana/Library/Caches/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-mac-arm64/chrome-headless-shell --use-gl=angle --use-angle=metal --enable-webgl --ignore-gpu-blocklist --no-sandbox --screenshot=/tmp/jarvis-reactor2.png --window-size=1440,900 --virtual-time-budget=5000 http://localhost:3099)",
       "Bash(grep -v \"^$\")",
-      "Bash(curl -s http://localhost:3099)"
+      "Bash(curl -s http://localhost:3099)",
+      "Bash(npm install *)"
     ]
   }
 }
