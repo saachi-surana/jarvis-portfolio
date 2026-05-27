@@ -1,11 +1,15 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 import JarvisChat from "@/components/chat/JarvisChat";
 import OperatorOverlay from "@/components/panels/OperatorOverlay";
 import OrbitalDisplays from "@/components/effects/OrbitalDisplays";
+import CompassRose from "@/components/effects/CompassRose";
+import DirectionalPopup from "@/components/effects/DirectionalPopup";
 import { useJarvisStore } from "@/lib/store";
+import { useMouseZoneStore, useMouseZone, useMouseZoneTracker } from "@/lib/mouseZoneStore";
 
 const ArcReactor = dynamic(() => import("@/components/reactor/ArcReactor"), {
   ssr: false,
@@ -18,6 +22,25 @@ interface CenterPanelProps {
 
 export default function CenterPanel({ booted }: CenterPanelProps) {
   const { showAbout, setShowAbout } = useJarvisStore();
+  const reactorRef = useRef<HTMLDivElement>(null);
+  const setReactorCenter = useMouseZoneStore((s) => s.setReactorCenter);
+  const zone = useMouseZone();
+
+  // Wire up global mouse zone tracking
+  useMouseZoneTracker();
+
+  // Measure reactor center and update store on mount and resize
+  useEffect(() => {
+    const el = reactorRef.current;
+    if (!el) return;
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      setReactorCenter(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [setReactorCenter]);
 
   return (
     <main
@@ -28,9 +51,11 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
         backgroundSize: "40px 40px",
       }}
     >
-      {/* Arc reactor */}
-      <div className="reactor-section">
+      {/* Arc reactor + HUD overlays */}
+      <div className="reactor-section" ref={reactorRef}>
         <ArcReactor />
+        <CompassRose zone={zone} />
+        <DirectionalPopup zone={zone} />
       </div>
 
       {/* Secondary orbital displays row */}

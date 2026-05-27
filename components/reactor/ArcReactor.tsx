@@ -12,6 +12,7 @@ import { Particles, BurstParticles } from "./ArcReactorParticles";
 import { CasingRing, TickMarks, RadarSweep } from "./ArcReactorSweep";
 import { DataLabels } from "./ArcReactorLabels";
 import type { ReactorMode } from "@/lib/store";
+import { useMouseZone } from "@/lib/mouseZoneStore";
 
 // Inner rings map to project IDs for row pinging
 const PROJECT_RING_PINGS: Record<string, string> = {
@@ -38,10 +39,13 @@ function ReactorScene({
   burstTick: number; onCoreClick: () => void;
 }) {
   const groupRef = useRef<THREE.Group>(null!);
+  const zone = useMouseZone();
+  const outerAccent = zone === "EXPERIENCE" ? "#00ccaa" : zone === "PROJECTS" ? "#20f0ff" : undefined;
 
   useFrame((_, delta) => {
-    const targetX = -mouseRef.current.y * 0.28;
-    const targetY =  mouseRef.current.x * 0.28;
+    const tiltMult = zone !== "IDLE" ? 0.42 : 0.28;
+    const targetX = -mouseRef.current.y * tiltMult;
+    const targetY =  mouseRef.current.x * tiltMult;
     groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 3 * delta;
     groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 3 * delta;
   });
@@ -56,6 +60,7 @@ function ReactorScene({
         <Ring key={i} {...spec} mode={mode}
           isHovered={hoveredRing === spec.sectionId}
           onHoverChange={onRingHoverChange} onRingClick={onRingClick}
+          zoneAccent={i === 0 ? outerAccent : undefined}
         />
       ))}
       <Core hovered={hovered} onHover={onHover} mode={mode} onCoreClick={onCoreClick} />

@@ -18,6 +18,7 @@ export interface RingProps extends RingSpec {
   onHoverChange: (hovered: boolean, sectionId: string) => void;
   onRingClick:   (sectionId: string) => void;
   isHovered:     boolean;
+  zoneAccent?:   string; // outer ring only — zone-based color tint
 }
 
 export const RINGS: RingSpec[] = [
@@ -35,7 +36,7 @@ export const RINGS: RingSpec[] = [
 
 export function Ring({
   radius, tube, color, intensity, speed, axis, tilt, tubeSeg,
-  sectionId, sectionLabel, mode, onHoverChange, onRingClick, isHovered,
+  sectionId, sectionLabel, mode, onHoverChange, onRingClick, isHovered, zoneAccent,
 }: RingProps) {
   const meshRef  = useRef<THREE.Mesh>(null!);
   const rotAxis  = useRef(new THREE.Vector3(...axis).normalize());
@@ -43,7 +44,8 @@ export function Ring({
   const curEI    = useRef(intensity);
 
   useFrame((_, delta) => {
-    const targetColor = new THREE.Color(MODE_COLORS[mode] || color);
+    const baseColor = MODE_COLORS[mode] || (zoneAccent ?? color);
+    const targetColor = new THREE.Color(baseColor);
     curColor.current.lerp(targetColor, 5 * delta);
     const mat = meshRef.current.material as THREE.MeshStandardMaterial;
     mat.color.copy(curColor.current);
