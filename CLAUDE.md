@@ -62,6 +62,19 @@ COMPLETE — all 10 steps done + attribution + enhancement + polish + readabilit
 - [DONE] PART 5 — GlitchEffect: J.A.R.V.I.S title in TopBar does RGB channel split every 15–20s
 - [DONE] PART 6 — Particle burst: clicking reactor core fires 100 particles outward + lerp back
 
+## Interactive Features Session — DONE
+- [DONE] PART 1 — Ring navigation re-mapped: outer 5 (largest→smallest) = PROJECTS, GITHUB, ABOUT, SKILLS, CONTACT; inner 5 = JARVIS, STUDYSYNC, NOTION-PLANNER, QUERY, SNIP
+  - Hover: ring brightens, floating HTML label appears in Space Mono
+  - Click PROJECTS/SKILLS → highlight matching sidebar panel
+  - Click GITHUB → window.open github.com/saachi-surana
+  - Click ABOUT → opens OperatorOverlay
+  - Click inner project rings → highlight Projects panel + ping that project row + JARVIS message
+- [DONE] PART 2 — Reactor modes via chat (red alert/stealth/overdrive/online/reset) wired to Zustand store in lib/store.ts; smooth color+speed transitions in ArcReactorRings.tsx + ArcReactorCore.tsx + ArcReactorParticles.tsx
+- [DONE] PART 3 — Panel ping: JarvisChat scans response text for project names via PROJECT_PING_MAP → pingProject(id) → ProjectsPanel flashes .pinged class for 700ms
+- [DONE] PART 4 — GlitchEffect: GlitchTitle in TopBar fires RGB channel split every 15–20s (80ms duration)
+- [DONE] PART 5 — Particle burst: clicking reactor core fires 100 BurstParticles outward (2.5–4 units), lerp back over 0.8s; core flashes max emissive for 120ms; burst color matches reactor mode
+- [DONE] responses.ts split: 272 lines → lib/projectRules.ts (88 lines) + components/chat/responses.ts (138 lines)
+
 ## Content Update Session — DONE
 - [DONE] SkillsPanel: updated to Python 90%, TS/JS 80%, React/Next 80%, ML/AI 85%, Java 70%, Data 75%
 - [DONE] AboutPanel: new left sidebar panel with bio, degree/school/status/grad/email/LinkedIn data rows
@@ -116,7 +129,7 @@ COMPLETE — all 10 steps done + attribution + enhancement + polish + readabilit
 ## Key Architecture Notes (for future sessions)
 - State management: Zustand store at lib/store.ts (reactorMode, pingProjectId, highlightSection, pendingMessage)
 - Panel highlight system: Panel.tsx accepts sectionId prop → reads highlightSection from Zustand → pulses glow
-- Ring→section map: outer 5 rings = right sidebar (projects, skills, vitals, network, operator-id), inner 5 = left sidebar
+- Ring→section map: outer 5 rings = PROJECTS/GITHUB/ABOUT/SKILLS/CONTACT; inner 5 = JARVIS/STUDYSYNC/NOTION-PLANNER/QUERY/SNIP
 - Reactor mode keywords: "red alert"/"stealth"/"overdrive"/"reset" in chat → setReactorMode in store
 - Ring click → queueMessage(RING_MESSAGES[sectionId]) → JarvisChat watches pendingMessage → types it out
 - OperatorOverlay: slides up from bottom of CenterPanel; triggered by ArcReactor "// OPERATOR" button OR "about" keyword in chat; ESC/click-outside closes

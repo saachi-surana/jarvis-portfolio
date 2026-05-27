@@ -21,16 +21,16 @@ export interface RingProps extends RingSpec {
 }
 
 export const RINGS: RingSpec[] = [
-  { radius: 2.80, tube: 0.010, color: "#00e5ff", intensity: 2.5, speed:  0.12, axis: [0,   1,   0  ], tilt: [0,    0,    0   ], tubeSeg: 220, sectionId: "projects",   sectionLabel: "// ACTIVE_PROJECTS" },
-  { radius: 2.55, tube: 0.013, color: "#00b8cc", intensity: 2.0, speed: -0.20, axis: [1,   0,   0  ], tilt: [0,    0,    0.3 ], tubeSeg: 200, sectionId: "skills",      sectionLabel: "// SKILLS"          },
-  { radius: 2.30, tube: 0.015, color: "#c084fc", intensity: 2.0, speed:  0.32, axis: [0.7, 1,   0  ], tilt: [0.5,  0,    0   ], tubeSeg: 190, sectionId: "vitals",      sectionLabel: "// VITALS"          },
-  { radius: 2.05, tube: 0.018, color: "#00e5ff", intensity: 2.5, speed: -0.27, axis: [0,   0,   1  ], tilt: [0.2,  0.4,  0   ], tubeSeg: 170, sectionId: "network",     sectionLabel: "// NETWORK"         },
-  { radius: 1.80, tube: 0.020, color: "#9b5fd4", intensity: 1.8, speed:  0.50, axis: [1,   1,   0  ], tilt: [-0.3, 0,    0.5 ], tubeSeg: 160, sectionId: "operator-id", sectionLabel: "// OPERATOR_ID"     },
-  { radius: 1.50, tube: 0.022, color: "#5cddf0", intensity: 2.5, speed: -0.65, axis: [1,   0,   0.7], tilt: [0,    0.6,  0   ], tubeSeg: 150, sectionId: "diagnostics", sectionLabel: "// DIAGNOSTICS"     },
-  { radius: 1.20, tube: 0.025, color: "#a8ecff", intensity: 3.0, speed:  0.85, axis: [0,   1,   1  ], tilt: [0.4,  0,   -0.4 ], tubeSeg: 140, sectionId: "voice",       sectionLabel: "// VOICE ANALYSIS"  },
-  { radius: 0.90, tube: 0.028, color: "#c8f4ff", intensity: 3.5, speed: -1.20, axis: [1,   1,   1  ], tilt: [0,    0,    0   ], tubeSeg: 120, sectionId: "atmospheric", sectionLabel: "// ATMOSPHERIC"     },
-  { radius: 0.60, tube: 0.032, color: "#e0f7ff", intensity: 4.5, speed:  1.60, axis: [0,   0,   1  ], tilt: [0.5,  0.3,  0   ], tubeSeg: 100, sectionId: "location",    sectionLabel: "// LOCATION"        },
-  { radius: 0.35, tube: 0.038, color: "#f0faff", intensity: 6.0, speed: -2.20, axis: [1,   0,   0  ], tilt: [0,    0.5,  0   ], tubeSeg:  80, sectionId: "operator",    sectionLabel: "// OPERATOR"        },
+  { radius: 2.80, tube: 0.010, color: "#00e5ff", intensity: 2.5, speed:  0.12, axis: [0,   1,   0  ], tilt: [0,    0,    0   ], tubeSeg: 220, sectionId: "projects",       sectionLabel: "// ACTIVE_PROJECTS"  },
+  { radius: 2.55, tube: 0.013, color: "#00b8cc", intensity: 2.0, speed: -0.20, axis: [1,   0,   0  ], tilt: [0,    0,    0.3 ], tubeSeg: 200, sectionId: "github",          sectionLabel: "// GITHUB"           },
+  { radius: 2.30, tube: 0.015, color: "#c084fc", intensity: 2.0, speed:  0.32, axis: [0.7, 1,   0  ], tilt: [0.5,  0,    0   ], tubeSeg: 190, sectionId: "about",           sectionLabel: "// ABOUT"            },
+  { radius: 2.05, tube: 0.018, color: "#00e5ff", intensity: 2.5, speed: -0.27, axis: [0,   0,   1  ], tilt: [0.2,  0.4,  0   ], tubeSeg: 170, sectionId: "skills",          sectionLabel: "// SKILLS"           },
+  { radius: 1.80, tube: 0.020, color: "#9b5fd4", intensity: 1.8, speed:  0.50, axis: [1,   1,   0  ], tilt: [-0.3, 0,    0.5 ], tubeSeg: 160, sectionId: "contact",         sectionLabel: "// CONTACT"          },
+  { radius: 1.50, tube: 0.022, color: "#5cddf0", intensity: 2.5, speed: -0.65, axis: [1,   0,   0.7], tilt: [0,    0.6,  0   ], tubeSeg: 150, sectionId: "jarvis",          sectionLabel: "// JARVIS"           },
+  { radius: 1.20, tube: 0.025, color: "#a8ecff", intensity: 3.0, speed:  0.85, axis: [0,   1,   1  ], tilt: [0.4,  0,   -0.4 ], tubeSeg: 140, sectionId: "studysync",       sectionLabel: "// STUDYSYNC"        },
+  { radius: 0.90, tube: 0.028, color: "#c8f4ff", intensity: 3.5, speed: -1.20, axis: [1,   1,   1  ], tilt: [0,    0,    0   ], tubeSeg: 120, sectionId: "notion-planner",  sectionLabel: "// NOTION-PLANNER"   },
+  { radius: 0.60, tube: 0.032, color: "#e0f7ff", intensity: 4.5, speed:  1.60, axis: [0,   0,   1  ], tilt: [0.5,  0.3,  0   ], tubeSeg: 100, sectionId: "query",           sectionLabel: "// QUERY"            },
+  { radius: 0.35, tube: 0.038, color: "#f0faff", intensity: 6.0, speed: -2.20, axis: [1,   0,   0  ], tilt: [0,    0.5,  0   ], tubeSeg:  80, sectionId: "snip",            sectionLabel: "// SNIP"             },
 ];
 
 export function Ring({

@@ -13,6 +13,17 @@ import { CasingRing, TickMarks, RadarSweep } from "./ArcReactorSweep";
 import { DataLabels } from "./ArcReactorLabels";
 import type { ReactorMode } from "@/lib/store";
 
+// Inner rings map to project IDs for row pinging
+const PROJECT_RING_PINGS: Record<string, string> = {
+  "jarvis": "01", "studysync": "02", "notion-planner": "03", "query": "04", "snip": "05",
+};
+// Which sidebar section to highlight per ring click
+const SIDEBAR_HIGHLIGHTS: Record<string, string> = {
+  "projects": "projects", "skills": "skills",
+  "jarvis": "projects", "studysync": "projects",
+  "notion-planner": "projects", "query": "projects", "snip": "projects",
+};
+
 // ─── Scene ────────────────────────────────────────────────────────────────────
 
 function ReactorScene({
@@ -63,7 +74,7 @@ export default function ArcReactor() {
   const mouseRef = useRef({ x: 0, y: 0 });
   const caOffset = useRef(new THREE.Vector2(0.0008, 0.0008));
 
-  const { reactorMode, setHighlightSection, queueMessage, setShowAbout } = useJarvisStore();
+  const { reactorMode, setHighlightSection, queueMessage, setShowAbout, pingProject } = useJarvisStore();
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -76,10 +87,18 @@ export default function ArcReactor() {
   }, []);
 
   const handleRingClick = useCallback((sectionId: string) => {
-    setHighlightSection(sectionId);
+    if (sectionId === "github") {
+      window.open("https://github.com/saachi-surana", "_blank", "noopener,noreferrer");
+    } else if (sectionId === "about") {
+      setShowAbout(true);
+    }
+    const highlight = SIDEBAR_HIGHLIGHTS[sectionId];
+    if (highlight) setHighlightSection(highlight);
+    const projectId = PROJECT_RING_PINGS[sectionId];
+    if (projectId) pingProject(projectId);
     const msg = RING_MESSAGES[sectionId];
     if (msg) queueMessage(msg);
-  }, [setHighlightSection, queueMessage]);
+  }, [setHighlightSection, setShowAbout, pingProject, queueMessage]);
 
   return (
     <div className="absolute inset-0"
