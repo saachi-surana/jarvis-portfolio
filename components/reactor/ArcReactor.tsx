@@ -7,7 +7,7 @@ import * as THREE from "three";
 import { useJarvisStore } from "@/lib/store";
 import { RING_MESSAGES } from "@/components/chat/responses";
 import { Ring, RINGS } from "./ArcReactorRings";
-import { Core, CameraRig } from "./ArcReactorCore";
+import { Core } from "./ArcReactorCore";
 import { Particles, BurstParticles } from "./ArcReactorParticles";
 import { CasingRing, TickMarks, RadarSweep } from "./ArcReactorSweep";
 import { DataLabels } from "./ArcReactorLabels";
@@ -79,7 +79,7 @@ export default function ArcReactor() {
   const mouseRef = useRef({ x: 0, y: 0 });
   const caOffset = useRef(new THREE.Vector2(0.0008, 0.0008));
 
-  const { reactorMode, setHighlightSection, queueMessage, setShowAbout, pingProject, bloomIntensity } = useJarvisStore();
+  const { reactorMode, setHighlightSection, queueMessage, setShowAbout, pingProject } = useJarvisStore();
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -128,7 +128,6 @@ export default function ArcReactor() {
         <color attach="background" args={["#000000"]} />
         <ambientLight intensity={0.04} />
         <Suspense fallback={null}>
-          <CameraRig />
           <ReactorScene
             hovered={hovered} onHover={setHovered} mouseRef={mouseRef}
             mode={reactorMode} hoveredRing={hoveredRing}
@@ -137,7 +136,7 @@ export default function ArcReactor() {
           />
         </Suspense>
         <EffectComposer>
-          <Bloom intensity={bloomIntensity} luminanceThreshold={0.1} luminanceSmoothing={0.85} />
+          <Bloom intensity={2.5} luminanceThreshold={0.1} luminanceSmoothing={0.85} />
           <ChromaticAberration offset={caOffset.current} radialModulation={false} modulationOffset={0} />
           <Vignette eskil={false} offset={0.15} darkness={0.85} />
         </EffectComposer>
