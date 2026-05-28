@@ -18,6 +18,12 @@ interface JarvisStore {
 
   showAbout: boolean;
   setShowAbout: (v: boolean) => void;
+
+  bloomIntensity: number;
+  setBloomIntensity: (v: number) => void;
+
+  cameraZ: number;
+  setCameraZ: (v: number) => void;
 }
 
 export const useJarvisStore = create<JarvisStore>((set) => ({
@@ -36,4 +42,10 @@ export const useJarvisStore = create<JarvisStore>((set) => ({
 
   showAbout: false,
   setShowAbout: (v) => set({ showAbout: v }),
+
+  bloomIntensity: 2.5,
+  setBloomIntensity: (v) => set({ bloomIntensity: v }),
+
+  cameraZ: 7.2,
+  setCameraZ: (v) => set({ cameraZ: v }),
 }));

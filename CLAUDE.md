@@ -121,6 +121,15 @@ COMPLETE — all 10 steps done + attribution + enhancement + polish + readabilit
 - [DONE] CompassRose.tsx + DirectionalPopup.tsx deleted; globals.css: added @keyframes chevronPulse
 - [DONE] Reactor tilt enhancement stays: tiltMult 0.28→0.42 when zone≠IDLE; outermost ring shifts to #00ccaa (EXPERIENCE) or #20f0ff (PROJECTS)
 
+## Scroll-Driven Reveal Session — DONE
+- [DONE] PHASE 1 — Landing state: at scroll=0 the reactor fills 100vw×100vh (sidebars width=0, topbar/bottombar height=0), scroll hint (∨ // SCROLL TO INITIALIZE) pulses below reactor, fades on first scroll
+- [DONE] PHASE 2 — Scroll animation: topbar/bottombar 0→52/32px (scroll 0→0.22); left sidebar 0→280px (0.28→0.58); right sidebar 0→300px (0.58→0.88); orbital displays mount at scroll=0.5; chat + JARVIS greeting fire at scroll=0.6
+- [DONE] PHASE 3 — lib/useScrollReveal.ts: useScroll + useTransform; returns topBarHeight, bottomBarHeight, leftWidth, rightWidth MotionValues; scroll.on("change") updates Zustand bloomIntensity + cameraZ + boolean milestones (leftBooted, rightBooted, orbitalBooted, chatBooted, locked)
+- [DONE] PHASE 4 — Bloom 3.2→2.5 as scroll 0→1; camera z=5.4→7.2 via CameraRig in ArcReactorCore.tsx; both read from Zustand store (bloomIntensity, cameraZ)
+- [DONE] PHASE 5 — Mobile bypass: JarvisHUD detects window.innerWidth<768, skips scroll reveal, renders normal layout immediately after boot
+- [DONE] Architecture: JarvisHUD → ScrollRevealHUD (desktop) or inline mobile layout; 300vh outer container, 100vh sticky inner; locked state sets overflow:hidden; CenterPanel gets chatBooted/orbitalBooted props (undefined=mobile=show on boot)
+- [DONE] store.ts: added bloomIntensity (default 2.5) + cameraZ (default 7.2) + setters
+
 ## Polish Session — DONE
 - [DONE] BarGauge: added showPercent prop; SkillsPanel now shows relative bars only, no numbers
 - [DONE] SkillsPanel: 8 skills (Python/ML-AI/Java = strongest; React/TS/Data = strong; HTML/C++ = familiar)
@@ -149,8 +158,10 @@ COMPLETE — all 10 steps done + attribution + enhancement + polish + readabilit
 - Saachi: CS & Data Science @ UW, Dean's List, Class 2028, CoreWeave intern, UW BioRobotics researcher
 
 - Zone-based tilt in ArcReactor: tiltMult = zone!=="IDLE" ? 0.42 : 0.28; outermost ring gets zoneAccent color
-- DirectionalPopup: positioned absolute inside .reactor-section; CONTACT popup has real anchor links
-- mouseZoneStore.ts: IDLE_RADIUS=120px; zones by atan2 angle (right=PROJECTS, up=EXPERIENCE, left=IDENTITY, down=CONTACT)
+- mouseZoneStore.ts: IDLE_RADIUS=200px; zones by atan2 angle (right=PROJECTS, up=EXPERIENCE, left=IDENTITY, down=CONTACT); 400ms debounce; NONE zone for gaps
+- Scroll reveal: lib/useScrollReveal.ts; 300vh+sticky container in ScrollRevealHUD.tsx; JarvisHUD routes mobile vs desktop
+- bloomIntensity + cameraZ in Zustand store; ArcReactor reads bloom from store; CameraRig in ArcReactorCore reads cameraZ
+- CenterPanel: chatBooted/orbitalBooted props (undefined=mobile, false/true=scroll reveal) control conditional rendering of chat/orbital sections
 
 (Update this line every time you finish a step so context can be restored if needed)
 

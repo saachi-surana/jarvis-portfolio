@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import TopBar from "./TopBar";
 import BottomBar from "./BottomBar";
@@ -8,20 +8,33 @@ import LeftSidebar from "./LeftSidebar";
 import CenterPanel from "./CenterPanel";
 import RightSidebar from "./RightSidebar";
 import BootSequence from "@/components/effects/BootSequence";
+import ScrollRevealHUD from "./ScrollRevealHUD";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function JarvisHUD() {
   const [booted, setBooted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const handleBootComplete = useCallback(() => setBooted(true), []);
 
+  // Desktop: scroll-driven reveal
+  if (!isMobile) {
+    return <ScrollRevealHUD booted={booted} onBootComplete={handleBootComplete} />;
+  }
+
+  // Mobile: direct HUD after boot (no scroll reveal)
   return (
-    <div className="flex flex-col bg-black min-h-screen md:h-screen md:overflow-hidden">
-      {/* Boot overlay — renders on top of everything until dismissed */}
+    <div className="flex flex-col bg-black min-h-screen">
       <BootSequence onComplete={handleBootComplete} />
 
-      {/* Top bar — fades in with the boot */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={booted ? { opacity: 1 } : { opacity: 0 }}
@@ -30,25 +43,19 @@ export default function JarvisHUD() {
         <TopBar />
       </motion.div>
 
-      <div className="flex flex-col md:flex-row md:flex-1 md:min-h-0">
-        {/* Left sidebar — panels stagger in individually */}
+      <div className="flex flex-col flex-1 min-h-0">
         <LeftSidebar booted={booted} />
-
-        {/* Center panel — materializes slightly after left */}
         <motion.div
-          className="flex-1 min-w-0 md:min-h-0"
+          className="flex-1 min-w-0 min-h-0"
           initial={{ opacity: 0, scale: 0.975 }}
           animate={booted ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.975 }}
           transition={{ duration: 0.7, delay: 0.5, ease: EASE }}
         >
           <CenterPanel booted={booted} />
         </motion.div>
-
-        {/* Right sidebar — handles its own panel stagger internally */}
         <RightSidebar booted={booted} />
       </div>
 
-      {/* Bottom bar — last to appear */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={booted ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}

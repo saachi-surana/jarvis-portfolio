@@ -17,10 +17,12 @@ const ArcReactor = dynamic(() => import("@/components/reactor/ArcReactor"), {
 });
 
 interface CenterPanelProps {
-  booted?: boolean;
+  booted?:        boolean;
+  chatBooted?:    boolean; // scroll-reveal: undefined = show immediately (mobile)
+  orbitalBooted?: boolean; // scroll-reveal: undefined = show immediately (mobile)
 }
 
-export default function CenterPanel({ booted }: CenterPanelProps) {
+export default function CenterPanel({ booted, chatBooted, orbitalBooted }: CenterPanelProps) {
   const { showAbout, setShowAbout } = useJarvisStore();
   const reactorRef = useRef<HTMLDivElement>(null);
   const setReactorCenter = useMouseZoneStore((s) => s.setReactorCenter);
@@ -40,6 +42,10 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
     return () => window.removeEventListener("resize", update);
   }, [setReactorCenter]);
 
+  // If explicit prop not supplied, fall back to `booted` (mobile / normal mode)
+  const showOrbital = orbitalBooted ?? booted ?? false;
+  const showChat    = chatBooted    ?? booted ?? false;
+
   return (
     <main
       className="relative h-full w-full flex flex-col overflow-hidden"
@@ -49,21 +55,21 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
         backgroundSize: "40px 40px",
       }}
     >
-      {/* Arc reactor + chevron hints */}
+      {/* Arc reactor — takes all remaining height when chat/orbital are hidden */}
       <div className="reactor-section" ref={reactorRef} style={{ position: "relative" }}>
         <ArcReactor />
         <ChevronHints zone={zone} />
       </div>
 
-      {/* Secondary orbital displays row */}
-      <OrbitalDisplays />
+      {showOrbital && <OrbitalDisplays />}
 
-      {/* JARVIS chat */}
-      <div className="chat-section">
-        <JarvisChat booted={booted} />
-      </div>
+      {showChat && (
+        <div className="chat-section">
+          <JarvisChat booted={showChat} />
+        </div>
+      )}
 
-      {/* Floating zone cards — fixed overlay, escapes overflow:hidden */}
+      {/* Floating zone cards */}
       <FloatingCard zone={zone} />
 
       {/* Operator profile overlay */}

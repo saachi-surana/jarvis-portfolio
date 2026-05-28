@@ -1,10 +1,21 @@
 "use client";
 
 import { useRef, useCallback } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { ReactorMode } from "@/lib/store";
-import { MODE_COLORS } from "@/lib/constants";
+import { useJarvisStore } from "@/lib/store";
+
+// Smoothly moves the camera to the cameraZ value set by scroll reveal
+export function CameraRig() {
+  const { camera } = useThree();
+  const cameraZ = useJarvisStore((s) => s.cameraZ);
+  useFrame(() => {
+    (camera as THREE.PerspectiveCamera).position.z +=
+      (cameraZ - (camera as THREE.PerspectiveCamera).position.z) * 0.04;
+  });
+  return null;
+}
 
 interface CoreProps {
   hovered:     boolean;
@@ -52,9 +63,6 @@ export function Core({ hovered, onHover, mode, onCoreClick }: CoreProps) {
 
     lightRef.current.intensity += ((hovered ? 8 : 3) - lightRef.current.intensity) * 5 * delta;
   });
-
-  // Suppress unused import
-  void MODE_COLORS;
 
   const handleClick = useCallback(() => {
     clickFlash.current = 0.12;
