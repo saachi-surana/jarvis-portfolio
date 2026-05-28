@@ -6,8 +6,8 @@ import { AnimatePresence } from "framer-motion";
 import JarvisChat from "@/components/chat/JarvisChat";
 import OperatorOverlay from "@/components/panels/OperatorOverlay";
 import OrbitalDisplays from "@/components/effects/OrbitalDisplays";
-import CompassRose from "@/components/effects/CompassRose";
-import DirectionalPopup from "@/components/effects/DirectionalPopup";
+import FloatingCard from "@/components/effects/FloatingCard";
+import ChevronHints from "@/components/effects/ChevronHints";
 import { useJarvisStore } from "@/lib/store";
 import { useMouseZoneStore, useMouseZone, useMouseZoneTracker } from "@/lib/mouseZoneStore";
 
@@ -26,10 +26,8 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
   const setReactorCenter = useMouseZoneStore((s) => s.setReactorCenter);
   const zone = useMouseZone();
 
-  // Wire up global mouse zone tracking
   useMouseZoneTracker();
 
-  // Measure reactor center and update store on mount and resize
   useEffect(() => {
     const el = reactorRef.current;
     if (!el) return;
@@ -51,11 +49,10 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
         backgroundSize: "40px 40px",
       }}
     >
-      {/* Arc reactor + HUD overlays */}
-      <div className="reactor-section" ref={reactorRef}>
+      {/* Arc reactor + chevron hints */}
+      <div className="reactor-section" ref={reactorRef} style={{ position: "relative" }}>
         <ArcReactor />
-        <CompassRose zone={zone} />
-        <DirectionalPopup zone={zone} />
+        <ChevronHints zone={zone} />
       </div>
 
       {/* Secondary orbital displays row */}
@@ -65,6 +62,9 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
       <div className="chat-section">
         <JarvisChat booted={booted} />
       </div>
+
+      {/* Floating zone cards — fixed overlay, escapes overflow:hidden */}
+      <FloatingCard zone={zone} />
 
       {/* Operator profile overlay */}
       <AnimatePresence>

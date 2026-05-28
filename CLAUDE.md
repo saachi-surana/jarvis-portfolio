@@ -112,13 +112,14 @@ COMPLETE — all 10 steps done + attribution + enhancement + polish + readabilit
 - [DONE] OperatorIDPanel.tsx: name text-shadow, GitHub #ffffff→hover #00e5ff (corrected direction)
 - [DONE] ProjectOverlay.tsx: spring transition stiffness 300 damping 30, desc #e2e8f0 0.95rem lh 1.6, bg #070d0d
 
-## Mouse Zone Navigation Session — DONE
-- [DONE] PART 1 — lib/mouseZoneStore.ts: Zustand store (zone, reactorCenter, setReactorCenter, setZone), computeZone() uses atan2 with 200ms debounce, exports useMouseZone() + useMouseZoneTracker()
-- [DONE] PART 2 — Sidebar zone dimming: LeftSidebar + RightSidebar read useMouseZone(), dim non-highlighted panels to opacity 0.35, glow box-shadow on highlighted panels; zone→panel map: IDENTITY→[about,operator]/[operator-id], PROJECTS→[projects], EXPERIENCE→[experience,skills], CONTACT→[operator-id]; 300ms ease transitions
-- [DONE] PART 3 — DirectionalPopup.tsx: AbsPos popup per zone (left/right/top/bottom of reactor), HUD panel style (black bg, cyan border, corner bracket), 200ms fade+scale with AnimatePresence; IDENTITY shows bio summary + setShowAbout trigger, PROJECTS shows top 3 projects, EXPERIENCE shows work history, CONTACT has clickable mailto/linkedin/github links
-- [DONE] PART 4 — CompassRose.tsx: SVG overlay centered on reactor (inset 0, 100% w/h, viewBox 0 0 100 100); 4 tick marks (E/N/W/S) with radius R_INNER→R_OUTER, active direction brightens to full cyan + extends 4 extra units + label brightens to 0.6 opacity; 300ms CSS transitions
-- [DONE] PART 5 — Reactor tilt enhancement: ReactorScene reads useMouseZone(), tiltMult 0.28→0.42 when zone≠IDLE; outermost ring shifts to #00ccaa (EXPERIENCE) or #20f0ff (PROJECTS) via zoneAccent prop on Ring i=0
-- [DONE] CenterPanel: reactorRef tracks reactor-section center → setReactorCenter on mount+resize; calls useMouseZoneTracker(); renders CompassRose + DirectionalPopup inside reactor-section
+## Mouse Zone Navigation Session — DONE (revised)
+- [DONE] PART 1 — lib/mouseZoneStore.ts: IDLE_RADIUS=200px, narrow 60° bands (RIGHT 330°–30°=PROJECTS, UP 60°–120°=EXPERIENCE, LEFT 150°–210°=IDENTITY, DOWN 240°–300°=CONTACT), NONE zone for gaps, 400ms debounce
+- [DONE] PART 2 — Sidebars fully reverted: no opacity dimming, no zone logic, always full brightness; zone-based dimming removed from LeftSidebar + RightSidebar
+- [DONE] PART 3 — FloatingCard.tsx: position:fixed overlay cards per zone (left/right/top/bottom of viewport), spring(200,25) entry animation from direction, AnimatePresence exit; IDENTITY=left 12px, PROJECTS=right 12px, EXPERIENCE=top 72px centered, CONTACT=bottom 56px centered; black bg 0.92 + backdrop-blur + cyan border
+- [DONE] PART 4 — FloatingCardContent.tsx: IdentityContent (name/role/school/degree/status/grad/bio), ProjectsContent (all 9 projects clickable→ProjectOverlay), ExperienceContent (5 work entries, scrollable), ContactContent (4 clickable contact links)
+- [DONE] PART 5 — ChevronHints.tsx: `< > ^ v` Space Mono chars at reactor edges (position:absolute), brighten + chevronPulse animation when zone matches
+- [DONE] CompassRose.tsx + DirectionalPopup.tsx deleted; globals.css: added @keyframes chevronPulse
+- [DONE] Reactor tilt enhancement stays: tiltMult 0.28→0.42 when zone≠IDLE; outermost ring shifts to #00ccaa (EXPERIENCE) or #20f0ff (PROJECTS)
 
 ## Polish Session — DONE
 - [DONE] BarGauge: added showPercent prop; SkillsPanel now shows relative bars only, no numbers
