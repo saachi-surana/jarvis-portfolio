@@ -52,7 +52,7 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — all 10 steps done + attribution + enhancement + polish + readability sessions done
+COMPLETE — all sessions done, including splash→HUD routing
 
 ## Enhancement Session — DONE
 - [DONE] PART 1 — Authorship clarity (boot sequence, greeting, bottom bar, operator ID)
@@ -121,6 +121,14 @@ COMPLETE — all 10 steps done + attribution + enhancement + polish + readabilit
 - [DONE] CompassRose.tsx + DirectionalPopup.tsx deleted; globals.css: added @keyframes chevronPulse
 - [DONE] Reactor tilt enhancement stays: tiltMult 0.28→0.42 when zone≠IDLE; outermost ring shifts to #00ccaa (EXPERIENCE) or #20f0ff (PROJECTS)
 
+## Splash → HUD Routing Session — DONE
+- [DONE] PART 1 — /app/page.tsx: full-screen splash with reactor (80vh centered); BootSequence plays; after boot+1s, scroll hint appears (∨ // SCROLL OR CLICK TO INITIALIZE INTERFACE); scroll or click triggers exit animation (scale 0.32, move -28vw/-28vh, fade to black) → router.push('/hud') at 800ms
+- [DONE] PART 2 — /app/hud/page.tsx: renders JarvisHUD with skipBoot prop; no boot sequence; entrance animations play immediately (reactor scale 0.84→1, topbar y:-40→0, bottombar y:20→0)
+- [DONE] PART 3 — JarvisHUD: added skipBoot prop; when true, skips BootSequence and sets booted=true via useEffect; animation params differ per entry path
+- [DONE] PART 4 — BottomBar: added hidden-md // RESTART Link → / (splash); very muted color (text-[#2d3748]) hover to [#475569]
+- [DONE] PART 5 — Mobile: /app/page.tsx detects window.innerWidth<768 on mount → router.replace('/hud')
+- [DONE] PART 6 — Both routes independent: /hud works directly (entrance animation), / is splash-only entry; build: / = 2.46kB, /hud = 29.6kB, zero TS errors
+
 ## Polish Session — DONE
 - [DONE] BarGauge: added showPercent prop; SkillsPanel now shows relative bars only, no numbers
 - [DONE] SkillsPanel: 8 skills (Python/ML-AI/Java = strongest; React/TS/Data = strong; HTML/C++ = familiar)
@@ -149,8 +157,10 @@ COMPLETE — all 10 steps done + attribution + enhancement + polish + readabilit
 - Saachi: CS & Data Science @ UW, Dean's List, Class 2028, CoreWeave intern, UW BioRobotics researcher
 
 - Zone-based tilt in ArcReactor: tiltMult = zone!=="IDLE" ? 0.42 : 0.28; outermost ring gets zoneAccent color
-- DirectionalPopup: positioned absolute inside .reactor-section; CONTACT popup has real anchor links
-- mouseZoneStore.ts: IDLE_RADIUS=120px; zones by atan2 angle (right=PROJECTS, up=EXPERIENCE, left=IDENTITY, down=CONTACT)
+- mouseZoneStore.ts: IDLE_RADIUS=200px; zones by atan2; 400ms debounce; NONE zone for gaps
+- ROUTING: / = splash (ArcReactor 80vh, boot sequence, click/scroll → /hud); /hud = full HUD (skipBoot=true, no boot sequence)
+- JarvisHUD accepts skipBoot prop: when true, skips BootSequence, sets booted=true via useEffect immediately, uses faster/different entrance animations
+- BottomBar has hidden // RESTART link → / (splash), visible on md+ only
 
 (Update this line every time you finish a step so context can be restored if needed)
 
