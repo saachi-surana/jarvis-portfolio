@@ -135,7 +135,7 @@ COMPLETE — all sessions done, including splash→HUD routing
 - [DONE] app/favicon.ico: deleted (SVG replaces it)
 
 ## Splash Spin-Up Session — DONE
-- [DONE] PART 1 — ScrollIndicator.tsx: vertical 1px line, 5px cyan dot animates y:[0→44] opacity:[1→0] on 1.5s loop; "SCROLL" label; fades in/out via `visible` prop
+- [DONE] PART 1 — ScrollIndicator.tsx: right-side vertical indicator (right:40px, vertically centered); 80px line at 60% cyan opacity; 8px dot slides y:[0→72] with drop-shadow glow on 1.5s loop; "SCROLL" label rotate(-90deg) left of line at 70% opacity
 - [DONE] PART 2 — Spin-up state machine in page.tsx: spinningUp / shaking / exiting states + triggeredRef; scroll or click → setSpinningUp → shake at 800ms → setExiting at 1000ms → router.push at 1400ms; old 800ms handleExit replaced
 - [DONE] PART 3 — ArcReactor spinningUp prop: ReactorScene ramps groupRef.rotation.z by (1 + ramp*3)*delta*2 over 1.2s using spinElapsed ref; Core flares emissiveIntensity → 25 when spinningUp; Bloom jumps to 3.5 (fullScreen) when spinningUp; screen shake via Framer Motion keyframes on reactor wrapper
 - [DONE] ArcReactorCore: spinningUp?: boolean prop; lerps emissive to #ffffff and intensity to 25 during spin-up
