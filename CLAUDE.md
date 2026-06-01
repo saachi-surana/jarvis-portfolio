@@ -129,6 +129,11 @@ COMPLETE — all sessions done, including splash→HUD routing
 - [DONE] PART 5 — Mobile: /app/page.tsx detects window.innerWidth<768 on mount → router.replace('/hud')
 - [DONE] PART 6 — Both routes independent: /hud works directly (entrance animation), / is splash-only entry; build: / = 2.43kB, /hud = 29.8kB, zero TS errors
 
+## Favicon Session — DONE
+- [DONE] /public/favicon.svg: arc reactor SVG (680×680 viewBox, black bg, concentric cyan rings, white core, cardinal tick marks + end-caps)
+- [DONE] app/layout.tsx: metadata icons → /favicon.svg for icon/shortcut/apple; title updated to "Saachi Surana"; description updated
+- [DONE] app/favicon.ico: deleted (SVG replaces it)
+
 ## Splash/HUD Polish Session — DONE
 - [DONE] ISSUE 1 — Splash reactor is now full 100vw×100vh (removed 80vh centered box); motion.div is position:fixed inset:0; background bleeds to edges
 - [DONE] ISSUE 2 — ArcReactor accepts fullScreen?: boolean prop; when true: camera z=8.5 (vs 7.2), bloom 3.0 (vs 2.5), particles 3000 (vs 2000)

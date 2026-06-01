@@ -27,9 +27,14 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
-  title: "J.A.R.V.I.S // SAACHI SURANA",
-  description: "Portfolio interface — Saachi Surana, CS @ University of Washington",
+  title: "Saachi Surana",
+  description: "JARVIS Portfolio Interface — Saachi Surana, CS & Data Science @ University of Washington",
   robots: { index: true, follow: true },
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export const viewport: Viewport = {
