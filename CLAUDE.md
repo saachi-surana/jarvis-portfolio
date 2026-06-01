@@ -163,8 +163,8 @@ COMPLETE — all sessions done, including splash→HUD routing
 - OperatorOverlay: slides up from bottom of CenterPanel; triggered by ArcReactor "// OPERATOR" button OR "about" keyword in chat; ESC/click-outside closes
 - store.ts also has showAbout / setShowAbout for the overlay
 - Projects: now 9 entries (01–09, BIN SENTINEL added)
-- Right sidebar order: OperatorID → Projects → Experience → Skills → Vitals → Network
-- Left sidebar order: Clock → Diagnostics → Voice → Atmospheric → Location → Operator → About
+- Right sidebar order: OperatorID → Projects → Experience → Vitals → Network
+- Left sidebar order: Clock → About → Skills → Location → Operator → Diagnostics → Voice → Atmospheric
 - Saachi: CS & Data Science @ UW, Dean's List, Class 2028, CoreWeave intern, UW BioRobotics researcher
 
 - Zone-based tilt in ArcReactor: tiltMult = zone!=="IDLE" ? 0.42 : 0.28; outermost ring gets zoneAccent color

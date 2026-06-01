@@ -2,12 +2,13 @@
 
 import { motion } from "framer-motion";
 import ClockPanel from "@/components/panels/ClockPanel";
+import AboutPanel from "@/components/panels/AboutPanel";
+import SkillsPanel from "@/components/panels/SkillsPanel";
+import LocationPanel from "@/components/panels/LocationPanel";
+import OperatorPanel from "@/components/panels/OperatorPanel";
 import DiagnosticsPanel from "@/components/panels/DiagnosticsPanel";
 import VoicePanel from "@/components/panels/VoicePanel";
 import AtmosphericPanel from "@/components/panels/AtmosphericPanel";
-import LocationPanel from "@/components/panels/LocationPanel";
-import OperatorPanel from "@/components/panels/OperatorPanel";
-import AboutPanel from "@/components/panels/AboutPanel";
 
 interface LeftSidebarProps {
   booted: boolean;
@@ -17,12 +18,13 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 const PANELS = [
   { id: "clock",       Component: ClockPanel       },
+  { id: "about",       Component: AboutPanel       },
+  { id: "skills",      Component: SkillsPanel      },
+  { id: "location",    Component: LocationPanel    },
+  { id: "operator",    Component: OperatorPanel    },
   { id: "diagnostics", Component: DiagnosticsPanel },
   { id: "voice",       Component: VoicePanel       },
   { id: "atmospheric", Component: AtmosphericPanel },
-  { id: "location",    Component: LocationPanel    },
-  { id: "operator",    Component: OperatorPanel    },
-  { id: "about",       Component: AboutPanel       },
 ];
 
 export default function LeftSidebar({ booted }: LeftSidebarProps) {
