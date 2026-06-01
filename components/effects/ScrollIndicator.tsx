@@ -2,16 +2,10 @@
 
 import { motion } from "framer-motion";
 
-interface Props {
-  booted: boolean;
-  scrollProgress: number;
-}
-
-export default function ScrollIndicator({ booted, scrollProgress }: Props) {
-  const visible = booted && scrollProgress < 0.15;
-
+export default function ScrollIndicator({ visible }: { visible: boolean }) {
   return (
     <motion.div
+      initial={{ opacity: 0 }}
       animate={{ opacity: visible ? 1 : 0 }}
       transition={{ duration: 0.6 }}
       style={{
@@ -44,7 +38,14 @@ export default function ScrollIndicator({ booted, scrollProgress }: Props) {
       </span>
 
       {/* Vertical track + sliding dot */}
-      <div style={{ position: "relative", width: 1, height: 80, background: "rgba(0,229,255,0.6)" }}>
+      <div
+        style={{
+          position: "relative",
+          width: 1,
+          height: 80,
+          background: "rgba(0,229,255,0.6)",
+        }}
+      >
         <motion.div
           animate={{ y: [0, 72], opacity: [1, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeIn" }}
