@@ -7,13 +7,14 @@ import type { ReactorMode } from "@/lib/store";
 import { MODE_COLORS } from "@/lib/constants";
 
 interface CoreProps {
-  hovered:     boolean;
-  onHover:     (v: boolean) => void;
-  mode:        ReactorMode;
-  onCoreClick: () => void;
+  hovered:      boolean;
+  onHover:      (v: boolean) => void;
+  mode:         ReactorMode;
+  onCoreClick:  () => void;
+  spinningUp?:  boolean;
 }
 
-export function Core({ hovered, onHover, mode, onCoreClick }: CoreProps) {
+export function Core({ hovered, onHover, mode, onCoreClick, spinningUp = false }: CoreProps) {
   const sphereRef   = useRef<THREE.Mesh>(null!);
   const coronaRef   = useRef<THREE.Mesh>(null!);
   const coronaScale = useRef(0);
@@ -32,6 +33,9 @@ export function Core({ hovered, onHover, mode, onCoreClick }: CoreProps) {
     if (clickFlash.current > 0) {
       clickFlash.current -= delta;
       mat.emissiveIntensity = 25;
+    } else if (spinningUp) {
+      mat.emissive.lerp(new THREE.Color("#ffffff"), 6 * delta);
+      mat.emissiveIntensity += (25 - mat.emissiveIntensity) * 6 * delta;
     } else {
       const coreColor =
         mode === "red-alert" ? "#ff2222" :

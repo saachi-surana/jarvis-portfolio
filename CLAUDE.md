@@ -134,6 +134,12 @@ COMPLETE — all sessions done, including splash→HUD routing
 - [DONE] app/layout.tsx: metadata icons → /favicon.svg for icon/shortcut/apple; title updated to "Saachi Surana"; description updated
 - [DONE] app/favicon.ico: deleted (SVG replaces it)
 
+## Splash Spin-Up Session — DONE
+- [DONE] PART 1 — ScrollIndicator.tsx: vertical 1px line, 5px cyan dot animates y:[0→44] opacity:[1→0] on 1.5s loop; "SCROLL" label; fades in/out via `visible` prop
+- [DONE] PART 2 — Spin-up state machine in page.tsx: spinningUp / shaking / exiting states + triggeredRef; scroll or click → setSpinningUp → shake at 800ms → setExiting at 1000ms → router.push at 1400ms; old 800ms handleExit replaced
+- [DONE] PART 3 — ArcReactor spinningUp prop: ReactorScene ramps groupRef.rotation.z by (1 + ramp*3)*delta*2 over 1.2s using spinElapsed ref; Core flares emissiveIntensity → 25 when spinningUp; Bloom jumps to 3.5 (fullScreen) when spinningUp; screen shake via Framer Motion keyframes on reactor wrapper
+- [DONE] ArcReactorCore: spinningUp?: boolean prop; lerps emissive to #ffffff and intensity to 25 during spin-up
+
 ## Splash/HUD Polish Session — DONE
 - [DONE] ISSUE 1 — Splash reactor is now full 100vw×100vh (removed 80vh centered box); motion.div is position:fixed inset:0; background bleeds to edges
 - [DONE] ISSUE 2 — ArcReactor accepts fullScreen?: boolean prop; when true: camera z=8.5 (vs 7.2), bloom 3.0 (vs 2.5), particles 3000 (vs 2000)

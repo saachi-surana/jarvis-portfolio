@@ -25,7 +25,7 @@ const SIDEBAR_HIGHLIGHTS: Record<string, string> = {
 
 function ReactorScene({
   hovered, onHover, mouseRef, mode, hoveredRing,
-  onRingHoverChange, onRingClick, burstTick, onCoreClick, fullScreen,
+  onRingHoverChange, onRingClick, burstTick, onCoreClick, fullScreen, spinningUp,
 }: {
   hovered: boolean; onHover: (v: boolean) => void;
   mouseRef: React.MutableRefObject<{ x: number; y: number }>;
@@ -33,18 +33,23 @@ function ReactorScene({
   onRingHoverChange: (hovered: boolean, sectionId: string) => void;
   onRingClick: (sectionId: string) => void;
   burstTick: number; onCoreClick: () => void;
-  fullScreen: boolean;
+  fullScreen: boolean; spinningUp: boolean;
 }) {
-  const groupRef = useRef<THREE.Group>(null!);
+  const groupRef    = useRef<THREE.Group>(null!);
+  const spinElapsed = useRef(0);
   const zone = useMouseZone();
   const outerAccent = zone === "EXPERIENCE" ? "#00ccaa" : zone === "PROJECTS" ? "#20f0ff" : undefined;
 
   useFrame((_, delta) => {
-    const tiltMult = zone !== "IDLE" ? 0.42 : 0.28;
-    const targetX = -mouseRef.current.y * tiltMult;
-    const targetY =  mouseRef.current.x * tiltMult;
-    groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 3 * delta;
-    groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 3 * delta;
+    const m = zone !== "IDLE" ? 0.42 : 0.28;
+    groupRef.current.rotation.x += (-mouseRef.current.y * m - groupRef.current.rotation.x) * 3 * delta;
+    groupRef.current.rotation.y += ( mouseRef.current.x * m - groupRef.current.rotation.y) * 3 * delta;
+    if (spinningUp) {
+      spinElapsed.current = Math.min(spinElapsed.current + delta, 1.2);
+      groupRef.current.rotation.z += (1 + (spinElapsed.current / 1.2) * 3) * delta * 2;
+    } else {
+      spinElapsed.current = 0;
+    }
   });
 
   return (
@@ -61,14 +66,14 @@ function ReactorScene({
           disableNav={fullScreen}
         />
       ))}
-      <Core hovered={hovered} onHover={onHover} mode={mode} onCoreClick={onCoreClick} />
+      <Core hovered={hovered} onHover={onHover} mode={mode} onCoreClick={onCoreClick} spinningUp={spinningUp} />
       <Particles count={fullScreen ? 3000 : 2000} mode={mode} />
       <BurstParticles burstTick={burstTick} mode={mode} />
     </group>
   );
 }
 
-export default function ArcReactor({ fullScreen = false }: { fullScreen?: boolean }) {
+export default function ArcReactor({ fullScreen = false, spinningUp = false }: { fullScreen?: boolean; spinningUp?: boolean }) {
   const [hovered,     setHovered]     = useState(false);
   const [hoveredRing, setHoveredRing] = useState<string | null>(null);
   const [burstTick,   setBurstTick]   = useState(0);
@@ -130,11 +135,11 @@ export default function ArcReactor({ fullScreen = false }: { fullScreen?: boolea
             mode={reactorMode} hoveredRing={hoveredRing}
             onRingHoverChange={handleRingHoverChange} onRingClick={handleRingClick}
             burstTick={burstTick} onCoreClick={() => setBurstTick((t) => t + 1)}
-            fullScreen={fullScreen}
+            fullScreen={fullScreen} spinningUp={spinningUp}
           />
         </Suspense>
         <EffectComposer>
-          <Bloom intensity={fullScreen ? 3.0 : 2.5} luminanceThreshold={0.1} luminanceSmoothing={0.85} />
+          <Bloom intensity={spinningUp ? (fullScreen ? 3.5 : 3.0) : (fullScreen ? 3.0 : 2.5)} luminanceThreshold={0.1} luminanceSmoothing={0.85} />
           <ChromaticAberration offset={caOffset.current} radialModulation={false} modulationOffset={0} />
           <Vignette eskil={false} offset={0.15} darkness={0.85} />
         </EffectComposer>
