@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 
 export default function BottomBar() {
   const [time, setTime] = useState("");
@@ -40,12 +39,12 @@ export default function BottomBar() {
     >
       {/* Left */}
       <div className="flex items-center gap-6 flex-1">
-        <Link
-          href="/"
-          className="font-mono text-[0.55rem] text-[#2d3748] tracking-[0.2em] uppercase hover:text-[#475569] transition-colors duration-300 hidden md:inline"
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="font-mono text-[0.55rem] text-[#2d3748] tracking-[0.2em] uppercase hover:text-[#475569] transition-colors duration-300 hidden md:inline bg-transparent border-none cursor-pointer p-0"
         >
-          // RESTART
-        </Link>
+          // HOME
+        </button>
         <span className="font-mono text-[0.65rem] text-[#475569] tracking-[0.2em] uppercase">
           // OPERATOR: SAACHI SURANA
         </span>

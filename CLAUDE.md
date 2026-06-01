@@ -52,7 +52,7 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — all sessions done, including splash→HUD routing
+COMPLETE — scroll architecture done; single-page experience at /
 
 ## Enhancement Session — DONE
 - [DONE] PART 1 — Authorship clarity (boot sequence, greeting, bottom bar, operator ID)
@@ -134,6 +134,16 @@ COMPLETE — all sessions done, including splash→HUD routing
 - [DONE] app/layout.tsx: metadata icons → /favicon.svg for icon/shortcut/apple; title updated to "Saachi Surana"; description updated
 - [DONE] app/favicon.ico: deleted (SVG replaces it)
 
+## Scroll Architecture Session — DONE
+- [DONE] /app/hud/ deleted; single route at /
+- [DONE] /app/page.tsx: 200vh scroll container + position:sticky 100vh layer; useScroll → first-scroll spin-up (once); passes scrollYProgress + booted + spinningUp to ScrollHUD
+- [DONE] /components/layout/ScrollHUD.tsx (106 lines): useTransform for topBar/sidebars/chat/bottomBar; absolute-positioned layers over fullscreen ArcReactor; OperatorOverlay via Zustand; ScrollIndicator; greetingFired fires once at scroll>0.9
+- [DONE] ScrollIndicator: props changed to {booted, scrollProgress}; visible when booted && scrollProgress<0.15
+- [DONE] TopBar: removed useRouter/fade-to-black; goHome → window.scrollTo({top:0,behavior:'smooth'}); Escape key scrolls to top
+- [DONE] BottomBar: // RESTART Link → // HOME button with scrollTo
+- Scroll thresholds: TopBar 0→0.35, sidebars 0.35→0.65, chat 0.65→0.95, greeting at 0.9
+- ArcReactor fullScreen switches at sp<0.5 (camera z=8.5→7.2, bloom 3.0→2.5)
+
 ## Splash Spin-Up Session — DONE
 - [DONE] PART 1 — ScrollIndicator.tsx: right-side vertical indicator (right:40px, vertically centered); 80px line at 60% cyan opacity; 8px dot slides y:[0→72] with drop-shadow glow on 1.5s loop; "SCROLL" label rotate(-90deg) left of line at 70% opacity
 - [DONE] PART 2 — Spin-up state machine in page.tsx: spinningUp / shaking / exiting states + triggeredRef; scroll or click → setSpinningUp → shake at 800ms → setExiting at 1000ms → router.push at 1400ms; old 800ms handleExit replaced
@@ -175,11 +185,12 @@ COMPLETE — all sessions done, including splash→HUD routing
 
 - Zone-based tilt in ArcReactor: tiltMult = zone!=="IDLE" ? 0.42 : 0.28; outermost ring gets zoneAccent color
 - mouseZoneStore.ts: IDLE_RADIUS=200px; zones by atan2; 400ms debounce; NONE zone for gaps
-- ROUTING: / = splash (ArcReactor fullscreen 100vw×100vh, boot sequence, click/scroll → /hud); /hud = full HUD (skipBoot=true, no boot sequence)
-- JarvisHUD accepts skipBoot prop: when true, skips BootSequence, sets booted=true via useEffect immediately, uses faster/different entrance animations
-- BottomBar has hidden // RESTART link → / (splash), visible on md+ only
-- TopBar (client component): "// HOME" button far left + Escape key → fade-to-black 500ms → router.push("/")
-- ArcReactor fullScreen prop: camera z=8.5, bloom 3.0, particles 3000, OPERATOR button hidden, ring disableNav=true (no hover/click/labels)
+- ROUTING: Single page at /; height:200vh outer, position:sticky top:0 height:100vh inner
+- ScrollHUD.tsx handles all scroll-driven layout (absolute positioned layers over fullscreen reactor)
+- Scroll thresholds: topBar 0→0.35, sidebars 0.35→0.65, chat 0.65→0.95, greeting at 0.9
+- ArcReactor fullScreen prop switches at scrollProgress<0.5 (camera z=8.5→7.2, bloom 3.0→2.5)
+- TopBar: // HOME button + Escape key → window.scrollTo({top:0}) (no routing)
+- BottomBar: // HOME button → window.scrollTo({top:0})
 
 (Update this line every time you finish a step so context can be restored if needed)
 
