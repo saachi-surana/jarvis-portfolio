@@ -19,6 +19,7 @@ export interface RingProps extends RingSpec {
   onRingClick:   (sectionId: string) => void;
   isHovered:     boolean;
   zoneAccent?:   string; // outer ring only — zone-based color tint
+  disableNav?:   boolean; // when true: hide hit area + hover label (splash mode)
 }
 
 export const RINGS: RingSpec[] = [
@@ -37,6 +38,7 @@ export const RINGS: RingSpec[] = [
 export function Ring({
   radius, tube, color, intensity, speed, axis, tilt, tubeSeg,
   sectionId, sectionLabel, mode, onHoverChange, onRingClick, isHovered, zoneAccent,
+  disableNav = false,
 }: RingProps) {
   const meshRef  = useRef<THREE.Mesh>(null!);
   const rotAxis  = useRef(new THREE.Vector3(...axis).normalize());
@@ -60,14 +62,16 @@ export function Ring({
     <mesh ref={meshRef} rotation={tilt}>
       <torusGeometry args={[radius, tube, 8, tubeSeg]} />
       <meshStandardMaterial color={color} emissive={color} emissiveIntensity={intensity} toneMapped={false} />
-      <mesh
-        onPointerOver={(e) => { e.stopPropagation(); onHoverChange(true, sectionId); }}
-        onPointerOut={(e)  => { e.stopPropagation(); onHoverChange(false, sectionId); }}
-        onClick={(e)       => { e.stopPropagation(); onRingClick(sectionId); }}
-      >
-        <torusGeometry args={[radius, 0.12, 6, tubeSeg]} />
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      </mesh>
+      {!disableNav && (
+        <mesh
+          onPointerOver={(e) => { e.stopPropagation(); onHoverChange(true, sectionId); }}
+          onPointerOut={(e)  => { e.stopPropagation(); onHoverChange(false, sectionId); }}
+          onClick={(e)       => { e.stopPropagation(); onRingClick(sectionId); }}
+        >
+          <torusGeometry args={[radius, 0.12, 6, tubeSeg]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
+      )}
       {isHovered && (
         <Html position={[radius + 0.2, 0, 0]} style={{ pointerEvents: "none", whiteSpace: "nowrap" }}>
           <span style={{

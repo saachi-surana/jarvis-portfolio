@@ -127,7 +127,13 @@ COMPLETE — all sessions done, including splash→HUD routing
 - [DONE] PART 3 — JarvisHUD: added skipBoot prop; when true, skips BootSequence and sets booted=true via useEffect; animation params differ per entry path
 - [DONE] PART 4 — BottomBar: added hidden-md // RESTART Link → / (splash); very muted color (text-[#2d3748]) hover to [#475569]
 - [DONE] PART 5 — Mobile: /app/page.tsx detects window.innerWidth<768 on mount → router.replace('/hud')
-- [DONE] PART 6 — Both routes independent: /hud works directly (entrance animation), / is splash-only entry; build: / = 2.46kB, /hud = 29.6kB, zero TS errors
+- [DONE] PART 6 — Both routes independent: /hud works directly (entrance animation), / is splash-only entry; build: / = 2.43kB, /hud = 29.8kB, zero TS errors
+
+## Splash/HUD Polish Session — DONE
+- [DONE] ISSUE 1 — Splash reactor is now full 100vw×100vh (removed 80vh centered box); motion.div is position:fixed inset:0; background bleeds to edges
+- [DONE] ISSUE 2 — ArcReactor accepts fullScreen?: boolean prop; when true: camera z=8.5 (vs 7.2), bloom 3.0 (vs 2.5), particles 3000 (vs 2000)
+- [DONE] ISSUE 3 — TopBar converted to client component; "// HOME" button far left (color #2d3748→#475569 hover); Escape key listener navigates to /; fade-to-black overlay (500ms) before router.push("/") at 600ms
+- [DONE] ISSUE 4 — ArcReactorRings: disableNav?: boolean prop; when true: hit-area torus not rendered (no pointer events), hover labels suppressed; fullScreen passes disableNav=true, isHovered=false to all rings
 
 ## Polish Session — DONE
 - [DONE] BarGauge: added showPercent prop; SkillsPanel now shows relative bars only, no numbers
@@ -158,9 +164,11 @@ COMPLETE — all sessions done, including splash→HUD routing
 
 - Zone-based tilt in ArcReactor: tiltMult = zone!=="IDLE" ? 0.42 : 0.28; outermost ring gets zoneAccent color
 - mouseZoneStore.ts: IDLE_RADIUS=200px; zones by atan2; 400ms debounce; NONE zone for gaps
-- ROUTING: / = splash (ArcReactor 80vh, boot sequence, click/scroll → /hud); /hud = full HUD (skipBoot=true, no boot sequence)
+- ROUTING: / = splash (ArcReactor fullscreen 100vw×100vh, boot sequence, click/scroll → /hud); /hud = full HUD (skipBoot=true, no boot sequence)
 - JarvisHUD accepts skipBoot prop: when true, skips BootSequence, sets booted=true via useEffect immediately, uses faster/different entrance animations
 - BottomBar has hidden // RESTART link → / (splash), visible on md+ only
+- TopBar (client component): "// HOME" button far left + Escape key → fade-to-black 500ms → router.push("/")
+- ArcReactor fullScreen prop: camera z=8.5, bloom 3.0, particles 3000, OPERATOR button hidden, ring disableNav=true (no hover/click/labels)
 
 (Update this line every time you finish a step so context can be restored if needed)
 

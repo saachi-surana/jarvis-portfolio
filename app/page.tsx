@@ -55,34 +55,18 @@ export default function SplashPage() {
       {/* Boot overlay */}
       <BootSequence onComplete={() => setBooted(true)} />
 
-      {/* Reactor — centered, 80vh square */}
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          pointerEvents: "none",
-        }}
+      {/* Reactor — full viewport */}
+      <motion.div
+        animate={
+          exiting
+            ? { scale: 0.32, x: "-28vw", y: "-28vh" }
+            : { scale: 1, x: 0, y: 0 }
+        }
+        transition={{ duration: 0.65, ease: EXIT_EASE }}
+        style={{ position: "fixed", inset: 0 }}
       >
-        <motion.div
-          animate={
-            exiting
-              ? { scale: 0.32, x: "-28vw", y: "-28vh" }
-              : { scale: 1, x: 0, y: 0 }
-          }
-          transition={{ duration: 0.65, ease: EXIT_EASE }}
-          style={{
-            width: "80vh",
-            height: "80vh",
-            position: "relative",
-            pointerEvents: "auto",
-          }}
-        >
-          <ArcReactor />
-        </motion.div>
-      </div>
+        <ArcReactor fullScreen />
+      </motion.div>
 
       {/* Fade-to-black overlay — starts 400ms after exit triggers */}
       <motion.div
