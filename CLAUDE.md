@@ -143,6 +143,9 @@ COMPLETE — scroll architecture done; single-page experience at /
 - [DONE] BottomBar: // RESTART Link → // HOME button with scrollTo
 - Scroll thresholds: TopBar 0→0.35, sidebars 0.35→0.65, chat 0.65→0.95, greeting at 0.9
 - ArcReactor fullScreen switches at sp<0.5 (camera z=8.5→7.2, bloom 3.0→2.5)
+- page.tsx uses containerRef for useScroll (not window) — prevents browser scroll restoration bug
+- Container: height:100vh overflowY:scroll, scrollbar hidden; inner 200vh div; sticky 100vh div
+- Sidebar wrappers have overflow:hidden to clip panel x:-10 entrance animations against sidebar boundary
 
 ## Splash Spin-Up Session — DONE
 - [DONE] PART 1 — ScrollIndicator.tsx: right-side vertical indicator (right:40px, vertically centered); 80px line at 60% cyan opacity; 8px dot slides y:[0→72] with drop-shadow glow on 1.5s loop; "SCROLL" label rotate(-90deg) left of line at 70% opacity

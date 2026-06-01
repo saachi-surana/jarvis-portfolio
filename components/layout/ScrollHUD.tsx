@@ -68,9 +68,9 @@ export default function ScrollHUD({ scrollYProgress, booted, spinningUp }: Props
         <TopBar />
       </motion.div>
 
-      {/* LEFT SIDEBAR */}
+      {/* LEFT SIDEBAR — overflow:hidden clips panel x:-10 against sidebar boundary */}
       <motion.div className="absolute z-20"
-        style={{ top: TOP_H, bottom: BOT_H, left: 0, width: L_W, x: leftX }}>
+        style={{ top: TOP_H, bottom: BOT_H, left: 0, width: L_W, x: leftX, overflow: "hidden" }}>
         <div style={{ height: "100%", overflowY: "auto", background: "#050a0a" }}>
           <LeftSidebar booted={hud} />
         </div>
@@ -78,7 +78,7 @@ export default function ScrollHUD({ scrollYProgress, booted, spinningUp }: Props
 
       {/* RIGHT SIDEBAR */}
       <motion.div className="absolute z-20"
-        style={{ top: TOP_H, bottom: BOT_H, right: 0, width: R_W, x: rightX }}>
+        style={{ top: TOP_H, bottom: BOT_H, right: 0, width: R_W, x: rightX, overflow: "hidden" }}>
         <div style={{ height: "100%", overflowY: "auto", background: "#050a0a" }}>
           <RightSidebar booted={hud} />
         </div>
