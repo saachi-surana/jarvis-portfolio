@@ -39,7 +39,7 @@ export default function JarvisHUD({ skipBoot = false }: JarvisHUDProps) {
     : { initial: { opacity: 0, y: 8  }, transition: { duration: 0.5,  delay: 0.75, ease: EASE } };
 
   return (
-    <div className="flex flex-col bg-black min-h-screen md:h-screen md:overflow-hidden">
+    <div className="flex flex-col bg-black min-h-screen md:h-screen md:overflow-hidden relative isolate transform-gpu">
       {!skipBoot && <BootSequence onComplete={handleBootComplete} />}
 
       <motion.div

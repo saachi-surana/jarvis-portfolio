@@ -1,31 +1,38 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-export default function ScrollIndicator({ visible }: { visible: boolean }) {
+export default function ScrollIndicator() {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY <= 100);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <motion.div
-      initial={{ opacity: 0 }}
       animate={{ opacity: visible ? 1 : 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.4 }}
       style={{
         position: "fixed",
-        right: 40,
+        right: 32,
         top: "50%",
         transform: "translateY(-50%)",
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        gap: 12,
+        gap: 10,
         pointerEvents: "none",
-        zIndex: 10,
+        zIndex: 20,
       }}
     >
-      {/* "SCROLL" rotated to read upward, sitting left of the line */}
       <span
         style={{
           fontFamily: "'Space Mono', monospace",
-          fontSize: "0.6rem",
+          fontSize: "0.55rem",
           letterSpacing: "0.2em",
           color: "rgba(0,229,255,0.7)",
           textTransform: "uppercase",
@@ -37,15 +44,7 @@ export default function ScrollIndicator({ visible }: { visible: boolean }) {
         SCROLL
       </span>
 
-      {/* Vertical track + sliding dot */}
-      <div
-        style={{
-          position: "relative",
-          width: 1,
-          height: 80,
-          background: "rgba(0,229,255,0.6)",
-        }}
-      >
+      <div style={{ position: "relative", width: 1, height: 80, background: "rgba(0,229,255,0.5)" }}>
         <motion.div
           animate={{ y: [0, 72], opacity: [1, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeIn" }}

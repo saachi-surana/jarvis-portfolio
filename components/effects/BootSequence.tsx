@@ -16,7 +16,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
         <motion.div
           className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black select-none"
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.85, ease: "easeOut" }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
         >
           <div className="absolute inset-0 pointer-events-none"
             style={{ background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(0,229,255,0.055) 0%, transparent 70%)" }} />
@@ -33,7 +33,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
                     "0 0 10px rgba(0,229,255,0.3)", "0 0 20px rgba(0,229,255,0.45)",
                   ],
                 }}
-                transition={{ duration: 0.75, times: [0, 0.12, 0.3, 0.52, 0.72, 1], ease: "linear" }}
+                transition={{ duration: 0.6, times: [0, 0.12, 0.3, 0.52, 0.72, 1], ease: "linear" }}
                 className="font-display text-[clamp(2.8rem,7vw,6rem)] tracking-[0.35em] text-[#00e5ff] uppercase"
               >
                 J.A.R.V.I.S

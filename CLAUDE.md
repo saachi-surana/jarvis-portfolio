@@ -52,7 +52,37 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — all sessions done, including splash→HUD routing
+COMPLETE — simple scroll architecture: SplashSection (100vh) → JarvisHUD (100vh)
+
+## HUD Containment Fix — DONE
+- [DONE] JarvisHUD div: added `relative isolate transform-gpu` classes
+  - `relative`: establishes positioning context for absolute children
+  - `isolate`: creates new stacking context (z-index values inside can't compete with splash)
+  - `transform-gpu`: adds transform:translateZ(0) → makes JarvisHUD the containing block for ALL position:fixed descendants (ProjectOverlay, FloatingCard, TopBar fade overlay)
+- Why not change fixed→absolute: ProjectOverlay renders inside Panel (position:relative) so absolute inset-0 would cover only the Panel; FloatingCard must escape CenterPanel's overflow:hidden per existing design comment
+- Result: when user scrolls to splash, JarvisHUD is off-screen → its fixed children are off-screen too → no bleed-over
+
+## Splash Entry Fix — DONE
+- [DONE] page.tsx converted to client component ("use client") — required for useEffect scroll-to-top
+- [DONE] useEffect(() => window.scrollTo({top:0, behavior:'instant'})) at page level overrides browser scroll restoration
+- [DONE] main gets margin:0 padding:0 — eliminates any default layout gap
+- [DONE] SplashSection verified: onComplete only calls setBooted(true), no auto-scroll/navigate after boot; section stays in DOM permanently
+- Root cause: server component page.tsx couldn't run useEffect → browser scroll restoration fired → user landed in HUD
+
+## Scroll Fix Session — DONE
+- [DONE] ISSUE 1 — SplashSection: useEffect window.scrollTo({top:0,behavior:'instant'}) prevents browser scroll restoration loading into HUD
+- [DONE] ISSUE 2 — Boot timing cut to <2.5s: t2 1500→600ms, LINE1 pause 220→100ms, LINE2 10ms/char (was 32ms) → 500ms total, LINE2 pause 420→100ms, exit fade 0.85→0.4s, title fade 0.75→0.6s
+- [DONE] ISSUE 3 — Removed overflow:hidden from SplashSection (was trapping scroll; free scroll in both directions now)
+- [DONE] ISSUE 4 — ArcReactor: DataLabels only render when !fullScreen (HUD mode only); SplashSection owns its HTML labels → no more duplicates
+- [DONE] ISSUE 5 — Reactor always mounted in SplashSection (no conditional rendering); overflow removal also prevents canvas clipping
+
+## Simple Scroll Session — DONE
+- [DONE] app/page.tsx: renders <SplashSection /> then <JarvisHUD skipBoot /> — plain vertical scroll, no animations
+- [DONE] components/layout/SplashSection.tsx: 100vh fullscreen reactor (fullScreen), BootSequence, coordinate labels, ScrollIndicator
+- [DONE] components/effects/ScrollIndicator.tsx: self-managing (window.scrollY ≤ 100 = visible); position:fixed right:32px; 80px line + 8px glow dot + SCROLL rotated label; no props
+- [DONE] Deleted ScrollHUD.tsx (dead code from failed scroll architecture; was causing TS error)
+- ROUTING: / = SplashSection + JarvisHUD (scroll to reveal); /hud = standalone JarvisHUD (still works)
+- TopBar // HOME → router.push("/") scrolls back to top of page (SplashSection)
 
 ## Enhancement Session — DONE
 - [DONE] PART 1 — Authorship clarity (boot sequence, greeting, bottom bar, operator ID)

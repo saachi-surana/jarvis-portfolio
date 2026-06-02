@@ -57,7 +57,7 @@ function ReactorScene({
       <CasingRing />
       <TickMarks />
       <RadarSweep />
-      <DataLabels />
+      {!fullScreen && <DataLabels />}
       {RINGS.map((spec, i) => (
         <Ring key={i} {...spec} mode={mode}
           isHovered={!fullScreen && hoveredRing === spec.sectionId}
