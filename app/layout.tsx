@@ -52,8 +52,10 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${spaceMono.variable} ${rajdhani.variable} ${orbitron.variable}`}
+      style={{ scrollBehavior: 'auto' }}
     >
       <body className="bg-black">
+        <script dangerouslySetInnerHTML={{ __html: 'window.history.scrollRestoration = "manual"; window.scrollTo(0, 0);' }} />
         <CustomCursor />
         <ScanLine />
         {children}

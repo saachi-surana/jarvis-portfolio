@@ -52,7 +52,17 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — simple scroll architecture: SplashSection (100vh) → JarvisHUD (100vh)
+COMPLETE — unified single-route scroll: / renders SplashSection (100vh) + JarvisHUD skipBoot (100vh); /hud deleted
+
+## Scroll & Containment Fix Session — DONE
+- [DONE] BUG 1 — Scroll restoration: page.tsx useEffect sets `window.history.scrollRestoration = 'manual'` + `window.scrollTo(0, 0)` on mount; SplashSection.tsx redundant useEffect scroll-to-top removed (and `useEffect` import dropped); layout.tsx retains `scrollBehavior: 'auto'` on html + inline script guard
+- [DONE] BUG 2 — Fixed overlay bleed: JarvisHUD wrapper in page.tsx uses `contain: 'strict'`; CSS containment clips ALL children including position:fixed to container bounds — no component internals changed
+
+## Routing Consolidation Session — DONE
+- [DONE] app/page.tsx: wraps SplashSection in `height:100vh overflow:hidden position:relative` div; wraps JarvisHUD in `height:100vh overflow:hidden position:relative isolation:isolate` div
+- [DONE] app/hud/ directory deleted — / is now the only route; both sections live on one scrollable page
+- [DONE] JarvisHUD skipBoot prop already existed; SplashSection already rendered ScrollIndicator — no other files changed
+- ROUTING: / = SplashSection (100vh, boot sequence) → scroll down → JarvisHUD (100vh, skipBoot); no /hud route
 
 ## HUD Containment Fix — DONE
 - [DONE] JarvisHUD div: added `relative isolate transform-gpu` classes
@@ -81,7 +91,7 @@ COMPLETE — simple scroll architecture: SplashSection (100vh) → JarvisHUD (10
 - [DONE] components/layout/SplashSection.tsx: 100vh fullscreen reactor (fullScreen), BootSequence, coordinate labels, ScrollIndicator
 - [DONE] components/effects/ScrollIndicator.tsx: self-managing (window.scrollY ≤ 100 = visible); position:fixed right:32px; 80px line + 8px glow dot + SCROLL rotated label; no props
 - [DONE] Deleted ScrollHUD.tsx (dead code from failed scroll architecture; was causing TS error)
-- ROUTING: / = SplashSection + JarvisHUD (scroll to reveal); /hud = standalone JarvisHUD (still works)
+- ROUTING: / = SplashSection + JarvisHUD (scroll to reveal); /hud removed
 - TopBar // HOME → router.push("/") scrolls back to top of page (SplashSection)
 
 ## Enhancement Session — DONE
@@ -205,7 +215,7 @@ COMPLETE — simple scroll architecture: SplashSection (100vh) → JarvisHUD (10
 
 - Zone-based tilt in ArcReactor: tiltMult = zone!=="IDLE" ? 0.42 : 0.28; outermost ring gets zoneAccent color
 - mouseZoneStore.ts: IDLE_RADIUS=200px; zones by atan2; 400ms debounce; NONE zone for gaps
-- ROUTING: / = splash (ArcReactor fullscreen 100vw×100vh, boot sequence, click/scroll → /hud); /hud = full HUD (skipBoot=true, no boot sequence)
+- ROUTING: / = splash (100vh) + HUD (100vh) on single scrollable page; /hud deleted; skipBoot=true on HUD section
 - JarvisHUD accepts skipBoot prop: when true, skips BootSequence, sets booted=true via useEffect immediately, uses faster/different entrance animations
 - BottomBar has hidden // RESTART link → / (splash), visible on md+ only
 - TopBar (client component): "// HOME" button far left + Escape key → fade-to-black 500ms → router.push("/")

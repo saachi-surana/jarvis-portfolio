@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import BootSequence from "@/components/effects/BootSequence";
 import ScrollIndicator from "@/components/effects/ScrollIndicator";
@@ -24,11 +24,6 @@ const LABEL: React.CSSProperties = {
 
 export default function SplashSection() {
   const [booted, setBooted] = useState(false);
-
-  // Always start at the top — prevents browser scroll restoration from loading into HUD
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-  }, []);
 
   return (
     <section
