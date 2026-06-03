@@ -13,15 +13,19 @@ export default function Page() {
   const progress = useScrollStore((s) => s.progress)
   const [spinningUp, setSpinningUp] = useState(false)
   const spinFiredRef = useRef(false)
+  const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // One-shot spin-up when user first scrolls (progress crosses 0.1)
+  // One-shot spin-up: fires the first time progress crosses 0.1, never again
+  // Timer stored in ref so progress changes don't cancel it via cleanup
   useEffect(() => {
     if (spinFiredRef.current || progress <= 0.1) return
     spinFiredRef.current = true
     setSpinningUp(true)
-    const t = setTimeout(() => setSpinningUp(false), 1200)
-    return () => clearTimeout(t)
+    spinTimerRef.current = setTimeout(() => setSpinningUp(false), 1200)
   }, [progress])
+
+  // Clean up timer only on unmount
+  useEffect(() => () => { if (spinTimerRef.current) clearTimeout(spinTimerRef.current) }, [])
 
   const splashOpacity = progress < 0.5 ? 1 : 1 - (progress - 0.5) * 2
   const hudOpacity = progress > 0.3 ? (progress - 0.3) / 0.7 : 0

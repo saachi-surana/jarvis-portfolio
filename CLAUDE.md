@@ -52,7 +52,11 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — splash→HUD transition: parallax restored, spin-up fires on first scroll, reactor fly-in at 80% progress, green rings added
+COMPLETE — spin-up one-shot fix: timer stored in ref so progress changes can't cancel it
+
+## Spin-Up Fix Session — DONE
+- [DONE] Root cause: useEffect cleanup `() => clearTimeout(t)` ran on every `progress` change, cancelling the 1200ms timer before `setSpinningUp(false)` could fire → spinningUp stuck true indefinitely
+- [DONE] Fix: timer moved to `spinTimerRef` (ref, not local variable); spin trigger effect has no return/cleanup; separate one-line unmount-only effect clears the timer on page unload; `spinFiredRef.current = true` set synchronously on first fire, so all subsequent progress changes hit the guard immediately and are free
 
 ## Transition Polish Session — DONE
 - [DONE] PART 1 — Parallax restored: ArcReactor.tsx adds `useEffect` for `window.addEventListener('mousemove')` when fullScreen=true (parent has pointerEvents:none so React onMouseMove is blocked); normalizes against window.innerWidth/Height; fallback React onMouseMove still active for HUD reactor (fullScreen=false)
