@@ -7,6 +7,15 @@ export default function Page() {
   useEffect(() => {
     window.history.scrollRestoration = 'manual'
     window.scrollTo(0, 0)
+    document.documentElement.style.overflow = 'hidden'
+    
+    // Re-enable scrolling after a brief delay
+    const t = setTimeout(() => {
+      document.documentElement.style.overflow = ''
+      window.scrollTo(0, 0)
+    }, 100)
+    
+    return () => clearTimeout(t)
   }, [])
 
   return (

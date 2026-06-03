@@ -75,6 +75,7 @@ html {
   cursor: none;
   scroll-behavior: auto;
   overflow-anchor: none;
+  overflow: hidden;
 }
 
 html, body {
