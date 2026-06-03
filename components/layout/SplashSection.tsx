@@ -1,14 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 import BootSequence from "@/components/effects/BootSequence";
 import ScrollIndicator from "@/components/effects/ScrollIndicator";
-
-const ArcReactor = dynamic(() => import("@/components/reactor/ArcReactor"), {
-  ssr: false,
-  loading: () => null,
-});
 
 const LABEL: React.CSSProperties = {
   position: "absolute",
@@ -31,19 +25,14 @@ export default function SplashSection() {
         height: "100vh",
         width: "100vw",
         position: "relative",
-        background: "#000",
-        // No overflow:hidden — allows free scroll in both directions
+        background: "transparent",
+        // Reactor is rendered in its own permanent layer in page.tsx (always mounted)
       }}
     >
       {/* Boot sequence — runs once, unmounts on complete */}
       {!booted && <BootSequence onComplete={() => setBooted(true)} />}
 
-      {/* Reactor — always mounted, never conditionally rendered */}
-      <div style={{ position: "absolute", inset: 0 }}>
-        <ArcReactor fullScreen />
-      </div>
-
-      {/* Coordinate labels (SplashSection owns these; HUD reactor suppresses its own) */}
+      {/* Coordinate labels */}
       <span style={{ ...LABEL, top: "12%", left: "50%", transform: "translateX(-50%)" }}>
         47.6062°N
       </span>

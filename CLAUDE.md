@@ -52,7 +52,11 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — fake scroll architecture: page never actually scrolls; wheel/touch drives Zustand progress (0→1) which animates sections via CSS transforms
+COMPLETE — fake scroll polished: snap-at-halfway, 0.15 snap lerp, binary mobile touch, fullScreen reactor in permanent layer
+
+## Fake Scroll Polish Session — DONE
+- [DONE] ISSUE 1 — Scroll feel: wheel increment 0.015→0.04; snap logic in scrollStore: incrementProgress snaps target to 1 when raw>=0.5, decrementProgress snaps to 0 when raw<=0.5; lerp speed 0.12 normally / 0.15 when snapping (target===0 or 1); mobile touch binary: touchend with dy>50 → setProgress(1), dy<-50 → setProgress(0); touchmove still calls preventDefault to block native scroll
+- [DONE] ISSUE 2 — Green rings fix: fullScreen ArcReactor extracted from SplashSection into a permanent z:0 fixed layer in page.tsx (pointerEvents:none, no opacity animation — never suspended by browser); SplashSection.tsx now: no ArcReactor import, section background:transparent (reactor in layer below shows through); page.tsx layer order: z:0=reactor (permanent), z:1=splash overlay (slides up), z:2=HUD (slides up from below, contain:strict)
 
 ## Fake Scroll Session — DONE
 - [DONE] lib/scrollStore.ts: Zustand store with `progress` (smooth display, 0–1), `target` (desired pos), `isTransitioning`; actions: `setProgress` (sets target), `_setDisplay` (rAF writes interpolated value), `incrementProgress`/`decrementProgress` (+/- 0.015)
