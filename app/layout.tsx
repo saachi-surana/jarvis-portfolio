@@ -55,10 +55,15 @@ export default function RootLayout({
     >
       <body className="bg-black">
         <script dangerouslySetInnerHTML={{ __html: `
-          if (history.scrollRestoration) history.scrollRestoration = 'manual';
-          window.scrollTo(0, 0);
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
+          (function() {
+            if (history.scrollRestoration) history.scrollRestoration = 'manual';
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            window.addEventListener('scroll', function() {
+              window.scrollTo(0, 0);
+            }, { once: true, capture: true });
+          })();
         ` }} />
         <CustomCursor />
         <ScanLine />
