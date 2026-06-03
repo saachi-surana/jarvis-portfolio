@@ -25,19 +25,36 @@ export default function Page() {
   }, [progress])
   useEffect(() => () => { if (spinTimerRef.current) clearTimeout(spinTimerRef.current) }, [])
 
-  const handleBootComplete = useCallback(() => setBootComplete(true), [])
+  const handleBootComplete = useCallback(() => {
+    console.log('[boot] page.handleBootComplete → setBootComplete(true), FakeScroll enabling')
+    setBootComplete(true)
+  }, [])
+
+  // Viewport size — stateful so SSR (1440×900) and first client render match (no hydration
+  // mismatch), then resolves to real dimensions after mount and stays in sync on resize.
+  const [vp, setVp] = useState({ w: 1440, h: 900 })
+  useEffect(() => {
+    const update = () => setVp({ w: window.innerWidth, h: window.innerHeight })
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
 
   // Clamp to [0,1] — guards against any floating point edge cases
   const p = Math.max(0, Math.min(1, progress))
 
-  // Single reactor: interpolates from full viewport (p=0) to HUD center column (p=1)
-  // HUD center column: left=280px, right=300px, top=52px, height≈58vh-130px
+  // Single reactor: full viewport (p=0) → HUD center column (p=1).
+  // Targets calibrated to the HUD reference screenshot: left 240, top 45, 950×370.
+  const targetW = 950
+  const targetH = 370
+  const targetL = 240
+  const targetT = 45
   const reactorStyle: React.CSSProperties = {
     position: 'fixed',
-    left:   `${280 * p}px`,
-    right:  `${300 * p}px`,
-    top:    `${52  * p}px`,
-    height: `calc(${100 - 42 * p}vh - ${130 * p}px)`,
+    left:   `${targetL * p}px`,
+    top:    `${targetT * p}px`,
+    width:  `${vp.w - (vp.w - targetW) * p}px`,
+    height: `${vp.h - (vp.h - targetH) * p}px`,
     zIndex: 10,
     pointerEvents: p >= 0.8 ? 'auto' : 'none',
   }

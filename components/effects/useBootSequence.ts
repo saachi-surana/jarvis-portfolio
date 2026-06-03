@@ -53,6 +53,7 @@ export function useBootSequence(onComplete: () => void) {
           if (!completedRef.current) {
             completedRef.current = true;
             setPhase("fade");
+            console.log('[boot] useBootSequence → onComplete() (boot text finished)');
             onComplete();
             setTimeout(() => setVisible(false), 400);
           }

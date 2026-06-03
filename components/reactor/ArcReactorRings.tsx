@@ -24,7 +24,7 @@ export interface RingProps extends RingSpec {
 
 export const RINGS: RingSpec[] = [
   { radius: 2.80, tube: 0.010, color: "#00e5ff", intensity: 2.5, speed:  0.12, axis: [0,   1,   0  ], tilt: [0,    0,    0   ], tubeSeg: 220, sectionId: "projects",       sectionLabel: "// ACTIVE_PROJECTS"  },
-  { radius: 2.55, tube: 0.013, color: "#00b8cc", intensity: 2.0, speed: -0.20, axis: [1,   0,   0  ], tilt: [0,    0,    0.3 ], tubeSeg: 200, sectionId: "github",          sectionLabel: "// GITHUB"           },
+  { radius: 2.55, tube: 0.013, color: "#00b8cc", intensity: 2.0, speed: -0.20, axis: [1,   0,   0  ], tilt: [0,    0,    0.3 ], tubeSeg: 200, sectionId: "github",          sectionLabel: ""                    },
   { radius: 2.30, tube: 0.015, color: "#c084fc", intensity: 2.0, speed:  0.32, axis: [0.7, 1,   0  ], tilt: [0.5,  0,    0   ], tubeSeg: 190, sectionId: "about",           sectionLabel: "// ABOUT"            },
   { radius: 2.05, tube: 0.018, color: "#00e5ff", intensity: 2.5, speed: -0.27, axis: [0,   0,   1  ], tilt: [0.2,  0.4,  0   ], tubeSeg: 170, sectionId: "skills",          sectionLabel: "// SKILLS"           },
   { radius: 1.80, tube: 0.020, color: "#9b5fd4", intensity: 1.8, speed:  0.50, axis: [1,   1,   0  ], tilt: [-0.3, 0,    0.5 ], tubeSeg: 160, sectionId: "contact",         sectionLabel: "// CONTACT"          },
@@ -74,7 +74,7 @@ export function Ring({
           <meshBasicMaterial transparent opacity={0} depthWrite={false} />
         </mesh>
       )}
-      {isHovered && (
+      {isHovered && sectionLabel && (
         <Html position={[radius + 0.2, 0, 0]} style={{ pointerEvents: "none", whiteSpace: "nowrap" }}>
           <span style={{
             fontFamily: "'Space Mono', monospace", fontSize: "0.6rem",

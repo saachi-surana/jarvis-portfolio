@@ -52,7 +52,14 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — boot overlay lifted to z:100 layer so reactor canvas (z:10) never covers it
+COMPLETE — reactor interpolation recalibrated to HUD reference (240/45/950×370), GITHUB hover popup removed, boot chain logged
+
+## Reactor Position / GITHUB / Boot Trace Session — DONE
+- [DONE] PART 1 — Reactor interpolation rewritten in page.tsx: switched from left/right/top/height-calc to width/height interpolation calibrated to the HUD reference screenshot (left 240, top 45, width 950, height 370 at p=1). Formula: left=`240*p`, top=`45*p`, width=`vw-(vw-950)*p`, height=`vh-(vh-370)*p`. vw/vh held in `vp` state (init 1440×900 to match SSR → resolves to real size on mount via resize-aware useEffect), avoiding hydration mismatch the raw `typeof window` inline form would cause
+- [DONE] PART 2 — Boot→scroll chain verified intact (SplashSection no longer participates; BootSequence lives in page.tsx). Added console.log at the two real steps: useBootSequence onComplete() and page.handleBootComplete (which flips bootComplete → FakeScroll disabled=false). Chain was already firing; logs confirm. FakeScroll mounts unconditionally in page.tsx
+- [DONE] PART 3 — `// GITHUB` floating popup removed: github ring sectionLabel set to "" and the Html hover label guarded with `isHovered && sectionLabel` so it never renders over the reactor. Ring still clickable (opens github)
+- [DONE] PART 4 — Green rings confirmed already present in ArcReactorRings.tsx: radius 1.65 `#00e5b0` (intensity 2.8), radius 1.38 `#00ff88` (intensity 3.2) — both ≥2.0, mid-range between cyan outer + white inner rings. MODE_COLORS["online"]="" so they render their own colors
+- [DONE] Build passes clean, zero TS errors
 
 ## Boot Overlay Z-Index Fix — DONE
 - [DONE] Root cause: BootSequence rendered inside splash div (zIndex:1); reactor canvas at zIndex:10 visually covered it even though BootSequence itself declared z-50 — parent stacking context capped it at 1
