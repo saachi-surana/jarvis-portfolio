@@ -77,6 +77,10 @@ html {
   overflow-anchor: none;
 }
 
+html, body {
+  scroll-behavior: auto !important;
+}
+
 /* Also hide cursor on interactive elements so browser doesn't restore it */
 a, button, input, textarea, select, [role="button"] {
   cursor: none;
