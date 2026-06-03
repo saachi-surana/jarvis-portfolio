@@ -17,15 +17,15 @@ const SIDEBAR_HIGHLIGHTS: Record<string,string> = {"projects":"projects","skills
 
 function ReactorScene({
   hovered, onHover, mouseRef, mode, hoveredRing,
-  onRingHoverChange, onRingClick, burstTick, onCoreClick, fullScreen, spinningUp,
+  onRingHoverChange, onRingClick, burstTick, onCoreClick, activated, spinningUp,
 }: {
   hovered: boolean; onHover: (v: boolean) => void;
   mouseRef: React.MutableRefObject<{ x: number; y: number }>;
   mode: ReactorMode; hoveredRing: string | null;
   onRingHoverChange: (hovered: boolean, sectionId: string) => void;
-  onRingClick: (sectionId: string) => void;
+  onRingClick:   (sectionId: string) => void;
   burstTick: number; onCoreClick: () => void;
-  fullScreen: boolean; spinningUp: boolean;
+  activated: boolean; spinningUp: boolean;
 }) {
   const groupRef    = useRef<THREE.Group>(null!);
   const spinElapsed = useRef(0);
@@ -47,23 +47,23 @@ function ReactorScene({
       <CasingRing />
       <TickMarks />
       <RadarSweep />
-      {!fullScreen && <DataLabels />}
+      {activated && <DataLabels />}
       {RINGS.map((spec, i) => (
         <Ring key={i} {...spec} mode={mode}
-          isHovered={!fullScreen && hoveredRing === spec.sectionId}
+          isHovered={activated && hoveredRing === spec.sectionId}
           onHoverChange={onRingHoverChange} onRingClick={onRingClick}
           zoneAccent={undefined}
-          disableNav={fullScreen}
+          disableNav={!activated}
         />
       ))}
       <Core hovered={hovered} onHover={onHover} mode={mode} onCoreClick={onCoreClick} spinningUp={spinningUp} />
-      <Particles count={fullScreen ? 3000 : 2000} mode={mode} />
+      <Particles count={2000} mode={mode} />
       <BurstParticles burstTick={burstTick} mode={mode} />
     </group>
   );
 }
 
-export default function ArcReactor({ fullScreen = false, spinningUp = false }: { fullScreen?: boolean; spinningUp?: boolean }) {
+export default function ArcReactor({ activated = true, spinningUp = false }: { activated?: boolean; spinningUp?: boolean }) {
   const [hovered,     setHovered]     = useState(false);
   const [hoveredRing, setHoveredRing] = useState<string | null>(null);
   const [burstTick,   setBurstTick]   = useState(0);
@@ -72,21 +72,14 @@ export default function ArcReactor({ fullScreen = false, spinningUp = false }: {
 
   const { reactorMode, setHighlightSection, queueMessage, setShowAbout, pingProject } = useJarvisStore();
 
-  // fullScreen reactor has pointerEvents:none on its parent — use window listener instead
+  // Window-level mouse tracking — works regardless of pointerEvents on the wrapper
   useEffect(() => {
-    if (!fullScreen) return;
     const h = (e: MouseEvent) => {
       mouseRef.current.x =  (e.clientX / window.innerWidth  - 0.5) * 2;
       mouseRef.current.y = -(e.clientY / window.innerHeight - 0.5) * 2;
     };
     window.addEventListener("mousemove", h);
     return () => window.removeEventListener("mousemove", h);
-  }, [fullScreen]);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    mouseRef.current.x =  ((e.clientX - r.left) / r.width  - 0.5) * 2;
-    mouseRef.current.y = -((e.clientY - r.top)  / r.height - 0.5) * 2;
   }, []);
 
   const handleRingHoverChange = useCallback((isHovered: boolean, sectionId: string) => {
@@ -108,11 +101,8 @@ export default function ArcReactor({ fullScreen = false, spinningUp = false }: {
   }, [setHighlightSection, setShowAbout, pingProject, queueMessage]);
 
   return (
-    <div className="absolute inset-0"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={() => { mouseRef.current.x = 0; mouseRef.current.y = 0; }}
-    >
-      {!fullScreen && (
+    <div className="absolute inset-0">
+      {activated && (
         <button
           onClick={() => setShowAbout(true)}
           className="absolute left-1/2 z-10 flex flex-col items-center gap-[3px] group"
@@ -127,7 +117,7 @@ export default function ArcReactor({ fullScreen = false, spinningUp = false }: {
             style={{ background: "rgba(0,229,255,0.25)" }} />
         </button>
       )}
-      <Canvas camera={{ position: [0, 0, fullScreen ? 8.5 : 7.2], fov: 50 }} dpr={[1, 2]} gl={{ antialias: true, alpha: false }}>
+      <Canvas camera={{ position: [0, 0, 7.2], fov: 50 }} dpr={[1, 2]} gl={{ antialias: true, alpha: false }}>
         <color attach="background" args={["#000000"]} />
         <ambientLight intensity={0.04} />
         <Suspense fallback={null}>
@@ -136,11 +126,11 @@ export default function ArcReactor({ fullScreen = false, spinningUp = false }: {
             mode={reactorMode} hoveredRing={hoveredRing}
             onRingHoverChange={handleRingHoverChange} onRingClick={handleRingClick}
             burstTick={burstTick} onCoreClick={() => setBurstTick((t) => t + 1)}
-            fullScreen={fullScreen} spinningUp={spinningUp}
+            activated={activated} spinningUp={spinningUp}
           />
         </Suspense>
         <EffectComposer>
-          <Bloom intensity={spinningUp ? (fullScreen ? 3.5 : 3.0) : (fullScreen ? 3.0 : 2.5)} luminanceThreshold={0.1} luminanceSmoothing={0.85} />
+          <Bloom intensity={spinningUp ? 3.5 : 2.5} luminanceThreshold={0.1} luminanceSmoothing={0.85} />
           <ChromaticAberration offset={caOffset.current} radialModulation={false} modulationOffset={0} />
           <Vignette eskil={false} offset={0.15} darkness={0.85} />
         </EffectComposer>

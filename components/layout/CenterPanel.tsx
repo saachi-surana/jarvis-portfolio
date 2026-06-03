@@ -1,16 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 import JarvisChat from "@/components/chat/JarvisChat";
 import OperatorOverlay from "@/components/panels/OperatorOverlay";
 import OrbitalDisplays from "@/components/effects/OrbitalDisplays";
 import { useJarvisStore } from "@/lib/store";
-
-const ArcReactor = dynamic(() => import("@/components/reactor/ArcReactor"), {
-  ssr: false,
-  loading: () => null,
-});
 
 interface CenterPanelProps {
   booted?: boolean;
@@ -28,10 +22,8 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
         backgroundSize: "40px 40px",
       }}
     >
-      {/* Arc reactor */}
-      <div className="reactor-section" style={{ position: "relative" }}>
-        <ArcReactor />
-      </div>
+      {/* Layout spacer — the single reactor is position:fixed in page.tsx */}
+      <div className="reactor-section" />
 
       {/* Secondary orbital displays row */}
       <OrbitalDisplays />

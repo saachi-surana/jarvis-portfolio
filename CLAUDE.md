@@ -52,7 +52,15 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — spin-up one-shot fix: timer stored in ref so progress changes can't cancel it
+COMPLETE — single reactor architecture: one reactor scales/moves from splash→HUD, no duplicates
+
+## Single Reactor Session — DONE
+- [DONE] PART 1 — Single reactor in page.tsx: position:fixed, interpolated from full viewport (p=0) to HUD center column (p=1) using CSS: left=280*p px, right=300*p px, top=52*p px, height=calc((100-42p)vh - 130p px); zIndex:10, pointerEvents:none when p<0.8
+- [DONE] PART 2 — CenterPanel: ArcReactor removed entirely; empty `<div className="reactor-section" />` kept as layout spacer so OrbitalDisplays + Chat stay in correct positions
+- [DONE] PART 3 — ArcReactor: `fullScreen` prop replaced with `activated` (defaults true); activated=p>=0.8 controls DataLabels, OPERATOR button, ring nav; camera fixed at z=7.2 always; bloom 2.5 (3.5 spinningUp); particles 2000; window-level mousemove listener always active (React onMouseMove removed — window listener works regardless of pointerEvents on wrapper)
+- [DONE] PART 4 — Splash overlay: opacity Math.max(0, 1-p*2), gone by p=0.5; no translateY; zIndex:1
+- [DONE] PART 5 — HUD: opacity (p-0.3)/0.7 from p=0.3, no translateY; contain:strict; zIndex:2; HUD panels fade in around the reactor as it lands
+- [DONE] Spin-up: unchanged — fires once at p>0.1, timer in ref
 
 ## Spin-Up Fix Session — DONE
 - [DONE] Root cause: useEffect cleanup `() => clearTimeout(t)` ran on every `progress` change, cancelling the 1200ms timer before `setSpinningUp(false)` could fire → spinningUp stuck true indefinitely
