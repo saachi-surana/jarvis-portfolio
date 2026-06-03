@@ -14,7 +14,7 @@ export default function Page() {
       <div style={{ height: '100vh', overflow: 'hidden' }}>
         <SplashSection />
       </div>
-      <div style={{ height: '100vh', overflow: 'hidden', contain: 'strict' }}>
+      <div style={{ height: '100vh', overflow: 'hidden', isolation: 'isolate' }}>
         <JarvisHUD skipBoot />
       </div>
     </main>

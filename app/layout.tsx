@@ -54,6 +54,7 @@ export default function RootLayout({
       className={`${spaceMono.variable} ${rajdhani.variable} ${orbitron.variable}`}
     >
       <body className="bg-black">
+        <script dangerouslySetInnerHTML={{ __html: 'window.history.scrollRestoration="manual";window.scrollTo(0,0);' }} />
         <CustomCursor />
         <ScanLine />
         {children}
