@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useScrollStore } from "@/lib/scrollStore";
 
 export default function BottomBar() {
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
+  const setProgress = useScrollStore((s) => s.setProgress);
 
   useEffect(() => {
     const tick = () => {
@@ -40,12 +41,13 @@ export default function BottomBar() {
     >
       {/* Left */}
       <div className="flex items-center gap-6 flex-1">
-        <Link
-          href="/"
+        <button
+          onClick={() => setProgress(0)}
           className="font-mono text-[0.55rem] text-[#2d3748] tracking-[0.2em] uppercase hover:text-[#475569] transition-colors duration-300 hidden md:inline"
+          style={{ background: 'transparent', border: 'none', padding: 0 }}
         >
           // RESTART
-        </Link>
+        </button>
         <span className="font-mono text-[0.65rem] text-[#475569] tracking-[0.2em] uppercase">
           // OPERATOR: SAACHI SURANA
         </span>

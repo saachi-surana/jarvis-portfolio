@@ -52,7 +52,15 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — unified single-route scroll: / renders SplashSection (100vh) + JarvisHUD skipBoot (100vh); /hud deleted
+COMPLETE — fake scroll architecture: page never actually scrolls; wheel/touch drives Zustand progress (0→1) which animates sections via CSS transforms
+
+## Fake Scroll Session — DONE
+- [DONE] lib/scrollStore.ts: Zustand store with `progress` (smooth display, 0–1), `target` (desired pos), `isTransitioning`; actions: `setProgress` (sets target), `_setDisplay` (rAF writes interpolated value), `incrementProgress`/`decrementProgress` (+/- 0.015)
+- [DONE] components/effects/FakeScroll.tsx: intercepts wheel (passive:false, preventDefault) + touch events; rAF loop lerps displayRef toward target at 0.08 speed; writes back to store via `_setDisplay`; all listeners cleaned up on unmount
+- [DONE] app/page.tsx: no window.scrollTo; FakeScroll rendered; both sections `position:fixed top:0 left:0 width:100vw height:100vh`; splash slides up + fades as progress→1; HUD slides up from below + fades in; JarvisHUD wrapper gets `contain:strict`
+- [DONE] app/globals.css: html and body get `height:100vh; width:100vw; overflow:hidden` — browser can never actually scroll
+- [DONE] components/effects/ScrollIndicator.tsx: reads `progress` from scrollStore instead of window.scrollY; visible when progress < 0.15
+- [DONE] components/layout/BottomBar.tsx: // RESTART converted from Link→button; onClick calls `setProgress(0)` → target=0 → lerp smoothly returns to splash
 
 ## Scroll & Containment Fix Session — DONE
 - [DONE] BUG 1 — Scroll restoration: page.tsx useEffect sets `window.history.scrollRestoration = 'manual'` + `window.scrollTo(0, 0)` on mount; SplashSection.tsx redundant useEffect scroll-to-top removed (and `useEffect` import dropped); layout.tsx retains `scrollBehavior: 'auto'` on html + inline script guard
