@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, Suspense } from "react";
+import { useRef, useState, useCallback, Suspense, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
@@ -12,15 +12,8 @@ import { Particles, BurstParticles } from "./ArcReactorParticles";
 import { CasingRing, TickMarks, RadarSweep } from "./ArcReactorSweep";
 import { DataLabels } from "./ArcReactorLabels";
 import type { ReactorMode } from "@/lib/store";
-
-const PROJECT_RING_PINGS: Record<string, string> = {
-  "jarvis": "01", "studysync": "02", "notion-planner": "03", "query": "04", "snip": "05",
-};
-const SIDEBAR_HIGHLIGHTS: Record<string, string> = {
-  "projects": "projects", "skills": "skills",
-  "jarvis": "projects", "studysync": "projects",
-  "notion-planner": "projects", "query": "projects", "snip": "projects",
-};
+const PROJECT_RING_PINGS: Record<string,string> = {"jarvis":"01","studysync":"02","notion-planner":"03","query":"04","snip":"05"}
+const SIDEBAR_HIGHLIGHTS: Record<string,string> = {"projects":"projects","skills":"skills","jarvis":"projects","studysync":"projects","notion-planner":"projects","query":"projects","snip":"projects"}
 
 function ReactorScene({
   hovered, onHover, mouseRef, mode, hoveredRing,
@@ -78,6 +71,17 @@ export default function ArcReactor({ fullScreen = false, spinningUp = false }: {
   const caOffset = useRef(new THREE.Vector2(0.0008, 0.0008));
 
   const { reactorMode, setHighlightSection, queueMessage, setShowAbout, pingProject } = useJarvisStore();
+
+  // fullScreen reactor has pointerEvents:none on its parent — use window listener instead
+  useEffect(() => {
+    if (!fullScreen) return;
+    const h = (e: MouseEvent) => {
+      mouseRef.current.x =  (e.clientX / window.innerWidth  - 0.5) * 2;
+      mouseRef.current.y = -(e.clientY / window.innerHeight - 0.5) * 2;
+    };
+    window.addEventListener("mousemove", h);
+    return () => window.removeEventListener("mousemove", h);
+  }, [fullScreen]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();

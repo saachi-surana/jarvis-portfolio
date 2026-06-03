@@ -52,7 +52,13 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — floating zone cards removed; mouse parallax tilt kept
+COMPLETE — splash→HUD transition: parallax restored, spin-up fires on first scroll, reactor fly-in at 80% progress, green rings added
+
+## Transition Polish Session — DONE
+- [DONE] PART 1 — Parallax restored: ArcReactor.tsx adds `useEffect` for `window.addEventListener('mousemove')` when fullScreen=true (parent has pointerEvents:none so React onMouseMove is blocked); normalizes against window.innerWidth/Height; fallback React onMouseMove still active for HUD reactor (fullScreen=false)
+- [DONE] PART 2 — Spin-up on first scroll: page.tsx fires spinningUp=true when progress first crosses 0.1 (tracked via spinFiredRef to run only once); resets after 1200ms; passes spinningUp prop to fullScreen ArcReactor; existing ReactorScene + Core + Bloom already handle spinningUp visuals (ring acceleration, bloom 3.5, core flare)
+- [DONE] PART 3 — Reactor fly-in: page.tsx computes flyT=(progress-0.8)/0.2 during 0.8→1.0; applies `scale(1-flyT*0.7) translateY(-flyT*15vh)` to reactor layer div; reactor shrinks to 0.3 scale and drifts upward toward HUD center column position as HUD slides in
+- [DONE] PART 4 — Green rings: ArcReactorRings.tsx gains 2 rings: radius 1.65 color #00e5b0 (teal, sectionId teal-outer) and radius 1.38 color #00ff88 (green, sectionId teal-inner); inserted between radii 1.80 and 1.20; 12 rings total; MODE_COLORS["online"]="" so rings use own colors in default mode
 
 ## Zone Popup Removal Session — DONE
 - [DONE] Deleted: FloatingCard.tsx, FloatingCardContent.tsx, ChevronHints.tsx, lib/mouseZoneStore.ts
