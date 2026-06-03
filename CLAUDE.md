@@ -52,7 +52,11 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — boot sequence timing fixed, FakeScroll disabled during boot, reactor stable at p=0
+COMPLETE — boot callback stabilised with useCallback to prevent useBootSequence re-fire
+
+## Callback Stability Fix — DONE
+- [DONE] page.tsx: added useCallback to import; extracted `handleBootComplete = useCallback(() => setBootComplete(true), [])` replacing inline `() => setBootComplete(true)` prop — stable reference across re-renders
+- [DONE] SplashSection.tsx: added useCallback to import; wrapped `handleBootComplete` in useCallback with dep `[onBootComplete]` — prevents BootSequence from seeing a new onComplete reference on every parent render
 
 ## Boot & Transition Fix Session — DONE
 - [DONE] ISSUE 1 — Boot timing: useBootSequence.ts: t2 delay 600→1400ms (title gets full 1s to fade in); LINE1 speed 32→65ms/char (23 chars=1.5s); LINE2 speed 10→30ms/char (50 chars=1.5s); hold 100→800ms before onComplete; setVisible(false) delayed 400ms after onComplete; total boot ~5.3s; BootSequence.tsx title fade 0.6→1.0s

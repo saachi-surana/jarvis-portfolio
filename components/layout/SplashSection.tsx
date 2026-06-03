@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import BootSequence from "@/components/effects/BootSequence";
 import ScrollIndicator from "@/components/effects/ScrollIndicator";
 
@@ -23,10 +23,10 @@ interface SplashSectionProps {
 export default function SplashSection({ onBootComplete }: SplashSectionProps) {
   const [booted, setBooted] = useState(false);
 
-  const handleBootComplete = () => {
+  const handleBootComplete = useCallback(() => {
     setBooted(true);
     onBootComplete?.();
-  };
+  }, [onBootComplete]);
 
   return (
     <section

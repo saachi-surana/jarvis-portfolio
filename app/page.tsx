@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { useScrollStore } from '@/lib/scrollStore'
 import SplashSection from '@/components/layout/SplashSection'
@@ -23,6 +23,8 @@ export default function Page() {
     spinTimerRef.current = setTimeout(() => setSpinningUp(false), 1200)
   }, [progress])
   useEffect(() => () => { if (spinTimerRef.current) clearTimeout(spinTimerRef.current) }, [])
+
+  const handleBootComplete = useCallback(() => setBootComplete(true), [])
 
   // Clamp to [0,1] — guards against any floating point edge cases
   const p = Math.max(0, Math.min(1, progress))
@@ -55,7 +57,7 @@ export default function Page() {
         pointerEvents: p > 0.4 ? 'none' : 'auto',
         zIndex: 1,
       }}>
-        <SplashSection onBootComplete={() => setBootComplete(true)} />
+        <SplashSection onBootComplete={handleBootComplete} />
       </div>
 
       {/* z:2 — HUD panels fade in around the reactor as it lands */}
