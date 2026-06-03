@@ -33,7 +33,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
                     "0 0 10px rgba(0,229,255,0.3)", "0 0 20px rgba(0,229,255,0.45)",
                   ],
                 }}
-                transition={{ duration: 0.6, times: [0, 0.12, 0.3, 0.52, 0.72, 1], ease: "linear" }}
+                transition={{ duration: 1.0, times: [0, 0.12, 0.3, 0.52, 0.72, 1], ease: "linear" }}
                 className="font-display text-[clamp(2.8rem,7vw,6rem)] tracking-[0.35em] text-[#00e5ff] uppercase"
               >
                 J.A.R.V.I.S

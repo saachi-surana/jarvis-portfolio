@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { DUR_BOOT_CHAR } from "@/lib/constants";
 
 const LINE1 = "INITIALIZING SYSTEMS...";
 const LINE2 = "OPERATOR PORTFOLIO SYSTEM — BUILT BY SAACHI SURANA";
+
+// LINE1: 23 chars × 65ms = ~1.5s  |  LINE2: 50 chars × 30ms = 1.5s
+const SPEED1 = 65;
+const SPEED2 = 30;
 
 type Phase = "title" | "typing1" | "typing2" | "fade";
 
@@ -18,7 +21,8 @@ export function useBootSequence(onComplete: () => void) {
 
   useEffect(() => {
     const t1 = setTimeout(() => setShowTitle(true), 150);
-    const t2 = setTimeout(() => setPhase("typing1"), 600);
+    // 1400ms gives the 1.0s title fade-in animation time to fully complete
+    const t2 = setTimeout(() => setPhase("typing1"), 1400);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
@@ -32,7 +36,7 @@ export function useBootSequence(onComplete: () => void) {
         clearInterval(iv);
         setTimeout(() => setPhase("typing2"), 100);
       }
-    }, DUR_BOOT_CHAR);
+    }, SPEED1);
     return () => clearInterval(iv);
   }, [phase]);
 
@@ -44,16 +48,17 @@ export function useBootSequence(onComplete: () => void) {
       setLine2(LINE2.slice(0, i));
       if (i >= LINE2.length) {
         clearInterval(iv);
+        // Hold 800ms after all text appears, then signal complete
         setTimeout(() => {
           if (!completedRef.current) {
             completedRef.current = true;
             setPhase("fade");
             onComplete();
-            setTimeout(() => setVisible(false), 100);
+            setTimeout(() => setVisible(false), 400);
           }
-        }, 100);
+        }, 800);
       }
-    }, 10); // 10ms/char → 50 chars = 500ms total
+    }, SPEED2);
     return () => clearInterval(iv);
   }, [phase, onComplete]);
 

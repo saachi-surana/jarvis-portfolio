@@ -52,7 +52,12 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — single reactor architecture: one reactor scales/moves from splash→HUD, no duplicates
+COMPLETE — boot sequence timing fixed, FakeScroll disabled during boot, reactor stable at p=0
+
+## Boot & Transition Fix Session — DONE
+- [DONE] ISSUE 1 — Boot timing: useBootSequence.ts: t2 delay 600→1400ms (title gets full 1s to fade in); LINE1 speed 32→65ms/char (23 chars=1.5s); LINE2 speed 10→30ms/char (50 chars=1.5s); hold 100→800ms before onComplete; setVisible(false) delayed 400ms after onComplete; total boot ~5.3s; BootSequence.tsx title fade 0.6→1.0s
+- [DONE] ISSUE 2 — FakeScroll disabled during boot: FakeScroll gains `disabled` prop; tracks via ref (disabledRef) so event-handler closures always read current value; wheel/touch handlers check disabledRef.current before changing progress (still call preventDefault); SplashSection gains `onBootComplete` prop, calls it when BootSequence completes; page.tsx adds bootComplete state, passes disabled={!bootComplete} to FakeScroll and onBootComplete callback to SplashSection
+- [DONE] ISSUE 3 — Reactor stability: page.tsx clamps p = Math.max(0, Math.min(1, progress)); reactor position/size only changes when p>0 (after boot + first scroll); root cause of glitch was unguarded scroll during boot — fixed by ISSUE 2
 
 ## Single Reactor Session — DONE
 - [DONE] PART 1 — Single reactor in page.tsx: position:fixed, interpolated from full viewport (p=0) to HUD center column (p=1) using CSS: left=280*p px, right=300*p px, top=52*p px, height=calc((100-42p)vh - 130p px); zIndex:10, pointerEvents:none when p<0.8

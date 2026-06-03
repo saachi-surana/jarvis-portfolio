@@ -10,6 +10,7 @@ const ArcReactor = dynamic(() => import('@/components/reactor/ArcReactor'), { ss
 
 export default function Page() {
   const progress = useScrollStore((s) => s.progress)
+  const [bootComplete, setBootComplete] = useState(false)
   const [spinningUp, setSpinningUp] = useState(false)
   const spinFiredRef = useRef(false)
   const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -23,7 +24,8 @@ export default function Page() {
   }, [progress])
   useEffect(() => () => { if (spinTimerRef.current) clearTimeout(spinTimerRef.current) }, [])
 
-  const p = progress
+  // Clamp to [0,1] — guards against any floating point edge cases
+  const p = Math.max(0, Math.min(1, progress))
 
   // Single reactor: interpolates from full viewport (p=0) to HUD center column (p=1)
   // HUD center column: left=280px, right=300px, top=52px, height≈58vh-130px
@@ -39,7 +41,7 @@ export default function Page() {
 
   return (
     <>
-      <FakeScroll />
+      <FakeScroll disabled={!bootComplete} />
 
       {/* z:10 — single reactor, always visible, scales from splash→HUD position */}
       <div style={reactorStyle}>
@@ -53,7 +55,7 @@ export default function Page() {
         pointerEvents: p > 0.4 ? 'none' : 'auto',
         zIndex: 1,
       }}>
-        <SplashSection />
+        <SplashSection onBootComplete={() => setBootComplete(true)} />
       </div>
 
       {/* z:2 — HUD panels fade in around the reactor as it lands */}

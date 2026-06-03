@@ -16,8 +16,17 @@ const LABEL: React.CSSProperties = {
   userSelect: "none",
 };
 
-export default function SplashSection() {
+interface SplashSectionProps {
+  onBootComplete?: () => void;
+}
+
+export default function SplashSection({ onBootComplete }: SplashSectionProps) {
   const [booted, setBooted] = useState(false);
+
+  const handleBootComplete = () => {
+    setBooted(true);
+    onBootComplete?.();
+  };
 
   return (
     <section
@@ -30,7 +39,7 @@ export default function SplashSection() {
       }}
     >
       {/* Boot sequence — runs once, unmounts on complete */}
-      {!booted && <BootSequence onComplete={() => setBooted(true)} />}
+      {!booted && <BootSequence onComplete={handleBootComplete} />}
 
       {/* Coordinate labels */}
       <span style={{ ...LABEL, top: "12%", left: "50%", transform: "translateX(-50%)" }}>
