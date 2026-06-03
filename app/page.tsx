@@ -44,11 +44,12 @@ export default function Page() {
   const p = Math.max(0, Math.min(1, progress))
 
   // Single reactor: full viewport (p=0) → HUD center column (p=1).
-  // Targets calibrated to the HUD reference screenshot: left 240, top 45, 950×370.
-  const targetW = 950
-  const targetH = 370
-  const targetL = 240
-  const targetT = 45
+  // Targets computed dynamically from the live viewport so the reactor lands in the
+  // real center column at any size (left sidebar 280, right 300, top bar 52).
+  const targetL = 280
+  const targetT = 52
+  const targetW = Math.max(400, vp.w - 280 - 300)
+  const targetH = Math.max(200, (vp.h - 52) * 0.58 - 80)
   const reactorStyle: React.CSSProperties = {
     position: 'fixed',
     left:   `${targetL * p}px`,

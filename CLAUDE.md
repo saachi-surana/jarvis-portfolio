@@ -52,7 +52,11 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — reactor interpolation recalibrated to HUD reference (240/45/950×370), GITHUB hover popup removed, boot chain logged
+COMPLETE — reactor HUD targets now computed dynamically from live viewport (no hardcoded dims)
+
+## Dynamic Reactor Target Session — DONE
+- [DONE] page.tsx: replaced hardcoded HUD targets (targetW=950, targetH=370, targetL=240, targetT=45 — estimated for 1440px) with dynamic calc from live `vp`: targetL=280, targetT=52, targetW=`Math.max(400, vp.w-280-300)`, targetH=`Math.max(200, (vp.h-52)*0.58-80)`. Reactor now lands in the real center column at any viewport (tested target: 1155×991). reactorStyle interpolation unchanged
+- [DONE] Build passes clean, zero TS errors
 
 ## Reactor Position / GITHUB / Boot Trace Session — DONE
 - [DONE] PART 1 — Reactor interpolation rewritten in page.tsx: switched from left/right/top/height-calc to width/height interpolation calibrated to the HUD reference screenshot (left 240, top 45, width 950, height 370 at p=1). Formula: left=`240*p`, top=`45*p`, width=`vw-(vw-950)*p`, height=`vh-(vh-370)*p`. vw/vh held in `vp` state (init 1440×900 to match SSR → resolves to real size on mount via resize-aware useEffect), avoiding hydration mismatch the raw `typeof window` inline form would cause
