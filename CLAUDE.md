@@ -52,7 +52,12 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — boot callback stabilised with useCallback to prevent useBootSequence re-fire
+COMPLETE — boot overlay lifted to z:100 layer so reactor canvas (z:10) never covers it
+
+## Boot Overlay Z-Index Fix — DONE
+- [DONE] Root cause: BootSequence rendered inside splash div (zIndex:1); reactor canvas at zIndex:10 visually covered it even though BootSequence itself declared z-50 — parent stacking context capped it at 1
+- [DONE] Fix: BootSequence moved to page.tsx as its own `position:fixed inset:0 zIndex:100` layer, conditioned on `!bootComplete`; receives `handleBootComplete` directly from page.tsx
+- [DONE] SplashSection.tsx simplified: removed BootSequence import, useState, useCallback, onBootComplete prop — now renders only coordinate labels + ScrollIndicator; no props
 
 ## Callback Stability Fix — DONE
 - [DONE] page.tsx: added useCallback to import; extracted `handleBootComplete = useCallback(() => setBootComplete(true), [])` replacing inline `() => setBootComplete(true)` prop — stable reference across re-renders

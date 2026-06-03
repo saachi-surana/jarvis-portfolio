@@ -5,6 +5,7 @@ import { useScrollStore } from '@/lib/scrollStore'
 import SplashSection from '@/components/layout/SplashSection'
 import JarvisHUD from '@/components/layout/JarvisHUD'
 import FakeScroll from '@/components/effects/FakeScroll'
+import BootSequence from '@/components/effects/BootSequence'
 
 const ArcReactor = dynamic(() => import('@/components/reactor/ArcReactor'), { ssr: false, loading: () => null })
 
@@ -50,15 +51,22 @@ export default function Page() {
         <ArcReactor activated={p >= 0.8} spinningUp={spinningUp} />
       </div>
 
-      {/* z:1 — splash content (labels, boot, indicator), fades out by p=0.5 */}
+      {/* z:1 — splash content (labels, indicator), fades out by p=0.5 */}
       <div style={{
         position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
         opacity: Math.max(0, 1 - p * 2),
         pointerEvents: p > 0.4 ? 'none' : 'auto',
         zIndex: 1,
       }}>
-        <SplashSection onBootComplete={handleBootComplete} />
+        <SplashSection />
       </div>
+
+      {/* z:100 — boot overlay, above reactor (z:10) so canvas never covers the sequence */}
+      {!bootComplete && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100 }}>
+          <BootSequence onComplete={handleBootComplete} />
+        </div>
+      )}
 
       {/* z:2 — HUD panels fade in around the reactor as it lands */}
       <div style={{
