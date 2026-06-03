@@ -12,7 +12,6 @@ import { Particles, BurstParticles } from "./ArcReactorParticles";
 import { CasingRing, TickMarks, RadarSweep } from "./ArcReactorSweep";
 import { DataLabels } from "./ArcReactorLabels";
 import type { ReactorMode } from "@/lib/store";
-import { useMouseZone } from "@/lib/mouseZoneStore";
 
 const PROJECT_RING_PINGS: Record<string, string> = {
   "jarvis": "01", "studysync": "02", "notion-planner": "03", "query": "04", "snip": "05",
@@ -37,11 +36,9 @@ function ReactorScene({
 }) {
   const groupRef    = useRef<THREE.Group>(null!);
   const spinElapsed = useRef(0);
-  const zone = useMouseZone();
-  const outerAccent = zone === "EXPERIENCE" ? "#00ccaa" : zone === "PROJECTS" ? "#20f0ff" : undefined;
 
   useFrame((_, delta) => {
-    const m = zone !== "IDLE" ? 0.42 : 0.28;
+    const m = 0.28;
     groupRef.current.rotation.x += (-mouseRef.current.y * m - groupRef.current.rotation.x) * 3 * delta;
     groupRef.current.rotation.y += ( mouseRef.current.x * m - groupRef.current.rotation.y) * 3 * delta;
     if (spinningUp) {
@@ -62,7 +59,7 @@ function ReactorScene({
         <Ring key={i} {...spec} mode={mode}
           isHovered={!fullScreen && hoveredRing === spec.sectionId}
           onHoverChange={onRingHoverChange} onRingClick={onRingClick}
-          zoneAccent={!fullScreen && i === 0 ? outerAccent : undefined}
+          zoneAccent={undefined}
           disableNav={fullScreen}
         />
       ))}

@@ -1,15 +1,11 @@
 "use client";
 
-import { useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 import JarvisChat from "@/components/chat/JarvisChat";
 import OperatorOverlay from "@/components/panels/OperatorOverlay";
 import OrbitalDisplays from "@/components/effects/OrbitalDisplays";
-import FloatingCard from "@/components/effects/FloatingCard";
-import ChevronHints from "@/components/effects/ChevronHints";
 import { useJarvisStore } from "@/lib/store";
-import { useMouseZoneStore, useMouseZone, useMouseZoneTracker } from "@/lib/mouseZoneStore";
 
 const ArcReactor = dynamic(() => import("@/components/reactor/ArcReactor"), {
   ssr: false,
@@ -22,23 +18,6 @@ interface CenterPanelProps {
 
 export default function CenterPanel({ booted }: CenterPanelProps) {
   const { showAbout, setShowAbout } = useJarvisStore();
-  const reactorRef = useRef<HTMLDivElement>(null);
-  const setReactorCenter = useMouseZoneStore((s) => s.setReactorCenter);
-  const zone = useMouseZone();
-
-  useMouseZoneTracker();
-
-  useEffect(() => {
-    const el = reactorRef.current;
-    if (!el) return;
-    const update = () => {
-      const rect = el.getBoundingClientRect();
-      setReactorCenter(rect.left + rect.width / 2, rect.top + rect.height / 2);
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, [setReactorCenter]);
 
   return (
     <main
@@ -49,10 +28,9 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
         backgroundSize: "40px 40px",
       }}
     >
-      {/* Arc reactor + chevron hints */}
-      <div className="reactor-section" ref={reactorRef} style={{ position: "relative" }}>
+      {/* Arc reactor */}
+      <div className="reactor-section" style={{ position: "relative" }}>
         <ArcReactor />
-        <ChevronHints zone={zone} />
       </div>
 
       {/* Secondary orbital displays row */}
@@ -62,9 +40,6 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
       <div className="chat-section">
         <JarvisChat booted={booted} />
       </div>
-
-      {/* Floating zone cards — fixed overlay, escapes overflow:hidden */}
-      <FloatingCard zone={zone} />
 
       {/* Operator profile overlay */}
       <AnimatePresence>

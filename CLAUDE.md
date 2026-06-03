@@ -52,7 +52,12 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — fake scroll polished: snap-at-halfway, 0.15 snap lerp, binary mobile touch, fullScreen reactor in permanent layer
+COMPLETE — floating zone cards removed; mouse parallax tilt kept
+
+## Zone Popup Removal Session — DONE
+- [DONE] Deleted: FloatingCard.tsx, FloatingCardContent.tsx, ChevronHints.tsx, lib/mouseZoneStore.ts
+- [DONE] CenterPanel.tsx: removed all mouseZoneStore imports (useMouseZoneStore, useMouseZone, useMouseZoneTracker), removed reactorRef + useEffect setReactorCenter, removed FloatingCard + ChevronHints JSX; AnimatePresence kept for OperatorOverlay
+- [DONE] ArcReactor.tsx: removed useMouseZone import; zone-dependent tilt multiplier (0.42/0.28) replaced with constant 0.28; outerAccent (zone color on outermost ring) removed; mouse parallax useFrame logic unchanged
 
 ## Fake Scroll Polish Session — DONE
 - [DONE] ISSUE 1 — Scroll feel: wheel increment 0.015→0.04; snap logic in scrollStore: incrementProgress snaps target to 1 when raw>=0.5, decrementProgress snaps to 0 when raw<=0.5; lerp speed 0.12 normally / 0.15 when snapping (target===0 or 1); mobile touch binary: touchend with dy>50 → setProgress(1), dy<-50 → setProgress(0); touchmove still calls preventDefault to block native scroll
