@@ -1,21 +1,14 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { useCallback, useEffect } from "react";
 import { GlitchTitle } from "@/components/effects/GlitchEffect";
 
 export default function TopBar() {
-  const router = useRouter();
-  const exitingRef = useRef(false);
-  const [exiting, setExiting] = useState(false);
-
+  // Single-page architecture: splash and HUD are stacked sections on the
+  // same URL. "// HOME" / Escape scroll back up to the splash — no routing.
   const goHome = useCallback(() => {
-    if (exitingRef.current) return;
-    exitingRef.current = true;
-    setExiting(true);
-    setTimeout(() => router.push("/"), 600);
-  }, [router]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") goHome(); };
@@ -24,23 +17,10 @@ export default function TopBar() {
   }, [goHome]);
 
   return (
-    <>
-      <AnimatePresence>
-        {exiting && (
-          <motion.div
-            key="hud-exit-fade"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            style={{ position: "fixed", inset: 0, background: "#000000", zIndex: 9999, pointerEvents: "none" }}
-          />
-        )}
-      </AnimatePresence>
-
-      <header
-        className="flex items-center justify-between px-6 bg-[#070d0d] shrink-0 overflow-hidden relative"
-        style={{ borderBottom: "1px solid rgba(0,229,255,0.25)", height: 52 }}
-      >
+    <header
+      className="flex items-center justify-between px-6 bg-[#070d0d] shrink-0 overflow-hidden relative"
+      style={{ borderBottom: "1px solid rgba(0,229,255,0.25)", height: 52 }}
+    >
         {/* Horizontal scan line sweeping left to right */}
         <div
           className="topbar-scan"
@@ -86,7 +66,6 @@ export default function TopBar() {
             </span>
           </span>
         </div>
-      </header>
-    </>
+    </header>
   );
 }

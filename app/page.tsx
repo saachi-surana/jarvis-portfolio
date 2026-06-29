@@ -5,25 +5,41 @@ import JarvisHUD from '@/components/layout/JarvisHUD'
 
 export default function Page() {
   useEffect(() => {
-    window.history.scrollRestoration = 'manual'
-    window.scrollTo(0, 0)
-    document.documentElement.style.overflow = 'hidden'
-    
-    // Re-enable scrolling after a brief delay
-    const t = setTimeout(() => {
-      document.documentElement.style.overflow = ''
+    // Disable browser scroll restoration
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual'
+    }
+
+    // Force scroll to top — use sessionStorage to ensure this
+    // runs before the browser can restore a stored scroll position
+    const key = 'jarvis-scroll-reset'
+    if (!sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key, '1')
       window.scrollTo(0, 0)
-    }, 100)
-    
-    return () => clearTimeout(t)
+    } else {
+      window.scrollTo(0, 0)
+    }
   }, [])
 
   return (
     <main style={{ margin: 0, padding: 0 }}>
+      {/* Splash — full-screen arc reactor */}
       <div style={{ height: '100vh', overflow: 'hidden' }}>
         <SplashSection />
       </div>
-      <div style={{ height: '100vh', overflow: 'hidden', isolation: 'isolate' }}>
+
+      {/* HUD — contained so its fixed/absolute overlays cannot bleed
+          into the splash above. transform-gpu on JarvisHUD's root makes
+          it the containing block for fixed descendants; overflow:hidden
+          here clips them to this 100vh section. */}
+      <div
+        style={{
+          height: '100vh',
+          overflow: 'hidden',
+          position: 'relative',
+          isolation: 'isolate',
+        }}
+      >
         <JarvisHUD skipBoot />
       </div>
     </main>

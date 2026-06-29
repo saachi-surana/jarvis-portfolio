@@ -52,7 +52,7 @@ Update the status of each step as you go: [ ] → [IN PROGRESS] → [DONE]
 - [DONE] 10. Lighthouse audit — target 85+ performance
 
 ## Current Step
-COMPLETE — simple scroll architecture: SplashSection (100vh) → JarvisHUD (100vh)
+COMPLETE — single-URL scroll architecture: SplashSection (100vh) → JarvisHUD (100vh) on "/", sessionStorage scroll reset, /hud redirects to /, no routing between pages
 
 ## HUD Containment Fix — DONE
 - [DONE] JarvisHUD div: added `relative isolate transform-gpu` classes
@@ -159,6 +159,16 @@ COMPLETE — simple scroll architecture: SplashSection (100vh) → JarvisHUD (10
 - [DONE] PART 5 — Mobile: /app/page.tsx detects window.innerWidth<768 on mount → router.replace('/hud')
 - [DONE] PART 6 — Both routes independent: /hud works directly (entrance animation), / is splash-only entry; build: / = 2.43kB, /hud = 29.8kB, zero TS errors
 
+## Single-URL Scroll Session — DONE
+Everything now lives on one URL (saachi.dev / "/"). No routing between pages.
+- [DONE] app/page.tsx: SplashSection (100vh) stacked above JarvisHUD (100vh) in normal document flow. sessionStorage-based scroll reset: `history.scrollRestoration = 'manual'` + `jarvis-scroll-reset` key + `window.scrollTo(0,0)` on mount — beats browser scroll restoration so the page always opens on the splash.
+- [DONE] HUD wrapper div: `height:100vh; overflow:hidden; position:relative; isolation:isolate` — clips HUD overlays so they cannot bleed into the splash above.
+- [DONE] Overlay containment: NO fixed→absolute change needed. JarvisHUD root already has `transform-gpu`, which makes it the containing block for `position:fixed` descendants → fixed overlays resolve relative to the 100vh HUD wrapper and are clipped by its overflow:hidden. FloatingCard + OperatorOverlay were already `absolute`. ProjectOverlay MUST stay `fixed` — it renders inside the right-sidebar ProjectsPanel (position:relative), so `absolute inset-0` would shrink the full-screen overlay to that tiny panel.
+- [DONE] app/hud/page.tsx: `redirect('/')` (server component). /hud → / .
+- [DONE] TopBar: "// HOME" + Escape now `window.scrollTo({top:0, behavior:'smooth'})` instead of router.push (removed router/fade-to-black; no routing on single page).
+- [DONE] BottomBar: "// RESTART" converted from Link href="/" to a button that scrolls to top.
+- Build: / = 63.6kB / 151kB First Load, /hud = redirect, zero TS errors.
+
 ## Favicon Session — DONE
 - [DONE] /public/favicon.svg: arc reactor SVG (680×680 viewBox, black bg, concentric cyan rings, white core, cardinal tick marks + end-caps)
 - [DONE] app/layout.tsx: metadata icons → /favicon.svg for icon/shortcut/apple; title updated to "Saachi Surana"; description updated
@@ -205,7 +215,7 @@ COMPLETE — simple scroll architecture: SplashSection (100vh) → JarvisHUD (10
 
 - Zone-based tilt in ArcReactor: tiltMult = zone!=="IDLE" ? 0.42 : 0.28; outermost ring gets zoneAccent color
 - mouseZoneStore.ts: IDLE_RADIUS=200px; zones by atan2; 400ms debounce; NONE zone for gaps
-- ROUTING: / = splash (ArcReactor fullscreen 100vw×100vh, boot sequence, click/scroll → /hud); /hud = full HUD (skipBoot=true, no boot sequence)
+- ROUTING: SINGLE URL — "/" = SplashSection (100vh) stacked above JarvisHUD (100vh, skipBoot); scroll down reveals HUD, scroll up returns to splash. /hud now redirects to "/". No page transitions. TopBar "// HOME"/Escape + BottomBar "// RESTART" scroll to top (no router.push).
 - JarvisHUD accepts skipBoot prop: when true, skips BootSequence, sets booted=true via useEffect immediately, uses faster/different entrance animations
 - BottomBar has hidden // RESTART link → / (splash), visible on md+ only
 - TopBar (client component): "// HOME" button far left + Escape key → fade-to-black 500ms → router.push("/")
