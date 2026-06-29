@@ -57,7 +57,7 @@ function ReactorScene({
       <CasingRing />
       <TickMarks />
       <RadarSweep />
-      {!fullScreen && <DataLabels />}
+      <DataLabels />
       {RINGS.map((spec, i) => (
         <Ring key={i} {...spec} mode={mode}
           isHovered={!fullScreen && hoveredRing === spec.sectionId}
@@ -73,7 +73,7 @@ function ReactorScene({
   );
 }
 
-export default function ArcReactor({ fullScreen = false, spinningUp = false }: { fullScreen?: boolean; spinningUp?: boolean }) {
+export default function ArcReactor({ fullScreen = false, spinningUp = false, paused = false }: { fullScreen?: boolean; spinningUp?: boolean; paused?: boolean }) {
   const [hovered,     setHovered]     = useState(false);
   const [hoveredRing, setHoveredRing] = useState<string | null>(null);
   const [burstTick,   setBurstTick]   = useState(0);
@@ -126,7 +126,7 @@ export default function ArcReactor({ fullScreen = false, spinningUp = false }: {
             style={{ background: "rgba(0,229,255,0.25)" }} />
         </button>
       )}
-      <Canvas camera={{ position: [0, 0, fullScreen ? 8.5 : 7.2], fov: 50 }} dpr={[1, 2]} gl={{ antialias: true, alpha: false }}>
+      <Canvas frameloop={paused ? "never" : "always"} camera={{ position: [0, 0, fullScreen ? 8.5 : 7.2], fov: 50 }} dpr={[1, 2]} gl={{ antialias: true, alpha: false }}>
         <color attach="background" args={["#000000"]} />
         <ambientLight intensity={0.04} />
         <Suspense fallback={null}>

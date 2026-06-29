@@ -61,7 +61,7 @@ export default function FloatingCard({ zone }: FloatingCardProps) {
           exit={{ ...cfg.initial, transition: { duration: 0.18 } }}
           transition={SPRING}
           style={{
-            position: "absolute",
+            position: "fixed",
             zIndex: 50,
             width: cfg.width,
             ...cfg.pos,

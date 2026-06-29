@@ -18,7 +18,7 @@ export function useBootSequence(onComplete: () => void) {
 
   useEffect(() => {
     const t1 = setTimeout(() => setShowTitle(true), 150);
-    const t2 = setTimeout(() => setPhase("typing1"), 600);
+    const t2 = setTimeout(() => setPhase("typing1"), 1500);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
@@ -30,7 +30,7 @@ export function useBootSequence(onComplete: () => void) {
       setLine1(LINE1.slice(0, i));
       if (i >= LINE1.length) {
         clearInterval(iv);
-        setTimeout(() => setPhase("typing2"), 100);
+        setTimeout(() => setPhase("typing2"), 220);
       }
     }, DUR_BOOT_CHAR);
     return () => clearInterval(iv);
@@ -51,9 +51,9 @@ export function useBootSequence(onComplete: () => void) {
             onComplete();
             setTimeout(() => setVisible(false), 100);
           }
-        }, 100);
+        }, 420);
       }
-    }, 10); // 10ms/char → 50 chars = 500ms total
+    }, DUR_BOOT_CHAR);
     return () => clearInterval(iv);
   }, [phase, onComplete]);
 

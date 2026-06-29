@@ -4,7 +4,7 @@ import { useCallback, useEffect } from "react";
 import { GlitchTitle } from "@/components/effects/GlitchEffect";
 
 export default function TopBar() {
-  // Single-page architecture: splash and HUD are stacked sections on the
+  // Single-page architecture: the splash and HUD are stacked sections on the
   // same URL. "// HOME" / Escape scroll back up to the splash — no routing.
   const goHome = useCallback(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });

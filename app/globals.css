@@ -73,13 +73,6 @@ html {
   height: 100%;
   /* Hide OS cursor — CustomCursor component provides the replacement */
   cursor: none;
-  scroll-behavior: auto;
-  overflow-anchor: none;
-  overflow: hidden;
-}
-
-html, body {
-  scroll-behavior: auto !important;
 }
 
 /* Also hide cursor on interactive elements so browser doesn't restore it */

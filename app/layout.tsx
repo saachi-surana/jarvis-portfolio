@@ -54,17 +54,14 @@ export default function RootLayout({
       className={`${spaceMono.variable} ${rajdhani.variable} ${orbitron.variable}`}
     >
       <body className="bg-black">
-        <script dangerouslySetInnerHTML={{ __html: `
-          (function() {
-            if (history.scrollRestoration) history.scrollRestoration = 'manual';
-            window.scrollTo(0, 0);
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
-            window.addEventListener('scroll', function() {
-              window.scrollTo(0, 0);
-            }, { once: true, capture: true });
-          })();
-        ` }} />
+        {/* Open at the splash on every load — disable scroll restoration only.
+            Runs once at parse time; does NOT listen for or cancel scrolling. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "if(history.scrollRestoration){history.scrollRestoration='manual';}window.scrollTo(0,0);",
+          }}
+        />
         <CustomCursor />
         <ScanLine />
         {children}

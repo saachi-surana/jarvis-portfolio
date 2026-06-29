@@ -18,7 +18,7 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input,    setInput]    = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const bottomRef               = useRef<HTMLDivElement>(null);
+  const listRef                 = useRef<HTMLDivElement>(null);
   const timerRef                = useRef<ReturnType<typeof setTimeout> | null>(null);
   const greetedRef              = useRef(false);
 
@@ -66,9 +66,12 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
     typeMessage(pendingMessage);
   }, [pendingMessage, isTyping, clearMessage, typeMessage]);
 
-  // Scroll to bottom on new messages
+  // Scroll the chat list to the bottom on new messages — scroll the container
+  // itself (NOT scrollIntoView, which would also scroll the window/page and
+  // jump past the splash section into the HUD on load).
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages]);
 
   useEffect(() => {
@@ -107,11 +110,10 @@ export default function JarvisChat({ booted }: JarvisChatProps) {
 
   return (
     <div className="flex flex-col h-full" style={{ background: "#000" }}>
-      <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-4 min-h-0">
+      <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-4 min-h-0">
         {messages.map((msg) => (
           <ChatMessage key={msg.id} message={msg} />
         ))}
-        <div ref={bottomRef} />
       </div>
 
       <div
