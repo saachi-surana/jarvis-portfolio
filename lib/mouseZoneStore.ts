@@ -23,14 +23,18 @@ function computeZone(mx: number, my: number, cx: number, cy: number): MouseZone 
 interface ZoneStore {
   zone: MouseZone;
   reactorCenter: { x: number; y: number };
+  reactorHeight: number; // measured height of the HUD reactor section (for the splash hand-off)
   setReactorCenter: (x: number, y: number) => void;
+  setReactorHeight: (h: number) => void;
   setZone: (z: MouseZone) => void;
 }
 
 export const useMouseZoneStore = create<ZoneStore>((set) => ({
   zone: "IDLE",
   reactorCenter: { x: 0, y: 0 },
+  reactorHeight: 0,
   setReactorCenter: (x, y) => set({ reactorCenter: { x, y } }),
+  setReactorHeight: (reactorHeight) => set({ reactorHeight }),
   setZone: (zone) => set({ zone }),
 }));
 

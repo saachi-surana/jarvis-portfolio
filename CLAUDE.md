@@ -112,8 +112,50 @@ Built fresh from commit 120da28a (the last good state); all the prior
     page via preventDefault on wheel/keydown/touchmove while busyRef is true.
   - EXPERIENCE FloatingCard stuck mid-HUD: CenterPanel computed the mouse-zone
     reactor center once at mount, when the HUD was scrolled off-screen (center.y
-    ≈ innerHeight) → every mouse pos read as the UP/EXPERIENCE zone. Now recomputes
-    getBoundingClientRect on scroll (rAF-throttled) so the center is correct in-view.
+    ≈ innerHeight) → every mouse pos read as the UP/EXPERIENCE zone. Recompute
+    getBoundingClientRect on scroll (rAF-throttled) kept; BUT user disliked the
+    floating zone cards entirely, so <FloatingCard zone> removed from CenterPanel
+    (all that data lives in the sidebars). ChevronHints + useMouseZoneTracker kept.
+- DISAPPEAR ANIMATION = fixed-overlay crossfade (current). Phases idle→exit→merge
+  in SplashSection. runSequence: setPhase("exit") + window.scrollTo(0,innerHeight)
+  INSTANT in the same tick (reactor is position:fixed at scale 1 covering the HUD,
+  so the jump is never seen — no flash). exit: reactor shrinks scale 1→EXIT_SCALE
+  (0.3) over SHRINK_MS(1100) via PURE scale toward transformOrigin "50% originY"
+  (originY=(MINI_TOP - scale*h/2)/(1-scale)) so center lands on the mini reactor
+  with NO top/bottom truncation, revealing the HUD *behind* it (no black gap).
+  merge: opacity 1→0 over MERGE_MS(450) crossfading onto the HUD mini reactor.
+  Then phase→idle (position back to absolute, off-screen) + re-arm. section gets
+  zIndex:50 while overlay so the fixed reactor paints above the HUD section.
+  Tunables: EXIT_SCALE (match mini-reactor size), MINI_TOP (landing spot).
+  TRANSPARENT overlay: the overlay reactor was a black rectangle (canvas had an
+  opaque black bg) covering the HUD. ArcReactor now takes transparent?:boolean →
+  Canvas gl={{alpha:transparent}}, skips <color background>, drops Vignette (it
+  darkens edges → dark box). SplashSection passes transparent so only the rings/
+  glow overlay the HUD (HUD visible behind). Splash idle looks identical (black
+  body behind). EffectComposer rendered as two type-safe variants (with/without
+  Vignette) since it rejects a false child.
+  OVERLAY MATCH TUNING: the overlay was too big/bright vs the mini reactor. Now
+  (a) single "exit" phase shrinks scale 1→0.3 (SHRINK_EASE, fast early) AND
+  crossfades opacity [1,1,0] times[0,0.5,1] together over EXIT_MS(1000) so it
+  dissolves onto the mini reactor instead of lingering mismatched; (b) transparent
+  Bloom drops the spin-up boost (fullScreen?3.0:2.5); (c) the white core flare is
+  suppressed on the transparent overlay — ReactorScene takes transparent and
+  passes spinningUp={spinningUp && !transparent} to <Core>, so the rotation
+  spin-up is kept but the blown-out white core is not.
+  MEASURED ALIGNMENT (current): hardcoded MINI_TOP/EXIT_SCALE were wrong — on
+  desktop .reactor-section is flex:58 (~500px, NOT 280px) and centered ~y=302,
+  not 192. So the overlay now lands on the HUD reactor's REAL measured rect:
+  mouseZoneStore gains reactorHeight (set by CenterPanel alongside reactorCenter).
+  SplashSection.runSequence reads {reactorCenter, reactorHeight} via getState():
+  scale = (8.5/7.2)*(reactorHeight/vh) [Z_RATIO corrects camera-z size diff],
+  x = reactorCenter.x - vw/2, y = reactorCenter.y - 1.5*vh (reactorCenter is
+  measured viewport-relative at top where HUD sits 1 vh below, so its on-screen
+  center after the jump is reactorCenter.y - vh). Overlay animates scale+x+y to
+  land exactly on the HUD reactor then crossfades (opacity [1,1,0] times[0,0.6,1]).
+  transformOrigin center. Tunables: Z_RATIO fudge / EXIT_MS.
+  Fixes: truncation (pure scale, no translate), black gap (HUD revealed behind
+  shrinking reactor + instant jump), corner artifact on scroll-up (page stays
+  locked during the whole sequence so no partial state is ever scrolled into view).
 
 ## Enhancement Session — DONE
 - [DONE] PART 1 — Authorship clarity (boot sequence, greeting, bottom bar, operator ID)

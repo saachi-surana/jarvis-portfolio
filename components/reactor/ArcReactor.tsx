@@ -25,7 +25,7 @@ const SIDEBAR_HIGHLIGHTS: Record<string, string> = {
 
 function ReactorScene({
   hovered, onHover, mouseRef, mode, hoveredRing,
-  onRingHoverChange, onRingClick, burstTick, onCoreClick, fullScreen, spinningUp,
+  onRingHoverChange, onRingClick, burstTick, onCoreClick, fullScreen, spinningUp, transparent,
 }: {
   hovered: boolean; onHover: (v: boolean) => void;
   mouseRef: React.MutableRefObject<{ x: number; y: number }>;
@@ -33,7 +33,7 @@ function ReactorScene({
   onRingHoverChange: (hovered: boolean, sectionId: string) => void;
   onRingClick: (sectionId: string) => void;
   burstTick: number; onCoreClick: () => void;
-  fullScreen: boolean; spinningUp: boolean;
+  fullScreen: boolean; spinningUp: boolean; transparent: boolean;
 }) {
   const groupRef    = useRef<THREE.Group>(null!);
   const spinElapsed = useRef(0);
@@ -66,14 +66,16 @@ function ReactorScene({
           disableNav={fullScreen}
         />
       ))}
-      <Core hovered={hovered} onHover={onHover} mode={mode} onCoreClick={onCoreClick} spinningUp={spinningUp} />
+      {/* Keep the rotation spin-up (handled above) but suppress the white core
+          flare on the transparent overlay so its glow matches the mini reactor. */}
+      <Core hovered={hovered} onHover={onHover} mode={mode} onCoreClick={onCoreClick} spinningUp={spinningUp && !transparent} />
       <Particles count={fullScreen ? 3000 : 2000} mode={mode} />
       <BurstParticles burstTick={burstTick} mode={mode} />
     </group>
   );
 }
 
-export default function ArcReactor({ fullScreen = false, spinningUp = false, paused = false }: { fullScreen?: boolean; spinningUp?: boolean; paused?: boolean }) {
+export default function ArcReactor({ fullScreen = false, spinningUp = false, paused = false, transparent = false }: { fullScreen?: boolean; spinningUp?: boolean; paused?: boolean; transparent?: boolean }) {
   const [hovered,     setHovered]     = useState(false);
   const [hoveredRing, setHoveredRing] = useState<string | null>(null);
   const [burstTick,   setBurstTick]   = useState(0);
@@ -126,8 +128,8 @@ export default function ArcReactor({ fullScreen = false, spinningUp = false, pau
             style={{ background: "rgba(0,229,255,0.25)" }} />
         </button>
       )}
-      <Canvas frameloop={paused ? "never" : "always"} camera={{ position: [0, 0, fullScreen ? 8.5 : 7.2], fov: 50 }} dpr={[1, 2]} gl={{ antialias: true, alpha: false }}>
-        <color attach="background" args={["#000000"]} />
+      <Canvas frameloop={paused ? "never" : "always"} camera={{ position: [0, 0, fullScreen ? 8.5 : 7.2], fov: 50 }} dpr={[1, 2]} gl={{ antialias: true, alpha: transparent }}>
+        {!transparent && <color attach="background" args={["#000000"]} />}
         <ambientLight intensity={0.04} />
         <Suspense fallback={null}>
           <ReactorScene
@@ -135,14 +137,23 @@ export default function ArcReactor({ fullScreen = false, spinningUp = false, pau
             mode={reactorMode} hoveredRing={hoveredRing}
             onRingHoverChange={handleRingHoverChange} onRingClick={handleRingClick}
             burstTick={burstTick} onCoreClick={() => setBurstTick((t) => t + 1)}
-            fullScreen={fullScreen} spinningUp={spinningUp}
+            fullScreen={fullScreen} spinningUp={spinningUp} transparent={transparent}
           />
         </Suspense>
-        <EffectComposer>
-          <Bloom intensity={spinningUp ? (fullScreen ? 3.5 : 3.0) : (fullScreen ? 3.0 : 2.5)} luminanceThreshold={0.1} luminanceSmoothing={0.85} />
-          <ChromaticAberration offset={caOffset.current} radialModulation={false} modulationOffset={0} />
-          <Vignette eskil={false} offset={0.15} darkness={0.85} />
-        </EffectComposer>
+        {transparent ? (
+          <EffectComposer>
+            {/* No spin-up bloom boost here — keep the overlay glow close to the
+                HUD mini reactor's so the hand-off doesn't blow out white. */}
+            <Bloom intensity={fullScreen ? 3.0 : 2.5} luminanceThreshold={0.1} luminanceSmoothing={0.85} />
+            <ChromaticAberration offset={caOffset.current} radialModulation={false} modulationOffset={0} />
+          </EffectComposer>
+        ) : (
+          <EffectComposer>
+            <Bloom intensity={spinningUp ? (fullScreen ? 3.5 : 3.0) : (fullScreen ? 3.0 : 2.5)} luminanceThreshold={0.1} luminanceSmoothing={0.85} />
+            <ChromaticAberration offset={caOffset.current} radialModulation={false} modulationOffset={0} />
+            <Vignette eskil={false} offset={0.15} darkness={0.85} />
+          </EffectComposer>
+        )}
       </Canvas>
     </div>
   );

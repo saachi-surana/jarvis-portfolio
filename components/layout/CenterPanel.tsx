@@ -6,7 +6,6 @@ import { AnimatePresence } from "framer-motion";
 import JarvisChat from "@/components/chat/JarvisChat";
 import OperatorOverlay from "@/components/panels/OperatorOverlay";
 import OrbitalDisplays from "@/components/effects/OrbitalDisplays";
-import FloatingCard from "@/components/effects/FloatingCard";
 import ChevronHints from "@/components/effects/ChevronHints";
 import { useJarvisStore } from "@/lib/store";
 import { useMouseZoneStore, useMouseZone, useMouseZoneTracker } from "@/lib/mouseZoneStore";
@@ -24,6 +23,7 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
   const { showAbout, setShowAbout } = useJarvisStore();
   const reactorRef = useRef<HTMLDivElement>(null);
   const setReactorCenter = useMouseZoneStore((s) => s.setReactorCenter);
+  const setReactorHeight = useMouseZoneStore((s) => s.setReactorHeight);
   const zone = useMouseZone();
   // Pause the HUD reactor's render loop while the splash is on screen so only
   // one Three.js canvas is rendering at a time (keeps scrolling smooth).
@@ -40,6 +40,7 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
       // scrolls — recompute on scroll so the mouse-zone center is correct once
       // the HUD is in view (otherwise every mouse position reads as "above").
       setReactorCenter(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      setReactorHeight(rect.height);
       setPaused(window.scrollY < window.innerHeight * 0.5);
     };
     update();
@@ -56,7 +57,7 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
       window.removeEventListener("resize", update);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [setReactorCenter]);
+  }, [setReactorCenter, setReactorHeight]);
 
   return (
     <main
@@ -80,9 +81,6 @@ export default function CenterPanel({ booted }: CenterPanelProps) {
       <div className="chat-section">
         <JarvisChat booted={booted} />
       </div>
-
-      {/* Floating zone cards — fixed overlay, escapes overflow:hidden */}
-      <FloatingCard zone={zone} />
 
       {/* Operator profile overlay */}
       <AnimatePresence>
