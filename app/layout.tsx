@@ -27,13 +27,27 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://saachi.dev"),
   title: "Saachi Surana",
-  description: "JARVIS Portfolio Interface — Saachi Surana, CS & Data Science @ University of Washington",
+  description:
+    "JARVIS Portfolio Interface — Saachi Surana, CS & Data Science @ University of Washington",
   robots: { index: true, follow: true },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
     apple: "/favicon.svg",
+  },
+  openGraph: {
+    title: "Saachi Surana",
+    description: "building things that feel alive",
+    url: "https://saachi.dev",
+    siteName: "Saachi Surana",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Saachi Surana",
+    description: "building things that feel alive",
   },
 };
 
